@@ -1,6 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useState } from "react";
+import { Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -25,9 +26,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Input } from "@/components/ui/input";
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [targetRevenue, setTargetRevenue] = useState("25M");
   const itemsPerPage = 25;
 
   const recommendations = [
@@ -37,33 +40,74 @@ const Dashboard = () => {
       products: [
         { 
           id: 1, 
-          name: "Summer Dress", 
+          name: "Summer Floral Dress", 
           price: "$129.99",
           image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
         },
         { 
           id: 2, 
-          name: "Evening Gown", 
+          name: "Evening Cocktail Dress", 
           price: "$299.99",
           image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
         },
         { 
           id: 3, 
-          name: "Cocktail Dress", 
+          name: "Casual Maxi Dress", 
           price: "$179.99",
           image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
         }
-      ]
+      ],
+      details: "Based on historical data analysis, these dresses have shown consistent demand and positive customer feedback. The price elasticity study suggests room for a 10-15% price increase without significant impact on conversion rates."
     },
     {
       id: 2,
       text: "Based on historical data, increasing prices by 5% on these items could result in a 3% increase in overall revenue.",
-      details: "Detailed analysis shows stable demand patterns across seasons."
+      products: [
+        {
+          id: 4,
+          name: "Classic White Shirt",
+          price: "$89.99",
+          image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+        },
+        {
+          id: 5,
+          name: "Silk Blouse",
+          price: "$149.99",
+          image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
+        },
+        {
+          id: 6,
+          name: "Linen Button-Down",
+          price: "$119.99",
+          image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
+        }
+      ],
+      details: "Detailed analysis shows stable demand patterns across seasons, with particularly strong performance in business casual categories."
     },
     {
       id: 3,
       text: "Consider bundling these complementary products to increase average order value.",
-      details: "Customer purchase history indicates strong correlation between these items."
+      products: [
+        {
+          id: 7,
+          name: "Leather Boots",
+          price: "$199.99",
+          image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+        },
+        {
+          id: 8,
+          name: "Running Shoes",
+          price: "$159.99",
+          image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
+        },
+        {
+          id: 9,
+          name: "Canvas Sneakers",
+          price: "$79.99",
+          image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
+        }
+      ],
+      details: "Customer purchase history indicates strong correlation between these items. Bundle pricing could drive higher cart values and improve overall revenue."
     }
   ];
 
@@ -129,6 +173,10 @@ const Dashboard = () => {
   const currentActivities = activities.slice(startIndex, endIndex);
   const totalPages = Math.ceil(activities.length / itemsPerPage);
 
+  const handleRevenueChange = (value: string) => {
+    setTargetRevenue(value);
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -141,13 +189,31 @@ const Dashboard = () => {
                 <CardTitle>Target Revenue Goal</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">$25M</div>
+                <div className="flex items-center space-x-2">
+                  <div className="text-3xl font-bold">${targetRevenue}</div>
+                  <Dialog>
+                    <DialogTrigger>
+                      <Pencil className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Edit Target Revenue</DialogTitle>
+                      </DialogHeader>
+                      <Input
+                        type="text"
+                        value={targetRevenue}
+                        onChange={(e) => handleRevenueChange(e.target.value)}
+                        className="mt-4"
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <div className="text-sm text-muted-foreground mt-2">85% to goal</div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Incremental Revenue from Jeff</CardTitle>
+                <CardTitle>New Revenue Generated by Jeff</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-secondary">$1.25M</div>
@@ -175,29 +241,26 @@ const Dashboard = () => {
                           <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
                             See More
                           </DialogTrigger>
-                          <DialogContent>
+                          <DialogContent className="max-w-2xl">
                             <DialogHeader>
                               <DialogTitle>Detailed Recommendation</DialogTitle>
                             </DialogHeader>
-                            {recommendation.products ? (
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                                {recommendation.products.map((product) => (
-                                  <div key={product.id} className="space-y-2">
-                                    <img
-                                      src={product.image}
-                                      alt={product.name}
-                                      className="w-full h-32 object-cover rounded-lg"
-                                    />
-                                    <h3 className="font-medium">{product.name}</h3>
-                                    <p className="text-sm text-muted-foreground">{product.price}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="mt-4 text-sm text-muted-foreground">
-                                {recommendation.details}
-                              </p>
-                            )}
+                            <p className="mt-4 text-sm text-muted-foreground">
+                              {recommendation.details}
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                              {recommendation.products.map((product) => (
+                                <div key={product.id} className="space-y-2">
+                                  <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-32 object-cover rounded-lg"
+                                  />
+                                  <h3 className="font-medium">{product.name}</h3>
+                                  <p className="text-sm text-muted-foreground">{product.price}</p>
+                                </div>
+                              ))}
+                            </div>
                           </DialogContent>
                         </Dialog>
                       </p>
