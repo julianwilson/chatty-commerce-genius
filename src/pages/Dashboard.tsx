@@ -151,11 +151,11 @@ const Dashboard = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>% of Overall Sales $</TableHead>
-                    <TableHead>Total Sales $</TableHead>
+                    <TableHead>LY % of Overall Sales $</TableHead>
+                    <TableHead>YTD Total Sales $</TableHead>
                     <TableHead>% to Goal</TableHead>
                     <TableHead>Total Units</TableHead>
-                    <TableHead>Avg Unit Retail</TableHead>
+                    <TableHead>Avg. Unit Retail</TableHead>
                     <TableHead># of Products</TableHead>
                   </TableRow>
                 </TableHeader>
