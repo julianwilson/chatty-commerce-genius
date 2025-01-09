@@ -298,12 +298,12 @@ const Dashboard = () => {
           </Card>
 
           {/* Monthly Sales Chart */}
-          <Card className="overflow-hidden">
+          <Card>
             <CardHeader>
               <CardTitle>% of Sales by Month LY</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="h-[300px] w-full">
+            <CardContent>
+              <div className="h-[400px] w-full">
                 <ChartContainer
                   config={{
                     sales: {
@@ -314,10 +314,7 @@ const Dashboard = () => {
                     }
                   }}
                 >
-                  <LineChart 
-                    data={monthlySalesData}
-                    margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
-                  >
+                  <LineChart data={monthlySalesData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="month"
