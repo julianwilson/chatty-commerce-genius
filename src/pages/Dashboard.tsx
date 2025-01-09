@@ -2,6 +2,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import {
   Dialog,
   DialogContent,
@@ -27,16 +29,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,6 +50,59 @@ const Dashboard = () => {
     { month: 'Nov', salesPercentage: 12.5 },
     { month: 'Dec', salesPercentage: 8.5 }
   ];
+
+  const chartOptions = {
+    chart: {
+      type: 'line',
+      height: 300,
+      style: {
+        fontFamily: 'inherit'
+      }
+    },
+    title: {
+      text: ''
+    },
+    xAxis: {
+      categories: monthlySalesData.map(data => data.month),
+      labels: {
+        style: {
+          color: 'var(--foreground)'
+        }
+      }
+    },
+    yAxis: {
+      title: {
+        text: 'Sales Percentage',
+        style: {
+          color: 'var(--foreground)'
+        }
+      },
+      labels: {
+        format: '{value}%',
+        style: {
+          color: 'var(--foreground)'
+        }
+      }
+    },
+    series: [{
+      name: '% of Sales',
+      data: monthlySalesData.map(data => data.salesPercentage),
+      color: '#10B981'
+    }],
+    credits: {
+      enabled: false
+    },
+    tooltip: {
+      formatter: function(this: Highcharts.TooltipFormatterContextObject) {
+        return `<b>${this.x}</b><br/>${this.y}%`;
+      }
+    },
+    legend: {
+      itemStyle: {
+        color: 'var(--foreground)'
+      }
+    }
+  };
 
   const recommendations = [
     {
@@ -302,39 +347,12 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle>% of Sales by Month LY</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="h-[400px] w-full">
-                <ChartContainer
-                  config={{
-                    sales: {
-                      theme: {
-                        light: "#10B981",
-                        dark: "#10B981"
-                      }
-                    }
-                  }}
-                >
-                  <LineChart data={monthlySalesData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="month"
-                      tick={{ fill: 'currentColor' }}
-                    />
-                    <YAxis
-                      tick={{ fill: 'currentColor' }}
-                      tickFormatter={(value) => `${value}%`}
-                    />
-                    <ChartTooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="salesPercentage"
-                      name="% of Sales"
-                      stroke="var(--color-sales)"
-                      strokeWidth={2}
-                      dot={{ fill: "var(--color-sales)" }}
-                    />
-                  </LineChart>
-                </ChartContainer>
+            <CardContent className="p-0">
+              <div className="h-[300px] w-full">
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={chartOptions}
+                />
               </div>
             </CardContent>
           </Card>
