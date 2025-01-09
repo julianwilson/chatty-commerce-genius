@@ -108,14 +108,14 @@ export default function Marketing() {
   };
 
   // Custom day render function
-  const renderDay = (day: Date) => {
-    const dayEvents = getEventsForDate(day);
+  const renderDay = ({ date: dayDate }: { date: Date }) => {
+    const dayEvents = getEventsForDate(dayDate);
     const hasEvents = dayEvents.length > 0;
 
     return (
       <div className="relative w-full h-full">
         <div className={`text-center ${hasEvents ? 'font-bold' : ''}`}>
-          {format(day, 'd')}
+          {format(dayDate, 'd')}
         </div>
         {hasEvents && (
           <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0.5 pb-1">
@@ -155,7 +155,7 @@ export default function Marketing() {
                       }
                     }}
                     components={{
-                      Day: ({ day }) => renderDay(day)
+                      Day: renderDay
                     }}
                     className="rounded-md border"
                   />
