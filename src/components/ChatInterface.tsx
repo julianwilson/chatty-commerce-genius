@@ -49,48 +49,10 @@ export function ChatInterface() {
     {
       text: "Hey Julian. It looks like sales are a bit slower than last year this month. We may want to consider running a site wide sale. What's on your mind?",
       isUser: false,
-    },
-    {
-      text: (
-        <>
-          By the way, I identified a few products as good opportunities because they've been selling well and you may be able to increase prices while maintaining conversion rate.{" "}
-          <Dialog>
-            <DialogTrigger className="text-primary underline">See more</DialogTrigger>
-            <DialogContent className="max-w-3xl">
-              <DialogHeader>
-                <DialogTitle>Product Opportunities</DialogTitle>
-              </DialogHeader>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Image</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Price</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell>
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      </TableCell>
-                      <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.price}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </DialogContent>
-          </Dialog>
-        </>
-      ),
-      isUser: false,
     }
   ]);
+  
+  const [hasUserReplied, setHasUserReplied] = useState(false);
   const [input, setInput] = useState("");
 
   const handleInputClick = () => {
@@ -102,14 +64,58 @@ export function ChatInterface() {
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, isUser: true }]);
+      setHasUserReplied(true);
       
       // Add Jeff's response if the message matches our specific case
       if (input.includes("Setup a promotion on Jeans for 20% off")) {
         setTimeout(() => {
-          setMessages(prev => [...prev, {
-            text: <>Okay. I've setup a draft promotion <Link to="/promotions/draft" className="text-primary underline">here</Link>. Give it a look and when you're ready to launch just press Go Live.</>,
-            isUser: false
-          }]);
+          setMessages(prev => [
+            ...prev,
+            {
+              text: <>Okay. I've setup a draft promotion <Link to="/promotions/draft" className="text-primary underline">here</Link>. Give it a look and when you're ready to launch just press Go Live.</>,
+              isUser: false
+            },
+            {
+              text: (
+                <>
+                  By the way, I identified a few products as good opportunities because they've been selling well and you may be able to increase prices while maintaining conversion rate.{" "}
+                  <Dialog>
+                    <DialogTrigger className="text-primary underline">See more</DialogTrigger>
+                    <DialogContent className="max-w-3xl">
+                      <DialogHeader>
+                        <DialogTitle>Product Opportunities</DialogTitle>
+                      </DialogHeader>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Image</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Price</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {products.map((product) => (
+                            <TableRow key={product.id}>
+                              <TableCell>
+                                <img 
+                                  src={product.image} 
+                                  alt={product.name} 
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                              </TableCell>
+                              <TableCell>{product.name}</TableCell>
+                              <TableCell>{product.price}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              ),
+              isUser: false
+            }
+          ]);
         }, 500);
       }
       
@@ -119,19 +125,19 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}
           >
             {!message.isUser && (
-              <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
+              <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3">
                 J
               </div>
             )}
             <div
-              className={`max-w-[80%] p-3 rounded-lg ${
+              className={`max-w-[80%] p-4 rounded-lg ${
                 message.isUser
                   ? "bg-primary text-white"
                   : "bg-gray-100 text-gray-800"
@@ -150,7 +156,7 @@ export function ChatInterface() {
             onChange={(e) => setInput(e.target.value)}
             onClick={handleInputClick}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type your message..."
+            placeholder={hasUserReplied ? "Give me some recommendations" : "Type your message..."}
             className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <Button onClick={handleSend} className="bg-primary hover:bg-primary/90">
