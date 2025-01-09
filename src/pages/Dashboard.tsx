@@ -51,7 +51,7 @@ const Dashboard = () => {
     { month: 'Dec', salesPercentage: 8.5 }
   ];
 
-  const chartOptions = {
+  const chartOptions: Highcharts.Options = {
     chart: {
       type: 'line',
       height: 300,
@@ -93,7 +93,7 @@ const Dashboard = () => {
       enabled: false
     },
     tooltip: {
-      formatter: function(this: Highcharts.TooltipFormatterContextObject) {
+      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
         return `<b>${this.x}</b><br/>${this.y}%`;
       }
     },
