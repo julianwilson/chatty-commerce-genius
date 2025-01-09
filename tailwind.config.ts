@@ -56,6 +56,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        marketing: {
+          "markdown": "#F97316",
+          "discount": "#8B5CF6",
+          "collection": "#0EA5E9",
+          "bogo": "#D946EF",
+          "shipping": "#33C3F0",
+          "update": "#8E9196",
+          "influencer": "#9b87f5",
+          "event": "#6E59A5",
+          "loyalty": "#F2FCE2",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
