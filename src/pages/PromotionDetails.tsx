@@ -171,8 +171,7 @@ const PromotionDetails = () => {
       pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
         'Units Sold: <b>{point.units}</b><br/>' +
         'Average Unit Retail: <b>${point.aur}</b><br/>' +
-        'Average Markdown: <b>{point.markdown}%</b><br/><br/>' +
-        '{series.name === "Previous Period" ? "" : "<br/>"}',
+        'Average Markdown: <b>{point.markdown}%</b>',
       shared: true,
       useHTML: true
     },
