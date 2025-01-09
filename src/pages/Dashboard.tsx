@@ -27,9 +27,16 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import { ChartContainer } from "@/components/ui/chart";
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -196,55 +203,6 @@ const Dashboard = () => {
     setTargetRevenue(value);
   };
 
-  const chartOptions = {
-    chart: {
-      type: 'line',
-      style: {
-        fontFamily: 'inherit'
-      }
-    },
-    title: {
-      text: ''
-    },
-    xAxis: {
-      categories: monthlySalesData.map(data => data.month),
-      labels: {
-        style: {
-          color: 'var(--foreground)'
-        }
-      }
-    },
-    yAxis: {
-      title: {
-        text: '% of Sales'
-      },
-      labels: {
-        formatter: function() {
-          return this.value + '%'
-        },
-        style: {
-          color: 'var(--foreground)'
-        }
-      }
-    },
-    series: [{
-      name: '% of Sales',
-      data: monthlySalesData.map(data => data.salesPercentage),
-      color: '#10B981'
-    }],
-    tooltip: {
-      formatter: function() {
-        return `<b>${this.x}</b><br/>${this.y}%`
-      }
-    },
-    credits: {
-      enabled: false
-    },
-    legend: {
-      enabled: false
-    }
-  }
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -340,12 +298,12 @@ const Dashboard = () => {
           </Card>
 
           {/* Monthly Sales Chart */}
-          <Card className="overflow-hidden">
+          <Card>
             <CardHeader>
               <CardTitle>% of Sales by Month LY</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="h-[300px] w-full">
+            <CardContent>
+              <div className="h-[400px] w-full">
                 <ChartContainer
                   config={{
                     sales: {
@@ -356,7 +314,26 @@ const Dashboard = () => {
                     }
                   }}
                 >
-                  {chartOptions}
+                  <LineChart data={monthlySalesData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="month"
+                      tick={{ fill: 'currentColor' }}
+                    />
+                    <YAxis
+                      tick={{ fill: 'currentColor' }}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <ChartTooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="salesPercentage"
+                      name="% of Sales"
+                      stroke="var(--color-sales)"
+                      strokeWidth={2}
+                      dot={{ fill: "var(--color-sales)" }}
+                    />
+                  </LineChart>
                 </ChartContainer>
               </div>
             </CardContent>
