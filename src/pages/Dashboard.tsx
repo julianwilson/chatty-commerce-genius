@@ -17,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Pagination,
@@ -29,11 +28,45 @@ import {
 } from "@/components/ui/pagination";
 
 const Dashboard = () => {
-  const [revenueGoal, setRevenueGoal] = useState("25M");
-  const [editingGoal, setEditingGoal] = useState(false);
-  const [tempGoal, setTempGoal] = useState(revenueGoal);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
+
+  const recommendations = [
+    {
+      id: 1,
+      text: "I identified these products as good opportunities because they have been selling well and you may be able to increase prices while maintaining the same conversion.",
+      products: [
+        { 
+          id: 1, 
+          name: "Summer Dress", 
+          price: "$129.99",
+          image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+        },
+        { 
+          id: 2, 
+          name: "Evening Gown", 
+          price: "$299.99",
+          image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
+        },
+        { 
+          id: 3, 
+          name: "Cocktail Dress", 
+          price: "$179.99",
+          image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
+        }
+      ]
+    },
+    {
+      id: 2,
+      text: "Based on historical data, increasing prices by 5% on these items could result in a 3% increase in overall revenue.",
+      details: "Detailed analysis shows stable demand patterns across seasons."
+    },
+    {
+      id: 3,
+      text: "Consider bundling these complementary products to increase average order value.",
+      details: "Customer purchase history indicates strong correlation between these items."
+    }
+  ];
 
   const collections = [
     { 
@@ -102,58 +135,53 @@ const Dashboard = () => {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="container mx-auto p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Target Revenue Goal */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Target Revenue Goal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Dialog open={editingGoal} onOpenChange={setEditingGoal}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="text-2xl font-bold">
-                      ${revenueGoal}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Revenue Goal</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <Input
-                        value={tempGoal}
-                        onChange={(e) => setTempGoal(e.target.value)}
-                        placeholder="Enter new goal..."
-                      />
-                      <Button
-                        onClick={() => {
-                          setRevenueGoal(tempGoal);
-                          setEditingGoal(false);
-                        }}
-                      >
-                        Save
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-
-            {/* Recommendations */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recommendations</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  I identified these products as good opportunities because they have been
-                  selling well and you may be able to increase prices while maintaining
-                  the same conversion.
-                </p>
-                <Button>Create Experiment</Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Recommendations */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recommendations</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {recommendations.map((recommendation) => (
+                <div key={recommendation.id} className="space-y-2">
+                  <div className="flex flex-col space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {recommendation.text}
+                      <Dialog>
+                        <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
+                          See More
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Detailed Recommendation</DialogTitle>
+                          </DialogHeader>
+                          {recommendation.products ? (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                              {recommendation.products.map((product) => (
+                                <div key={product.id} className="space-y-2">
+                                  <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-32 object-cover rounded-lg"
+                                  />
+                                  <h3 className="font-medium">{product.name}</h3>
+                                  <p className="text-sm text-muted-foreground">{product.price}</p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="mt-4 text-sm text-muted-foreground">
+                              {recommendation.details}
+                            </p>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                    </p>
+                    <Button>Create Experiment</Button>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
 
           {/* Top Down Collection Performance */}
           <Card>
