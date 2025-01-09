@@ -1,3 +1,5 @@
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import {
   Table,
   TableBody,
@@ -20,32 +22,39 @@ const promotionsData = [
 
 export default function Promotions() {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Promotions</h1>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Promotion Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-              <TableHead>Total Sales $</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {promotionsData.map((promotion) => (
-              <TableRow key={promotion.id}>
-                <TableCell className="font-medium">{promotion.name}</TableCell>
-                <TableCell>{promotion.type}</TableCell>
-                <TableCell>{promotion.startDate}</TableCell>
-                <TableCell>{promotion.endDate}</TableCell>
-                <TableCell>{promotion.totalSales}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <main className="flex-1 bg-white">
+          <div className="container mx-auto py-8">
+            <h1 className="text-2xl font-bold mb-6">Promotions</h1>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Promotion Name</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Total Sales $</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {promotionsData.map((promotion) => (
+                    <TableRow key={promotion.id}>
+                      <TableCell className="font-medium">{promotion.name}</TableCell>
+                      <TableCell>{promotion.type}</TableCell>
+                      <TableCell>{promotion.startDate}</TableCell>
+                      <TableCell>{promotion.endDate}</TableCell>
+                      <TableCell>{promotion.totalSales}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
