@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   Table,
   TableBody,
@@ -85,6 +86,7 @@ const Dashboard = () => {
       }
     },
     series: [{
+      type: 'line',
       name: '% of Sales',
       data: monthlySalesData.map(data => data.salesPercentage),
       color: '#10B981'
@@ -93,7 +95,7 @@ const Dashboard = () => {
       enabled: false
     },
     tooltip: {
-      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
+      formatter: function(this: Highcharts.TooltipPointObject): string {
         return `<b>${this.x}</b><br/>${this.y}%`;
       }
     },
