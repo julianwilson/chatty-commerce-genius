@@ -328,7 +328,7 @@ const Dashboard = () => {
                     <Line
                       type="monotone"
                       dataKey="salesPercentage"
-                      name="sales"
+                      name="% of Sales"
                       stroke="var(--color-sales)"
                       strokeWidth={2}
                       dot={{ fill: "var(--color-sales)" }}
