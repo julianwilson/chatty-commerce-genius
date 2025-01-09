@@ -1,7 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -135,51 +134,77 @@ const Dashboard = () => {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="container mx-auto p-6 space-y-6">
+          {/* Target Revenue Goal and Incremental Revenue */}
+          <div className="grid grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Target Revenue Goal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">$25M</div>
+                <div className="text-sm text-muted-foreground mt-2">85% to goal</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Incremental Revenue from Jeff</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-secondary">$1.25M</div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Recommendations */}
           <Card>
             <CardHeader>
               <CardTitle>Recommendations</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {recommendations.map((recommendation) => (
-                <div key={recommendation.id} className="space-y-2">
-                  <div className="flex flex-col space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      {recommendation.text}
-                      <Dialog>
-                        <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
-                          See More
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Detailed Recommendation</DialogTitle>
-                          </DialogHeader>
-                          {recommendation.products ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                              {recommendation.products.map((product) => (
-                                <div key={product.id} className="space-y-2">
-                                  <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-full h-32 object-cover rounded-lg"
-                                  />
-                                  <h3 className="font-medium">{product.name}</h3>
-                                  <p className="text-sm text-muted-foreground">{product.price}</p>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="mt-4 text-sm text-muted-foreground">
-                              {recommendation.details}
-                            </p>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                    </p>
-                    <Button>Create Experiment</Button>
+            <CardContent>
+              <div className="space-y-4">
+                {recommendations.map((recommendation) => (
+                  <div
+                    key={recommendation.id}
+                    className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+                  >
+                    <div className="w-3 h-3 rounded-full mt-1.5 bg-blue-500" />
+                    <div className="flex-1">
+                      <p className="text-sm">
+                        {recommendation.text}
+                        <Dialog>
+                          <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
+                            See More
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Detailed Recommendation</DialogTitle>
+                            </DialogHeader>
+                            {recommendation.products ? (
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                {recommendation.products.map((product) => (
+                                  <div key={product.id} className="space-y-2">
+                                    <img
+                                      src={product.image}
+                                      alt={product.name}
+                                      className="w-full h-32 object-cover rounded-lg"
+                                    />
+                                    <h3 className="font-medium">{product.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{product.price}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="mt-4 text-sm text-muted-foreground">
+                                {recommendation.details}
+                              </p>
+                            )}
+                          </DialogContent>
+                        </Dialog>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </CardContent>
           </Card>
 
