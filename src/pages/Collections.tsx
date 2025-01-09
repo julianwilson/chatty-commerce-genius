@@ -98,11 +98,13 @@ export default function Collections() {
                   {collectionsData.map((collection) => (
                     <TableRow key={collection.id}>
                       <TableCell>
-                        <img
-                          src={collection.src}
-                          alt={collection.title}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
+                        <div className="relative w-16 h-16 overflow-hidden rounded-md">
+                          <img
+                            src={collection.src}
+                            alt={collection.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         {collection.title}
