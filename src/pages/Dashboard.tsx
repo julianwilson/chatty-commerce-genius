@@ -31,80 +31,80 @@ import {
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 
+// Monthly sales data for last year
+const monthlySalesData = [
+  { month: 'Jan', salesPercentage: 8.5 },
+  { month: 'Feb', salesPercentage: 7.2 },
+  { month: 'Mar', salesPercentage: 9.1 },
+  { month: 'Apr', salesPercentage: 8.8 },
+  { month: 'May', salesPercentage: 7.9 },
+  { month: 'Jun', salesPercentage: 8.3 },
+  { month: 'Jul', salesPercentage: 9.5 },
+  { month: 'Aug', salesPercentage: 8.7 },
+  { month: 'Sep', salesPercentage: 8.2 },
+  { month: 'Oct', salesPercentage: 7.8 },
+  { month: 'Nov', salesPercentage: 12.5 },
+  { month: 'Dec', salesPercentage: 8.5 }
+];
+
+const chartOptions: Highcharts.Options = {
+  chart: {
+    type: 'line',
+    height: 300,
+    style: {
+      fontFamily: 'inherit'
+    }
+  },
+  title: {
+    text: ''
+  },
+  xAxis: {
+    categories: monthlySalesData.map(data => data.month),
+    labels: {
+      style: {
+        color: 'var(--foreground)'
+      }
+    }
+  },
+  yAxis: {
+    title: {
+      text: 'Sales Percentage',
+      style: {
+        color: 'var(--foreground)'
+      }
+    },
+    labels: {
+      format: '{value}%',
+      style: {
+        color: 'var(--foreground)'
+      }
+    }
+  },
+  series: [{
+    type: 'line',
+    name: '% of Sales',
+    data: monthlySalesData.map(data => data.salesPercentage),
+    color: '#10B981'
+  }],
+  credits: {
+    enabled: false
+  },
+  tooltip: {
+    formatter: function(this: Highcharts.Point): string {
+      return `<b>${this.x}</b><br/>${this.y}%`;
+    }
+  },
+  legend: {
+    itemStyle: {
+      color: 'var(--foreground)'
+    }
+  }
+};
+
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [targetRevenue, setTargetRevenue] = useState("25M");
   const itemsPerPage = 25;
-
-  // Monthly sales data for last year
-  const monthlySalesData = [
-    { month: 'Jan', salesPercentage: 8.5 },
-    { month: 'Feb', salesPercentage: 7.2 },
-    { month: 'Mar', salesPercentage: 9.1 },
-    { month: 'Apr', salesPercentage: 8.8 },
-    { month: 'May', salesPercentage: 7.9 },
-    { month: 'Jun', salesPercentage: 8.3 },
-    { month: 'Jul', salesPercentage: 9.5 },
-    { month: 'Aug', salesPercentage: 8.7 },
-    { month: 'Sep', salesPercentage: 8.2 },
-    { month: 'Oct', salesPercentage: 7.8 },
-    { month: 'Nov', salesPercentage: 12.5 },
-    { month: 'Dec', salesPercentage: 8.5 }
-  ];
-
-  const chartOptions: Highcharts.Options = {
-    chart: {
-      type: 'line',
-      height: 300,
-      style: {
-        fontFamily: 'inherit'
-      }
-    },
-    title: {
-      text: ''
-    },
-    xAxis: {
-      categories: monthlySalesData.map(data => data.month),
-      labels: {
-        style: {
-          color: 'var(--foreground)'
-        }
-      }
-    },
-    yAxis: {
-      title: {
-        text: 'Sales Percentage',
-        style: {
-          color: 'var(--foreground)'
-        }
-      },
-      labels: {
-        format: '{value}%',
-        style: {
-          color: 'var(--foreground)'
-        }
-      }
-    },
-    series: [{
-      type: 'line',
-      name: '% of Sales',
-      data: monthlySalesData.map(data => data.salesPercentage),
-      color: '#10B981'
-    }],
-    credits: {
-      enabled: false
-    },
-    tooltip: {
-      formatter: function(this: Highcharts.TooltipPointObject): string {
-        return `<b>${this.x}</b><br/>${this.y}%`;
-      }
-    },
-    legend: {
-      itemStyle: {
-        color: 'var(--foreground)'
-      }
-    }
-  };
 
   const recommendations = [
     {
