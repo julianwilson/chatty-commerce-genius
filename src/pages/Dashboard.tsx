@@ -27,11 +27,37 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [targetRevenue, setTargetRevenue] = useState("25M");
   const itemsPerPage = 25;
+
+  // Monthly sales data for last year
+  const monthlySalesData = [
+    { month: 'Jan', salesPercentage: 8.5 },
+    { month: 'Feb', salesPercentage: 7.2 },
+    { month: 'Mar', salesPercentage: 9.1 },
+    { month: 'Apr', salesPercentage: 8.8 },
+    { month: 'May', salesPercentage: 7.9 },
+    { month: 'Jun', salesPercentage: 8.3 },
+    { month: 'Jul', salesPercentage: 9.5 },
+    { month: 'Aug', salesPercentage: 8.7 },
+    { month: 'Sep', salesPercentage: 8.2 },
+    { month: 'Oct', salesPercentage: 7.8 },
+    { month: 'Nov', salesPercentage: 7.5 },
+    { month: 'Dec', salesPercentage: 8.5 }
+  ];
 
   const recommendations = [
     {
@@ -267,6 +293,48 @@ const Dashboard = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Monthly Sales Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Last Year's Monthly Sales Distribution (%)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px] w-full">
+                <ChartContainer
+                  config={{
+                    sales: {
+                      theme: {
+                        light: "#10B981",
+                        dark: "#10B981"
+                      }
+                    }
+                  }}
+                >
+                  <LineChart data={monthlySalesData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="month"
+                      tick={{ fill: 'currentColor' }}
+                    />
+                    <YAxis
+                      tick={{ fill: 'currentColor' }}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <ChartTooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="salesPercentage"
+                      name="sales"
+                      stroke="var(--color-sales)"
+                      strokeWidth={2}
+                      dot={{ fill: "var(--color-sales)" }}
+                    />
+                  </LineChart>
+                </ChartContainer>
               </div>
             </CardContent>
           </Card>
