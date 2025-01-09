@@ -19,12 +19,21 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const Dashboard = () => {
   const [revenueGoal, setRevenueGoal] = useState("25M");
   const [editingGoal, setEditingGoal] = useState(false);
   const [tempGoal, setTempGoal] = useState(revenueGoal);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
 
   const collections = [
     { 
@@ -82,6 +91,11 @@ const Dashboard = () => {
     { type: "experiment", text: "Started Experiment (Lower Ground Shipping to $5)" },
     { type: "promotion", text: "Started Promotion (20% off site wide)" },
   ];
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentActivities = activities.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(activities.length / itemsPerPage);
 
   return (
     <SidebarProvider>
@@ -182,27 +196,55 @@ const Dashboard = () => {
               <CardTitle>Activity Feed</CardTitle>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[300px]">
-                <div className="space-y-4">
-                  {activities.map((activity, index) => (
+              <div className="space-y-4">
+                {currentActivities.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+                  >
                     <div
-                      key={index}
-                      className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
-                    >
-                      <div
-                        className={`w-3 h-3 rounded-full mt-1.5 ${
-                          activity.type === "collection"
-                            ? "bg-blue-500"
-                            : activity.type === "experiment"
-                            ? "bg-green-500"
-                            : "bg-orange-500"
-                        }`}
-                      />
-                      <p className="text-sm">{activity.text}</p>
-                    </div>
-                  ))}
+                      className={`w-3 h-3 rounded-full mt-1.5 ${
+                        activity.type === "collection"
+                          ? "bg-blue-500"
+                          : activity.type === "experiment"
+                          ? "bg-green-500"
+                          : "bg-orange-500"
+                      }`}
+                    />
+                    <p className="text-sm">{activity.text}</p>
+                  </div>
+                ))}
+              </div>
+              {totalPages > 1 && (
+                <div className="mt-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(page)}
+                            isActive={currentPage === page}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
                 </div>
-              </ScrollArea>
+              )}
             </CardContent>
           </Card>
         </div>
