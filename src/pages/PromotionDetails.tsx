@@ -160,7 +160,7 @@ const PromotionDetails = () => {
         color: '#1E3A8A'
       },
       {
-        name: 'Previous Period',
+        name: 'Same Period LY',
         data: previousPeriodData.map(day => day.sales),
         color: '#9CA3AF',
         dashStyle: 'ShortDash'
