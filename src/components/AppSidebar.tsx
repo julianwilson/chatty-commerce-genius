@@ -5,7 +5,7 @@ import {
   Rocket,
   Percent,
   ShoppingCart,
-  Graph,
+  ChartLine,
   Settings,
   Users,
 } from "lucide-react";
@@ -28,7 +28,7 @@ const items = [
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Collections", url: "/collections", icon: Users },
   { title: "Products", url: "/products", icon: ShoppingCart },
-  { title: "Experiments", url: "/experiments", icon: Graph },
+  { title: "Experiments", url: "/experiments", icon: ChartLine },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
