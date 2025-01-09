@@ -24,7 +24,6 @@ const items = [
   { title: "Chat with Jeff", url: "/", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
   { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Collections", url: "/collections", icon: Users },
   { title: "Products", url: "/products", icon: ShoppingCart },
   { title: "Experiments", url: "/experiments", icon: ChartLine },
@@ -33,7 +32,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="bg-[hsl(251,91%,95%)] dark:bg-[hsl(250,43%,20%)]">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>E-commerce Director</SidebarGroupLabel>
