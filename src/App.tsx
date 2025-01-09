@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
+import Collections from "./pages/Collections";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/promotions/:id" element={<PromotionDetails />} />
+          <Route path="/collections" element={<Collections />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
