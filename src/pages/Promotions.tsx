@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 const promotionsData = [
   {
@@ -101,6 +102,8 @@ const promotionsData = [
 ];
 
 export default function Promotions() {
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -121,7 +124,11 @@ export default function Promotions() {
                 </TableHeader>
                 <TableBody>
                   {promotionsData.map((promotion) => (
-                    <TableRow key={promotion.id}>
+                    <TableRow 
+                      key={promotion.id}
+                      className="cursor-pointer hover:bg-gray-50"
+                      onClick={() => navigate(`/promotions/${promotion.id}`)}
+                    >
                       <TableCell className="font-medium">{promotion.name}</TableCell>
                       <TableCell>{promotion.type}</TableCell>
                       <TableCell>{promotion.startDate}</TableCell>
