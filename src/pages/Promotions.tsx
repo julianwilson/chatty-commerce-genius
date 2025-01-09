@@ -124,12 +124,13 @@ export default function Promotions() {
                 </TableHeader>
                 <TableBody>
                   {promotionsData.map((promotion) => (
-                    <TableRow 
-                      key={promotion.id}
-                      className="cursor-pointer hover:bg-gray-50"
-                      onClick={() => navigate(`/promotions/${promotion.id}`)}
-                    >
-                      <TableCell className="font-medium">{promotion.name}</TableCell>
+                    <TableRow key={promotion.id}>
+                      <TableCell 
+                        className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
+                        onClick={() => navigate(`/promotions/${promotion.id}`)}
+                      >
+                        {promotion.name}
+                      </TableCell>
                       <TableCell>{promotion.type}</TableCell>
                       <TableCell>{promotion.startDate}</TableCell>
                       <TableCell>{promotion.endDate}</TableCell>
