@@ -66,6 +66,59 @@ const dailyData = [
   },
 ];
 
+const previousPeriodData = [
+  {
+    date: "2025-01-01",
+    sales: 4100,
+    unitsSold: 82,
+    averageUnitRetail: 50,
+    averageMarkdown: 15,
+    sessions: 1000,
+    impressions: 3000,
+    aov: 140,
+  },
+  {
+    date: "2025-01-02",
+    sales: 4800,
+    unitsSold: 96,
+    averageUnitRetail: 50,
+    averageMarkdown: 15,
+    sessions: 1100,
+    impressions: 3300,
+    aov: 145,
+  },
+  {
+    date: "2025-01-03",
+    sales: 4600,
+    unitsSold: 92,
+    averageUnitRetail: 50,
+    averageMarkdown: 15,
+    sessions: 1050,
+    impressions: 3150,
+    aov: 142,
+  },
+  {
+    date: "2025-01-04",
+    sales: 5700,
+    unitsSold: 114,
+    averageUnitRetail: 50,
+    averageMarkdown: 15,
+    sessions: 1200,
+    impressions: 3600,
+    aov: 155,
+  },
+  {
+    date: "2025-01-05",
+    sales: 5200,
+    unitsSold: 104,
+    averageUnitRetail: 50,
+    averageMarkdown: 15,
+    sessions: 1150,
+    impressions: 3450,
+    aov: 150,
+  },
+];
+
 const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -100,11 +153,19 @@ const PromotionDetails = () => {
         }
       }
     },
-    series: [{
-      name: 'Sales',
-      data: dailyData.map(day => day.sales),
-      color: '#1E3A8A'
-    }],
+    series: [
+      {
+        name: 'Current Period',
+        data: dailyData.map(day => day.sales),
+        color: '#1E3A8A'
+      },
+      {
+        name: 'Previous Period',
+        data: previousPeriodData.map(day => day.sales),
+        color: '#9CA3AF',
+        dashStyle: 'ShortDash'
+      }
+    ],
     tooltip: {
       headerFormat: '<b>{point.x}</b><br/>',
       pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
@@ -119,9 +180,10 @@ const PromotionDetails = () => {
         point: {
           events: {
             mouseOver: function() {
-              this.units = dailyData[this.index].unitsSold;
-              this.aur = dailyData[this.index].averageUnitRetail;
-              this.markdown = dailyData[this.index].averageMarkdown;
+              const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
+              this.units = data[this.index].unitsSold;
+              this.aur = data[this.index].averageUnitRetail;
+              this.markdown = data[this.index].averageMarkdown;
             }
           }
         }
