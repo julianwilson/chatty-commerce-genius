@@ -14,6 +14,10 @@ export function ChatInterface() {
       text: "Hey Julian. It looks like sales are a bit slower than last year this month. We may want to consider running a site wide sale. What's on your mind?",
       isUser: false,
     },
+    {
+      text: "I identified these products as good opportunities because they have been selling well and you may be able to increase prices while maintaining the same conversion.",
+      isUser: false,
+    }
   ]);
   const [input, setInput] = useState("");
 
