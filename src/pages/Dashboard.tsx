@@ -300,7 +300,7 @@ const Dashboard = () => {
           {/* Monthly Sales Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Last Year's Monthly Sales Distribution (%)</CardTitle>
+              <CardTitle>Monthly % of Sales $ LY</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[400px] w-full">
