@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 interface Message {
-  text: string;
+  text: string | JSX.Element;
   isUser: boolean;
 }
 
