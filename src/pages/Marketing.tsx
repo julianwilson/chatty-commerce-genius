@@ -132,19 +132,20 @@ export default function Marketing() {
     );
   };
 
+  // Get last 10 marketing events sorted by start date
+  const recentEvents = [...marketingEvents]
+    .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+    .slice(0, 10);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <main className="flex-1 bg-background p-8">
-          <div className="container mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Marketing Calendar</h1>
+          <div className="container mx-auto space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle>Event Calendar</CardTitle>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                   <Calendar
                     mode="single"
                     selected={date}
@@ -187,6 +188,40 @@ export default function Marketing() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Recent Marketing Events */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Marketing Events</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+                    >
+                      <div
+                        className="w-3 h-3 rounded-full mt-1.5"
+                        style={{ backgroundColor: eventTypes[event.type] }}
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-medium">{event.name}</h3>
+                        <Badge 
+                          className="mt-2"
+                          style={{ backgroundColor: eventTypes[event.type] }}
+                        >
+                          {event.type}
+                        </Badge>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {format(event.startDate, 'MMM d')} - {format(event.endDate, 'MMM d, yyyy')}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
