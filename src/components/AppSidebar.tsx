@@ -24,7 +24,6 @@ const items = [
   { title: "Chat with Jeff", url: "/", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
   { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Marketing", url: "/marketing", icon: Rocket },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Collections", url: "/collections", icon: Users },
   { title: "Products", url: "/products", icon: ShoppingCart },
