@@ -55,7 +55,7 @@ const Dashboard = () => {
     { month: 'Aug', salesPercentage: 8.7 },
     { month: 'Sep', salesPercentage: 8.2 },
     { month: 'Oct', salesPercentage: 7.8 },
-    { month: 'Nov', salesPercentage: 7.5 },
+    { month: 'Nov', salesPercentage: 12.5 },
     { month: 'Dec', salesPercentage: 8.5 }
   ];
 
