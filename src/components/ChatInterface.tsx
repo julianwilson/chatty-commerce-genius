@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface Message {
   text: string;
@@ -16,9 +17,26 @@ export function ChatInterface() {
   ]);
   const [input, setInput] = useState("");
 
+  const handleInputClick = () => {
+    if (!input) {
+      setInput("Setup a promotion on Jeans for 20% off");
+    }
+  };
+
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, isUser: true }]);
+      
+      // Add Jeff's response if the message matches our specific case
+      if (input.includes("Setup a promotion on Jeans for 20% off")) {
+        setTimeout(() => {
+          setMessages(prev => [...prev, {
+            text: <>Okay. I've setup a draft promotion <Link to="/promotions/draft" className="text-primary underline">here</Link>. Give it a look and when you're ready to launch just press Go Live.</>,
+            isUser: false
+          }]);
+        }, 500);
+      }
+      
       setInput("");
     }
   };
@@ -54,6 +72,7 @@ export function ChatInterface() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onClick={handleInputClick}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type your message..."
             className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
