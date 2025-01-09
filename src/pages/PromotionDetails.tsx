@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,7 +13,6 @@ import {
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-// Mock data - in a real app this would come from an API
 const dailyData = [
   {
     date: "2025-01-01",
@@ -68,6 +68,7 @@ const dailyData = [
 
 const PromotionDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const chartOptions = {
     chart: {
@@ -137,7 +138,16 @@ const PromotionDetails = () => {
         <AppSidebar />
         <main className="flex-1 bg-white p-8">
           <div className="container mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Promotion Details</h1>
+            <div className="flex items-center gap-4 mb-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/promotions')}
+              >
+                ← Back to Promotions
+              </Button>
+              <h1 className="text-2xl font-bold">Promotion Details</h1>
+            </div>
             
             {/* Sales Chart */}
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
