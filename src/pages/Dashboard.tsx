@@ -1,3 +1,5 @@
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,117 +44,122 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Target Revenue Goal */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Target Revenue Goal</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Dialog open={editingGoal} onOpenChange={setEditingGoal}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="text-2xl font-bold">
-                  ${revenueGoal}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Revenue Goal</DialogTitle>
-                </DialogHeader>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="container mx-auto p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Target Revenue Goal */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Target Revenue Goal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Dialog open={editingGoal} onOpenChange={setEditingGoal}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="text-2xl font-bold">
+                      ${revenueGoal}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit Revenue Goal</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Input
+                        value={tempGoal}
+                        onChange={(e) => setTempGoal(e.target.value)}
+                        placeholder="Enter new goal..."
+                      />
+                      <Button
+                        onClick={() => {
+                          setRevenueGoal(tempGoal);
+                          setEditingGoal(false);
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+
+            {/* Recommendations */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recommendations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  I identified these products as good opportunities because they have been
+                  selling well and you may be able to increase prices while maintaining
+                  the same conversion.
+                </p>
+                <Button>Create Experiment</Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Top Down Collection Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Down Collection Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>% of Overall Sales $</TableHead>
+                    <TableHead># of Products</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {collections.map((collection) => (
+                    <TableRow key={collection.name}>
+                      <TableCell>{collection.name}</TableCell>
+                      <TableCell>{collection.salesPercentage}%</TableCell>
+                      <TableCell>{collection.products}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          {/* Activity Feed */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Activity Feed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[300px]">
                 <div className="space-y-4">
-                  <Input
-                    value={tempGoal}
-                    onChange={(e) => setTempGoal(e.target.value)}
-                    placeholder="Enter new goal..."
-                  />
-                  <Button
-                    onClick={() => {
-                      setRevenueGoal(tempGoal);
-                      setEditingGoal(false);
-                    }}
-                  >
-                    Save
-                  </Button>
+                  {activities.map((activity, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+                    >
+                      <div
+                        className={`w-3 h-3 rounded-full mt-1.5 ${
+                          activity.type === "collection"
+                            ? "bg-blue-500"
+                            : activity.type === "experiment"
+                            ? "bg-green-500"
+                            : "bg-orange-500"
+                        }`}
+                      />
+                      <p className="text-sm">{activity.text}</p>
+                    </div>
+                  ))}
                 </div>
-              </DialogContent>
-            </Dialog>
-          </CardContent>
-        </Card>
-
-        {/* Recommendations */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommendations</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              I identified these products as good opportunities because they have been
-              selling well and you may be able to increase prices while maintaining
-              the same conversion.
-            </p>
-            <Button>Create Experiment</Button>
-          </CardContent>
-        </Card>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      {/* Top Down Collection Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Down Collection Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>% of Overall Sales $</TableHead>
-                <TableHead># of Products</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {collections.map((collection) => (
-                <TableRow key={collection.name}>
-                  <TableCell>{collection.name}</TableCell>
-                  <TableCell>{collection.salesPercentage}%</TableCell>
-                  <TableCell>{collection.products}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Activity Feed */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity Feed</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[300px]">
-            <div className="space-y-4">
-              {activities.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
-                >
-                  <div
-                    className={`w-3 h-3 rounded-full mt-1.5 ${
-                      activity.type === "collection"
-                        ? "bg-blue-500"
-                        : activity.type === "experiment"
-                        ? "bg-green-500"
-                        : "bg-orange-500"
-                    }`}
-                  />
-                  <p className="text-sm">{activity.text}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
+    </SidebarProvider>
   );
 };
 
