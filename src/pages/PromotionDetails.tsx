@@ -168,11 +168,10 @@ const PromotionDetails = () => {
     ],
     tooltip: {
       headerFormat: '<b>{point.x}</b><br/>',
-      pointFormat: `<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${'$'}{point.y:,.2f}</b><br/>` +
+      pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
         'Units Sold: <b>{point.units}</b><br/>' +
         'Average Unit Retail: <b>${point.aur}</b><br/>' +
-        'Average Markdown: <b>{point.markdown}%</b><br/>' +
-        '{series.name === "Previous Period" ? "<br/>Data shown is from the previous promotional period<br/><br/>" : ""}',
+        'Average Markdown: <b>{point.markdown}%</b>',
       shared: true,
       useHTML: true
     },
