@@ -9,12 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 // Mock data - in a real app this would come from an API
 const dailyData = [
@@ -73,6 +69,68 @@ const dailyData = [
 const PromotionDetails = () => {
   const { id } = useParams();
 
+  const chartOptions = {
+    chart: {
+      type: 'line',
+      style: {
+        fontFamily: 'inherit'
+      }
+    },
+    title: {
+      text: 'Daily Sales',
+      style: {
+        fontSize: '16px',
+        fontWeight: 'bold'
+      }
+    },
+    xAxis: {
+      categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+      labels: {
+        style: {
+          fontSize: '12px'
+        }
+      }
+    },
+    yAxis: {
+      title: {
+        text: 'Sales ($)',
+        style: {
+          fontSize: '12px'
+        }
+      }
+    },
+    series: [{
+      name: 'Sales',
+      data: dailyData.map(day => day.sales),
+      color: '#1E3A8A'
+    }],
+    tooltip: {
+      headerFormat: '<b>{point.x}</b><br/>',
+      pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
+        'Units Sold: <b>{point.units}</b><br/>' +
+        'Average Unit Retail: <b>${point.aur}</b><br/>' +
+        'Average Markdown: <b>{point.markdown}%</b>',
+      shared: true,
+      useHTML: true
+    },
+    plotOptions: {
+      series: {
+        point: {
+          events: {
+            mouseOver: function() {
+              this.units = dailyData[this.index].unitsSold;
+              this.aur = dailyData[this.index].averageUnitRetail;
+              this.markdown = dailyData[this.index].averageMarkdown;
+            }
+          }
+        }
+      }
+    },
+    credits: {
+      enabled: false
+    }
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -83,44 +141,10 @@ const PromotionDetails = () => {
             
             {/* Sales Chart */}
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-              <h2 className="text-lg font-semibold mb-4">Daily Sales</h2>
-              <ChartContainer
-                className="h-[400px]"
-                config={{
-                  sales: {
-                    theme: {
-                      light: "#1E3A8A",
-                      dark: "#93C5FD",
-                    },
-                  },
-                }}
-              >
-                <LineChart data={dailyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(value) => new Date(value).toLocaleDateString()}
-                  />
-                  <YAxis />
-                  <ChartTooltip
-                    content={({ active, payload }) => {
-                      if (!active || !payload) return null;
-                      return (
-                        <ChartTooltipContent
-                          className="bg-white"
-                          payload={payload}
-                        />
-                      );
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="var(--color-sales)"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ChartContainer>
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={chartOptions}
+              />
             </div>
 
             {/* Metrics Table */}
