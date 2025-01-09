@@ -13,7 +13,7 @@ const promotionsData = [
   {
     id: 1,
     name: "Summer dresses sale",
-    type: "Collection Sale",
+    type: "Sitewide Markdown Sale",
     startDate: "12/26/24",
     endDate: "01/08/25",
     totalSales: "$53,478",
@@ -21,7 +21,7 @@ const promotionsData = [
   {
     id: 2,
     name: "Winter clearance",
-    type: "Seasonal Sale",
+    type: "Sitewide Discount Code Sale",
     startDate: "01/15/25",
     endDate: "02/01/25",
     totalSales: "$42,890",
@@ -29,7 +29,7 @@ const promotionsData = [
   {
     id: 3,
     name: "Valentine's special",
-    type: "Holiday Sale",
+    type: "Collection Sale",
     startDate: "02/07/25",
     endDate: "02/14/25",
     totalSales: "$38,654",
@@ -37,7 +37,7 @@ const promotionsData = [
   {
     id: 4,
     name: "Spring collection launch",
-    type: "New Collection",
+    type: "Bogo Sale",
     startDate: "03/01/25",
     endDate: "03/15/25",
     totalSales: "$67,234",
@@ -45,7 +45,7 @@ const promotionsData = [
   {
     id: 5,
     name: "Easter weekend deals",
-    type: "Holiday Sale",
+    type: "Free Shipping Sale",
     startDate: "03/29/25",
     endDate: "04/01/25",
     totalSales: "$28,976",
@@ -53,7 +53,7 @@ const promotionsData = [
   {
     id: 6,
     name: "Mother's day special",
-    type: "Holiday Sale",
+    type: "Shipping Update",
     startDate: "05/08/25",
     endDate: "05/12/25",
     totalSales: "$45,321",
@@ -61,7 +61,7 @@ const promotionsData = [
   {
     id: 7,
     name: "Summer swimwear",
-    type: "Collection Sale",
+    type: "Influencer",
     startDate: "06/01/25",
     endDate: "06/30/25",
     totalSales: "$58,432",
@@ -69,7 +69,7 @@ const promotionsData = [
   {
     id: 8,
     name: "Back to school",
-    type: "Seasonal Sale",
+    type: "Event",
     startDate: "08/15/25",
     endDate: "09/05/25",
     totalSales: "$72,154",
@@ -77,7 +77,7 @@ const promotionsData = [
   {
     id: 9,
     name: "Fall fashion fest",
-    type: "Collection Sale",
+    type: "Loyalty Bonus",
     startDate: "09/20/25",
     endDate: "10/05/25",
     totalSales: "$49,876",
@@ -85,7 +85,7 @@ const promotionsData = [
   {
     id: 10,
     name: "Black Friday deals",
-    type: "Holiday Sale",
+    type: "Sitewide Markdown Sale",
     startDate: "11/29/25",
     endDate: "12/02/25",
     totalSales: "$98,765",
@@ -93,7 +93,7 @@ const promotionsData = [
   {
     id: 11,
     name: "Cyber Monday special",
-    type: "Holiday Sale",
+    type: "Sitewide Discount Code Sale",
     startDate: "12/02/25",
     endDate: "12/03/25",
     totalSales: "$87,654",
