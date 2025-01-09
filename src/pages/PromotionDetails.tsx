@@ -144,7 +144,7 @@ const PromotionDetails = () => {
                 size="sm"
                 onClick={() => navigate('/promotions')}
               >
-                ← Back to Promotions
+                ← Back
               </Button>
               <h1 className="text-2xl font-bold">Promotion Details</h1>
             </div>
