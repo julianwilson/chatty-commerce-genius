@@ -2,11 +2,47 @@ import { useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Message {
   text: string | JSX.Element;
   isUser: boolean;
 }
+
+const products = [
+  {
+    id: 1,
+    name: "Summer Floral Dress",
+    price: "$129.99",
+    image: "https://images.unsplash.com/photo-1582562124811-c09040d0a901"
+  },
+  {
+    id: 2,
+    name: "Evening Cocktail Dress",
+    price: "$299.99",
+    image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
+  },
+  {
+    id: 3,
+    name: "Casual Maxi Dress",
+    price: "$179.99",
+    image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
+  }
+];
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
@@ -15,7 +51,43 @@ export function ChatInterface() {
       isUser: false,
     },
     {
-      text: "I identified these products as good opportunities because they have been selling well and you may be able to increase prices while maintaining the same conversion.",
+      text: (
+        <>
+          By the way, I identified a few products as good opportunities because they've been selling well and you may be able to increase prices while maintaining conversion rate.{" "}
+          <Dialog>
+            <DialogTrigger className="text-primary underline">See more</DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Product Opportunities</DialogTitle>
+              </DialogHeader>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Price</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      </TableCell>
+                      <TableCell>{product.name}</TableCell>
+                      <TableCell>{product.price}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </DialogContent>
+          </Dialog>
+        </>
+      ),
       isUser: false,
     }
   ]);
