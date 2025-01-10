@@ -99,6 +99,20 @@ const experimentData: ExperimentMetric[] = [
 export default function ExperimentDetails() {
   const { id } = useParams();
 
+  const getValueColor = (value: string | number, metric: string) => {
+    if (metric === "% of Traffic") return ""; // No color for traffic percentage
+    
+    if (typeof value === "string") {
+      // Check if the value is a percentage
+      if (value.includes("%")) {
+        const numValue = parseFloat(value.replace("%", "").replace("+", ""));
+        if (numValue > 0) return "text-green-600";
+        if (numValue < 0) return "text-red-600";
+      }
+    }
+    return "";
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Experiment Details #{id}</h1>
@@ -116,9 +130,15 @@ export default function ExperimentDetails() {
             {experimentData.map((row, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{row.metric}</TableCell>
-                <TableCell>{row.control}</TableCell>
-                <TableCell>{row.testA}</TableCell>
-                <TableCell>{row.testB}</TableCell>
+                <TableCell className={getValueColor(row.control, row.metric)}>
+                  {row.control}
+                </TableCell>
+                <TableCell className={getValueColor(row.testA, row.metric)}>
+                  {row.testA}
+                </TableCell>
+                <TableCell className={getValueColor(row.testB, row.metric)}>
+                  {row.testB}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
