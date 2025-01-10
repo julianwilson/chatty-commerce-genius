@@ -94,7 +94,7 @@ const ProductDetails = () => {
     tooltip: {
       shared: true,
       useHTML: true,
-      formatter: function() {
+      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
         if (!this.points) return '';
         
         const date = this.points[0].key;
