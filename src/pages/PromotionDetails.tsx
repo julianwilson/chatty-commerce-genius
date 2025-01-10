@@ -147,6 +147,7 @@ const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<PromotionType>('Site Wide');
+  // Set default collection ID to Best Sellers (288699236535)
   const [selectedItemId, setSelectedItemId] = useState<string>('');
 
   const { data: products } = useQuery({
@@ -219,7 +220,12 @@ const PromotionDetails = () => {
                   variant={selectedType === type ? "default" : "outline"}
                   onClick={() => {
                     setSelectedType(type);
-                    setSelectedItemId('');
+                    // When switching to By Collection, set Best Sellers as default
+                    if (type === 'By Collection') {
+                      setSelectedItemId('288699236535');
+                    } else {
+                      setSelectedItemId('');
+                    }
                   }}
                 >
                   {type}
