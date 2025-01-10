@@ -225,6 +225,7 @@ const ProductDetails = () => {
                   <ReferenceLine
                     key={index}
                     x={date.date}
+                    yAxisId="left"
                     stroke="#8884d8"
                     strokeDasharray="3 3"
                     label={
