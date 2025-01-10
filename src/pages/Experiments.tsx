@@ -60,6 +60,10 @@ export default function Experiments() {
   const navigate = useNavigate();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  const handleRowClick = (id: number) => {
+    navigate(`/experiments/${id}`);
+  };
+
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
@@ -82,7 +86,11 @@ export default function Experiments() {
             </TableHeader>
             <TableBody>
               {experimentsData.map((experiment) => (
-                <TableRow key={experiment.id}>
+                <TableRow 
+                  key={experiment.id}
+                  className="cursor-pointer hover:bg-gray-50"
+                  onClick={() => handleRowClick(experiment.id)}
+                >
                   <TableCell>
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       experiment.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
@@ -93,10 +101,7 @@ export default function Experiments() {
                       {experiment.status}
                     </span>
                   </TableCell>
-                  <TableCell 
-                    className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
-                    onClick={() => navigate(`/experiments/${experiment.id}`)}
-                  >
+                  <TableCell className="font-medium">
                     {experiment.name}
                   </TableCell>
                   <TableCell>{experiment.startDate}</TableCell>
