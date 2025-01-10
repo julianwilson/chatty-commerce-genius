@@ -6,7 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 
 type ExperimentMetric = {
   metric: string;
@@ -98,6 +100,7 @@ const experimentData: ExperimentMetric[] = [
 
 export default function ExperimentDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getValueColor = (value: string | number, metric: string) => {
     if (metric === "% of Traffic") return ""; // No color for traffic percentage
@@ -115,7 +118,16 @@ export default function ExperimentDetails() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Experiment Details #{id}</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigate('/experiments')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
