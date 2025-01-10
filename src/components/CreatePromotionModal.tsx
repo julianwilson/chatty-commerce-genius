@@ -45,6 +45,8 @@ const promotionTypes = [
   "Loyalty Bonus",
 ] as const;
 
+const priceAdjustmentTypes = ["Lower by", "Increase By"] as const;
+
 interface Collection {
   id: number;
   title: string;
@@ -57,6 +59,8 @@ const formSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   collectionId: z.number().optional(),
+  priceAdjustmentType: z.enum(priceAdjustmentTypes),
+  priceAdjustmentPercentage: z.number().min(0).max(100),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -73,6 +77,8 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
     resolver: zodResolver(formSchema),
     defaultValues: {
       products: [],
+      priceAdjustmentType: "Lower by",
+      priceAdjustmentPercentage: 10,
     },
   });
 
@@ -214,6 +220,53 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
                 </FormItem>
               )}
             />
+
+            <div className="flex gap-4 items-end">
+              <FormField
+                control={form.control}
+                name="priceAdjustmentType"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Price Adjustment</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select adjustment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priceAdjustmentTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="priceAdjustmentPercentage"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Percentage</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
