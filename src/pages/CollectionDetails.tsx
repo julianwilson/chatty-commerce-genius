@@ -75,10 +75,10 @@ const CollectionDetails = () => {
     tooltip: {
       shared: true,
       useHTML: true,
-      formatter: function() {
+      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
         if (!this.points) return '';
         
-        const date = this.points[0].key;
+        const date = this.x;
         let html = `<div style="padding: 8px;">
           <p style="font-weight: bold; margin-bottom: 4px;">${date}</p>`;
         
