@@ -31,6 +31,7 @@ import {
   Legend,
   ResponsiveContainer,
   Scatter,
+  ReferenceDot,
 } from "recharts";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
@@ -109,12 +110,33 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
             <CardContent>
               <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={salesData}>
+                  <LineChart 
+                    data={salesData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 25 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="date"
                       tick={{ fontSize: 12 }}
-                    />
+                      height={60}
+                    >
+                      {salesData.map((entry, index) => {
+                        if (entry.promotion) {
+                          return (
+                            <ReferenceDot
+                              key={index}
+                              x={entry.date}
+                              y={0}
+                              r={4}
+                              fill="#EF4444"
+                              stroke="none"
+                              isFront={true}
+                            />
+                          );
+                        }
+                        return null;
+                      })}
+                    </XAxis>
                     <YAxis 
                       yAxisId="left"
                       tick={{ fontSize: 12 }}
