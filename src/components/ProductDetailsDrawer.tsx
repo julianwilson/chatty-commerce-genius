@@ -30,6 +30,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Scatter,
 } from "recharts";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
@@ -43,6 +44,26 @@ interface ProductDetailsDrawerProps {
 export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsDrawerProps) {
   const salesData = generateMockSalesData(30);
   const [selectedVariant, setSelectedVariant] = useState<string>("all");
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-4 border rounded-lg shadow-lg">
+          <p className="text-sm font-medium">{payload[0].payload.date}</p>
+          {payload[0].payload.promotion && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {payload[0].payload.promotion.type}
+            </p>
+          )}
+          <div className="mt-2">
+            <p className="text-sm">Sales: ${payload[0].payload.sales}</p>
+            <p className="text-sm">Price: ${payload[0].payload.price}</p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <Drawer open={open} onClose={onClose}>
@@ -115,7 +136,7 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
                         style: { textAnchor: 'middle' }
                       }}
                     />
-                    <Tooltip />
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     <Line
                       yAxisId="left"
@@ -132,6 +153,13 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
                       stroke="#10B981"
                       name="Price"
                       dot={false}
+                    />
+                    <Scatter
+                      yAxisId="left"
+                      data={salesData.filter(d => d.promotion)}
+                      dataKey="sales"
+                      fill="#EF4444"
+                      name="Promotion"
                     />
                   </LineChart>
                 </ResponsiveContainer>
