@@ -17,7 +17,7 @@ const experimentsData = [
   {
     id: 1,
     name: "Dresses price test",
-    status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
+    status: "Running",
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
     uplift: 15.2,
