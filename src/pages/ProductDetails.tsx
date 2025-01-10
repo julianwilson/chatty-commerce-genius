@@ -29,6 +29,8 @@ import {
   ResponsiveContainer,
   Scatter,
   ReferenceDot,
+  ReferenceLine,
+  Label,
 } from "recharts";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
@@ -38,6 +40,21 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [selectedVariant, setSelectedVariant] = useState<string>("all");
   const salesData = generateMockSalesData(30);
+
+  // Find dates where promotions start or end
+  const promotionDates = salesData.reduce((acc: { date: string; type: string }[], curr, index, array) => {
+    if (curr.promotion) {
+      // Check if this is the start of a promotion
+      if (index === 0 || !array[index - 1].promotion) {
+        acc.push({ date: curr.date, type: 'Start: ' + curr.promotion.type });
+      }
+      // Check if this is the end of a promotion
+      if (index === array.length - 1 || !array[index + 1].promotion) {
+        acc.push({ date: curr.date, type: 'End: ' + curr.promotion.type });
+      }
+    }
+    return acc;
+  }, []);
 
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ["product", id],
@@ -204,6 +221,22 @@ const ProductDetails = () => {
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
+                {promotionDates.map((date, index) => (
+                  <ReferenceLine
+                    key={index}
+                    x={date.date}
+                    stroke="#8884d8"
+                    strokeDasharray="3 3"
+                    label={
+                      <Label
+                        value={date.type}
+                        position="top"
+                        fill="#8884d8"
+                        fontSize={10}
+                      />
+                    }
+                  />
+                ))}
                 <Line
                   yAxisId="left"
                   type="monotone"
