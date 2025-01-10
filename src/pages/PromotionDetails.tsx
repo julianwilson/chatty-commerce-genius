@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
+import { MetricCard } from "@/components/MetricCard";
 import {
   Table,
   TableBody,
@@ -165,6 +166,11 @@ const PromotionDetails = () => {
       return data.collections;
     },
   });
+
+  // Calculate total sales for current and previous periods
+  const currentTotalSales = dailyData.reduce((sum, day) => sum + day.sales, 0);
+  const previousTotalSales = previousPeriodData.reduce((sum, day) => sum + day.sales, 0);
+  const salesPercentageChange = ((currentTotalSales - previousTotalSales) / previousTotalSales) * 100;
 
   const salesChartOptions = {
     chart: {
@@ -366,6 +372,24 @@ const PromotionDetails = () => {
                   </SelectContent>
                 </Select>
               )}
+            </div>
+
+            {/* Metric Cards */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <MetricCard
+                title="% of Total Sales"
+                percentage={salesPercentageChange}
+                currentValue={currentTotalSales}
+                previousValue={previousTotalSales}
+                format="currency"
+              />
+              <MetricCard
+                title="% Change from Previous Period"
+                percentage={salesPercentageChange}
+                currentValue={currentTotalSales}
+                previousValue={previousTotalSales}
+                format="currency"
+              />
             </div>
             
             {/* Sales Chart */}
