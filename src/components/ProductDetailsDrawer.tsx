@@ -68,7 +68,7 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
 
   return (
     <Drawer open={open} onClose={onClose}>
-      <DrawerContent className="h-[85vh]">
+      <DrawerContent className="h-[85vh] overflow-y-auto">
         <DrawerHeader className="relative">
           <Button
             variant="ghost"
@@ -80,7 +80,7 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
           </Button>
           <DrawerTitle>{product.title}</DrawerTitle>
         </DrawerHeader>
-        <div className="px-4 space-y-4">
+        <div className="px-4 space-y-4 pb-8">
           <div className="w-full max-w-xs">
             <Select
               value={selectedVariant}
