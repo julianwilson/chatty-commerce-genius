@@ -147,8 +147,7 @@ const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<PromotionType>('Site Wide');
-  // Set default collection ID to Best Sellers (288699236535)
-  const [selectedItemId, setSelectedItemId] = useState<string>('');
+  const [selectedItemId, setSelectedItemId] = useState<string>('288699236535');
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -177,7 +176,6 @@ const PromotionDetails = () => {
       };
     }
 
-    // Mock different values based on selection
     if (type === 'By Product') {
       return {
         percentage: itemId ? 15.5 : 8.2,
@@ -186,7 +184,6 @@ const PromotionDetails = () => {
       };
     }
 
-    // By Collection
     return {
       percentage: itemId ? 22.3 : 10.5,
       currentValue: itemId ? 45000 : 18000,
@@ -220,10 +217,9 @@ const PromotionDetails = () => {
                   variant={selectedType === type ? "default" : "outline"}
                   onClick={() => {
                     setSelectedType(type);
-                    // When switching to By Collection, set Best Sellers as default
                     if (type === 'By Collection') {
                       setSelectedItemId('288699236535');
-                    } else {
+                    } else if (type === 'Site Wide') {
                       setSelectedItemId('');
                     }
                   }}
@@ -236,6 +232,7 @@ const PromotionDetails = () => {
                 <Select
                   value={selectedItemId}
                   onValueChange={setSelectedItemId}
+                  defaultValue="288699236535"
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder={`Select ${selectedType === 'By Product' ? 'product' : 'collection'}`} />
@@ -259,7 +256,6 @@ const PromotionDetails = () => {
               )}
             </div>
 
-            {/* Metric Card */}
             <div className="grid grid-cols-1 gap-4 mb-8">
               <MetricCard
                 title="% of Total Sales"
@@ -271,7 +267,6 @@ const PromotionDetails = () => {
               />
             </div>
 
-            {/* Sales Chart */}
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
@@ -348,7 +343,6 @@ const PromotionDetails = () => {
               />
             </div>
 
-            {/* AUR and Units Chart */}
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
@@ -427,7 +421,6 @@ const PromotionDetails = () => {
               />
             </div>
 
-            {/* Metrics Table */}
             <div className="bg-white rounded-lg shadow-sm border mb-8">
               <Table>
                 <TableHeader>
@@ -459,7 +452,6 @@ const PromotionDetails = () => {
               </Table>
             </div>
 
-            {/* Top Products Card */}
             <div className="max-w-xl mx-auto">
               <TopProductsCard products={products || []} />
             </div>

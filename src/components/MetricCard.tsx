@@ -38,10 +38,6 @@ export const MetricCard = ({
             <span className="font-medium">
               {disabled ? "-" : formatter.format(currentValue)}
             </span>
-            {" vs "}
-            <span>
-              {disabled ? "-" : formatter.format(previousValue)}
-            </span>
           </div>
         </div>
       </CardContent>
