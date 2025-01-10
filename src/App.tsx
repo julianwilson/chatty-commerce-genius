@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { ChatBox } from "@/components/ChatBox";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
@@ -23,6 +24,7 @@ const App = () => (
         <SidebarProvider>
           <div className="min-h-screen flex w-full">
             <AppSidebar />
+            <ChatBox />
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
