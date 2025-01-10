@@ -55,6 +55,21 @@ const CollectionDetails = () => {
     },
   });
 
+  const getPromotionColor = (type: string): string => {
+    const colors: { [key: string]: string } = {
+      "Sitewide Markdown Sale": "#F97316",
+      "Sitewide Discount Code Sale": "#8B5CF6",
+      "Collection Sale": "#0EA5E9",
+      "Bogo Sale": "#D946EF",
+      "Free Shipping Sale": "#33C3F0",
+      "Shipping Update": "#8E9196",
+      "Influencer": "#9b87f5",
+      "Event": "#6E59A5",
+      "Loyalty Bonus": "#F2FCE2"
+    };
+    return colors[type] || '#CBD5E1';
+  };
+
   const chartOptions: Highcharts.Options = {
     title: {
       text: ''
@@ -140,21 +155,6 @@ const CollectionDetails = () => {
     }]
   };
 
-  const getPromotionColor = (type: string): string => {
-    const colors: { [key: string]: string } = {
-      "Sitewide Markdown Sale": "#F97316",
-      "Sitewide Discount Code Sale": "#8B5CF6",
-      "Collection Sale": "#0EA5E9",
-      "Bogo Sale": "#D946EF",
-      "Free Shipping Sale": "#33C3F0",
-      "Shipping Update": "#8E9196",
-      "Influencer": "#9b87f5",
-      "Event": "#6E59A5",
-      "Loyalty Bonus": "#F2FCE2"
-    };
-    return colors[type] || '#CBD5E1';
-  };
-
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
@@ -229,6 +229,3 @@ const CollectionDetails = () => {
       </Card>
     </div>
   );
-};
-
-export default CollectionDetails;
