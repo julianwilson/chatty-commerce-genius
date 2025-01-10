@@ -1,13 +1,8 @@
-import { type ClassValue } from "clsx"
-import { type ReactNode } from "react"
-
 export type SidebarContext = {
+  isMobile: boolean
   state: "expanded" | "collapsed"
-  open: boolean
-  setOpen: (open: boolean) => void
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
-  isMobile: boolean
   toggleSidebar: () => void
 }
 
@@ -17,7 +12,7 @@ export type SidebarProviderProps = {
   onOpenChange?: (open: boolean) => void
   className?: string
   style?: React.CSSProperties
-  children: ReactNode
+  children: React.ReactNode
 }
 
 export type SidebarProps = {
@@ -25,5 +20,5 @@ export type SidebarProps = {
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
   className?: string
-  children?: ReactNode
+  children?: React.ReactNode
 }
