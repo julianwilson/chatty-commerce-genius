@@ -15,13 +15,23 @@ import HighchartsReact from 'highcharts-react-official';
 import { TopProductsCard } from "@/components/TopProductsCard";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "@/types/product";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type PromotionType = 'Site Wide' | 'By Product' | 'By Collection';
 
 const dailyData = [
   {
     date: "2025-01-01",
     sales: 5200,
     unitsSold: 104,
-    averageUnitRetail: 47.5, // 5% lower than price
+    averageUnitRetail: 47.5,
     price: 50,
     averageMarkdown: 15,
     sessions: 1200,
@@ -135,6 +145,8 @@ const previousPeriodData = [
 const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [selectedType, setSelectedType] = useState<PromotionType>('Site Wide');
+  const [selectedItemId, setSelectedItemId] = useState<string>('');
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -142,6 +154,15 @@ const PromotionDetails = () => {
       const response = await fetch("https://scentiment.com/products.json");
       const data = await response.json();
       return data.products as Product[];
+    },
+  });
+
+  const { data: collections } = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/collections.json");
+      const data = await response.json();
+      return data.collections;
     },
   });
 
@@ -304,6 +325,47 @@ const PromotionDetails = () => {
                 ← Back
               </Button>
               <h1 className="text-2xl font-bold">Promotion Details</h1>
+            </div>
+
+            <div className="flex items-center gap-4 mb-8">
+              {(['Site Wide', 'By Product', 'By Collection'] as PromotionType[]).map((type) => (
+                <Button
+                  key={type}
+                  variant={selectedType === type ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedType(type);
+                    setSelectedItemId('');
+                  }}
+                >
+                  {type}
+                </Button>
+              ))}
+
+              {selectedType !== 'Site Wide' && (
+                <Select
+                  value={selectedItemId}
+                  onValueChange={setSelectedItemId}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder={`Select ${selectedType === 'By Product' ? 'product' : 'collection'}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedType === 'By Product' ? (
+                      products?.map((product) => (
+                        <SelectItem key={product.id} value={product.id.toString()}>
+                          {product.title}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      collections?.map((collection) => (
+                        <SelectItem key={collection.id} value={collection.id.toString()}>
+                          {collection.title}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             
             {/* Sales Chart */}
