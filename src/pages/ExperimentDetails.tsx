@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { generateMockSalesData } from "@/lib/mockData";
+import { MetricCard } from "@/components/MetricCard";
 
 type ExperimentMetric = {
   metric: string;
@@ -203,9 +204,26 @@ export default function ExperimentDetails() {
         </Button>
         <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
       </div>
+
+      {/* Add Metric Cards */}
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <MetricCard
+          title="Overall Change"
+          percentage={15.8}
+          currentValue={158000}
+          previousValue={136000}
+          format="number"
+        />
+        <MetricCard
+          title="Incremental Revenue"
+          percentage={23.4}
+          currentValue={45000}
+          previousValue={36000}
+          format="currency"
+        />
+      </div>
       
       <div className="grid grid-cols-[400px,1fr] gap-6">
-        {/* Products Table */}
         <div className="rounded-md border">
           <Accordion type="single" collapsible>
             {products?.map((product: Product) => (
