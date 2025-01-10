@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -93,49 +93,88 @@ const recommendations = [
   }
 ];
 
+const productRecommendations = {
+  pricing: {
+    title: "Price Experimentation",
+    recommendations: [
+      "Sales of Midnight Jasmine are fluctuating despite a stable price, consider running A/B pricing tests to identify a sweet spot that maximizes both sales volume and revenue.",
+      "Introduce a limited-time promotion or discount to stimulate demand and monitor how it impacts sales trends."
+    ]
+  }
+};
+
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      text: "Hey Julian. It looks like sales are a bit slower than last year this month. We may want to consider running a site wide sale. What's on your mind?",
-      isUser: false,
-    },
-    {
-      text: "I have a few recommendations on things we can do today...",
-      isUser: false,
-    },
-    ...recommendations.map(rec => ({
-      text: (
-        <div>
-          <p className="text-sm">{rec.text}</p>
-          <Dialog>
-            <DialogTrigger className="text-primary underline mt-2 block text-sm">See products</DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Product Details</DialogTitle>
-              </DialogHeader>
-              <p className="mt-4 text-sm text-muted-foreground">
-                {rec.details}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                {rec.products.map((product) => (
-                  <div key={product.id} className="space-y-2">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <h3 className="font-medium text-sm">{product.name}</h3>
-                    <p className="text-sm text-muted-foreground">{product.price}</p>
-                  </div>
-                ))}
+  const location = useLocation();
+  const isProductPage = location.pathname.includes('/products/');
+  
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (isProductPage) {
+      return [
+        {
+          text: "I noticed you're looking at product details. Here are some recommendations based on recent performance:",
+          isUser: false,
+        },
+        {
+          text: (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold mb-2">{productRecommendations.pricing.title}</h3>
+                <ul className="list-disc pl-4 space-y-2">
+                  {productRecommendations.pricing.recommendations.map((rec, idx) => (
+                    <li key={idx} className="text-sm">{rec}</li>
+                  ))}
+                </ul>
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      ),
-      isUser: false
-    }))
-  ]);
+            </div>
+          ),
+          isUser: false,
+        }
+      ];
+    }
+    
+    return [
+      {
+        text: "Hey Julian. It looks like sales are a bit slower than last year this month. We may want to consider running a site wide sale. What's on your mind?",
+        isUser: false,
+      },
+      {
+        text: "I have a few recommendations on things we can do today...",
+        isUser: false,
+      },
+      ...recommendations.map(rec => ({
+        text: (
+          <div>
+            <p className="text-sm">{rec.text}</p>
+            <Dialog>
+              <DialogTrigger className="text-primary underline mt-2 block text-sm">See products</DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Product Details</DialogTitle>
+                </DialogHeader>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  {rec.details}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  {rec.products.map((product) => (
+                    <div key={product.id} className="space-y-2">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <h3 className="font-medium text-sm">{product.name}</h3>
+                      <p className="text-sm text-muted-foreground">{product.price}</p>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        ),
+        isUser: false
+      }))
+    ];
+  });
   
   const [hasUserReplied, setHasUserReplied] = useState(false);
   const [input, setInput] = useState("");
@@ -191,35 +230,7 @@ export function ChatInterface() {
               {typeof message.text === 'string' ? (
                 message.text
               ) : (
-                <div>
-                  <p className="text-sm">{message.text.props.children[0]}</p>
-                  <Dialog>
-                    <DialogTrigger className="text-primary underline mt-2 block text-sm">
-                      See products
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                      <DialogHeader>
-                        <DialogTitle>Product Details</DialogTitle>
-                      </DialogHeader>
-                      <p className="mt-4 text-sm text-muted-foreground">
-                        {message.text.props.children[1].props.children[1].props.children}
-                      </p>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-4">
-                        {message.text.props.children[1].props.children[1].props.children[2].props.children.map((product: any) => (
-                          <div key={product.key} className="space-y-2 bg-white rounded-lg p-3 shadow-sm">
-                            <img
-                              src={product.props.children[0].props.src}
-                              alt={product.props.children[0].props.alt}
-                              className="w-full h-32 object-cover rounded-lg"
-                            />
-                            <h3 className="font-medium text-sm">{product.props.children[1].props.children}</h3>
-                            <p className="text-sm text-muted-foreground">{product.props.children[2].props.children}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                message.text
               )}
             </div>
           </div>
