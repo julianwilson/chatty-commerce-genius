@@ -106,9 +106,9 @@ export function ChatInterface() {
     ...recommendations.map(rec => ({
       text: (
         <div>
-          <p>{rec.text}</p>
+          <p className="text-sm">{rec.text}</p>
           <Dialog>
-            <DialogTrigger className="text-primary underline mt-2 block">See products</DialogTrigger>
+            <DialogTrigger className="text-primary underline mt-2 block text-sm">See products</DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Product Details</DialogTitle>
@@ -124,7 +124,7 @@ export function ChatInterface() {
                       alt={product.name}
                       className="w-full h-32 object-cover rounded-lg"
                     />
-                    <h3 className="font-medium">{product.name}</h3>
+                    <h3 className="font-medium text-sm">{product.name}</h3>
                     <p className="text-sm text-muted-foreground">{product.price}</p>
                   </div>
                 ))}
@@ -182,7 +182,7 @@ export function ChatInterface() {
               </div>
             )}
             <div
-              className={`max-w-[80%] p-4 rounded-lg ${
+              className={`max-w-[80%] p-4 rounded-lg text-sm ${
                 message.isUser
                   ? "bg-primary text-white"
                   : "bg-gray-100 text-gray-800"
@@ -202,7 +202,7 @@ export function ChatInterface() {
             onClick={handleInputClick}
             onKeyPress={(e) => e.key === "Enter" && handleSend()}
             placeholder={hasUserReplied ? "Give me some recommendations" : "Type your message..."}
-            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
           />
           <Button onClick={handleSend} className="bg-primary hover:bg-primary/90">
             <Send className="h-4 w-4" />
