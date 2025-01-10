@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
   title: string;
-  percentage: number;
-  currentValue: number;
-  previousValue: number;
+  percentage: number | null;
+  currentValue: number | null;
+  previousValue: number | null;
   format?: "currency" | "number";
   disabled?: boolean;
 }
@@ -30,14 +30,20 @@ export const MetricCard = ({
         <div className="flex flex-col gap-1">
           <p className={cn(
             "text-2xl font-bold",
-            percentage >= 0 ? "text-secondary" : "text-destructive"
+            percentage === null ? "text-muted-foreground" : percentage >= 0 ? "text-secondary" : "text-destructive"
           )}>
-            {percentage >= 0 ? "+" : ""}{percentage.toFixed(1)}%
+            {percentage === null ? "-" : `${percentage >= 0 ? "+" : ""}${percentage.toFixed(1)}%`}
           </p>
           <div className="text-sm text-muted-foreground">
-            <span className="font-medium">{formatter.format(currentValue)}</span>
-            {" vs "}
-            <span>{formatter.format(previousValue)}</span>
+            {currentValue === null || previousValue === null ? (
+              "-"
+            ) : (
+              <>
+                <span className="font-medium">{formatter.format(currentValue)}</span>
+                {" vs "}
+                <span>{formatter.format(previousValue)}</span>
+              </>
+            )}
           </div>
         </div>
       </CardContent>
