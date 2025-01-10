@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Product } from "@/types/product";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
@@ -38,10 +39,13 @@ const ProductDetails = () => {
   const [selectedVariant, setSelectedVariant] = useState<string>("all");
   const salesData = generateMockSalesData(30);
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading, isError } = useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
       const response = await fetch(`https://scentiment.com/products/${id}.json`);
+      if (!response.ok) {
+        throw new Error(`Product not found (${response.status})`);
+      }
       const data = await response.json();
       return data.product as Product;
     },
@@ -67,8 +71,47 @@ const ProductDetails = () => {
     return null;
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!product) return <div>Product not found</div>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-48 bg-muted rounded"></div>
+          <div className="h-[400px] bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="h-8 w-8"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">Product Not Found</h1>
+        </div>
+        
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            The product you're looking for could not be found. It may have been removed or the URL might be incorrect.
+          </AlertDescription>
+        </Alert>
+
+        <Button onClick={() => navigate("/products")}>
+          Return to Products
+        </Button>
+      </div>
+    );
+  }
+
+  if (!product) return null;
 
   return (
     <div className="container mx-auto py-6 space-y-6">
