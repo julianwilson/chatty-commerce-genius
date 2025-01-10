@@ -23,14 +23,16 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SidebarProvider defaultOpen={false}>
-          <div className="min-h-screen flex w-full">
-            <AppSidebar />
-            <ChatBox />
-            <main className="flex-1">
-              <div className="p-4 border-b">
+          <div className="h-screen flex w-full overflow-hidden">
+            <div className="flex h-full">
+              <AppSidebar />
+              <ChatBox />
+            </div>
+            <main className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-none p-4 border-b">
                 <SearchBar />
               </div>
-              <div className="p-4">
+              <div className="flex-1 overflow-auto p-4">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/home" element={<Index />} />
