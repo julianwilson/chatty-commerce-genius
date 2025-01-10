@@ -15,7 +15,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Product } from "@/types/product";
 import { MiniBarChart } from "@/components/MiniBarChart";
-import { generateMockSalesHistory } from "@/lib/mockData";
+import { generateMockSalesData } from "@/lib/mockData";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -106,7 +106,7 @@ const Products = () => {
                     {format(new Date(product.created_at), "MMM d, yyyy")}
                   </TableCell>
                   <TableCell>
-                    <MiniBarChart data={generateMockSalesHistory()} />
+                    <MiniBarChart data={generateMockSalesData(7)} />
                   </TableCell>
                 </TableRow>
                 {expandedRows.includes(product.id) && (
@@ -135,7 +135,7 @@ const Products = () => {
                                       : "-"}
                                   </p>
                                 </div>
-                                <MiniBarChart data={generateMockSalesHistory()} />
+                                <MiniBarChart data={generateMockSalesData(7)} />
                               </div>
                             </div>
                           ))}
