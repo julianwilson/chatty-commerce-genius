@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   LineChart,
   Line,
@@ -36,7 +38,15 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
   return (
     <Drawer open={open} onClose={onClose}>
       <DrawerContent className="h-[85vh]">
-        <DrawerHeader>
+        <DrawerHeader className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </Button>
           <DrawerTitle>{product.title}</DrawerTitle>
         </DrawerHeader>
         <div className="px-4">
