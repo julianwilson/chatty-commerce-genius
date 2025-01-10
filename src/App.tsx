@@ -7,7 +7,6 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ChatBox } from "@/components/ChatBox";
 import { SearchBar } from "@/components/SearchBar";
-import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
@@ -33,7 +32,6 @@ const App = () => (
               <div className="p-4">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/home" element={<Index />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/promotions" element={<Promotions />} />
                   <Route path="/promotions/:id" element={<PromotionDetails />} />

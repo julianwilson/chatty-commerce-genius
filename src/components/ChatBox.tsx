@@ -12,7 +12,7 @@ export function ChatBox() {
     setIsExpanded(!isExpanded);
   };
 
-  if (state === "expanded") {
+  if (!isExpanded) {
     return (
       <div className="fixed bottom-4 right-4">
         <Button
