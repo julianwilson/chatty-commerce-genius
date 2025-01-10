@@ -232,25 +232,6 @@ const ProductDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sales Analysis</CardTitle>
-          <CardDescription>
-            {promotionStartDate && promotionEndDate 
-              ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of sales'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] w-full">
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={salesChartOptions}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
           <CardTitle>Units & Average Unit Retail (AUR)</CardTitle>
           <CardDescription>
             {promotionStartDate && promotionEndDate 
@@ -263,6 +244,25 @@ const ProductDetails = () => {
             <HighchartsReact
               highcharts={Highcharts}
               options={performanceChartOptions}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Sales Analysis</CardTitle>
+          <CardDescription>
+            {promotionStartDate && promotionEndDate 
+              ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
+              : '30-day view of sales'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] w-full">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={salesChartOptions}
             />
           </div>
         </CardContent>
