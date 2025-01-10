@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -32,7 +31,6 @@ interface Product {
 
 const Products = () => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -51,23 +49,11 @@ const Products = () => {
     );
   };
 
-  const filteredProducts = products?.filter((product) =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-6">Products</h1>
-      <div className="mb-4">
-        <Input
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-sm"
-        />
-      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -82,7 +68,7 @@ const Products = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts?.map((product) => (
+            {products?.map((product) => (
               <>
                 <TableRow key={product.id}>
                   <TableCell>
