@@ -232,14 +232,7 @@ const PromotionDetails = () => {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <MetricCard
-                title="% Change from Previous Period"
-                percentage={showMetrics ? salesPercentageChange : null}
-                currentValue={showMetrics ? currentTotalSales : null}
-                previousValue={showMetrics ? previousTotalSales : null}
-                format="currency"
-              />
+            <div className="grid grid-cols-1 gap-4 mb-8">
               <MetricCard
                 title="% of Total Sales"
                 percentage={showMetrics ? salesPercentageChange : null}
@@ -288,12 +281,14 @@ const PromotionDetails = () => {
                     {
                       name: 'Current Period',
                       data: dailyData.map(day => day.sales),
-                      color: '#1E3A8A'
+                      color: '#1E3A8A',
+                      type: 'column'
                     },
                     {
-                      name: 'Same Period LY',
+                      name: 'Previous Period',
                       data: previousPeriodData.map(day => day.sales),
                       color: '#9CA3AF',
+                      type: 'line',
                       dashStyle: 'ShortDash'
                     }
                   ],
