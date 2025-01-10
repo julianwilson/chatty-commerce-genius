@@ -72,7 +72,12 @@ const ProductDetails = () => {
       },
       labels: salesData
         .map((dataPoint, index) => dataPoint.promotion ? {
-          point: { x: index, y: dataPoint.sales },
+          point: {
+            xAxis: 0,
+            yAxis: 0,
+            x: index,
+            y: dataPoint.sales
+          },
           text: dataPoint.promotion.type,
           y: -30
         } : null)
