@@ -18,22 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Scatter,
-  ReferenceDot,
-  ReferenceLine,
-  Label,
-} from "recharts";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -72,25 +60,94 @@ const ProductDetails = () => {
     },
   });
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-4 border rounded-lg shadow-lg">
-          <p className="text-sm font-medium">{payload[0].payload.date}</p>
-          {payload[0].payload.promotion && (
-            <p className="text-xs text-muted-foreground mt-1">
-              {payload[0].payload.promotion.type}
-            </p>
-          )}
-          <div className="mt-2">
-            <p className="text-sm">Sales: ${payload[0].payload.sales}</p>
-            <p className="text-sm">Price: ${payload[0].payload.price}</p>
-            <p className="text-sm">Avg Unit Retail: ${payload[0].payload.aur}</p>
-          </div>
-        </div>
-      );
-    }
-    return null;
+  const chartOptions: Highcharts.Options = {
+    title: {
+      text: ''
+    },
+    xAxis: {
+      categories: salesData.map(d => d.date),
+      plotLines: promotionDates.map((date, index) => ({
+        value: salesData.findIndex(d => d.date === date.date),
+        color: '#8884d8',
+        dashStyle: 'Dash',
+        width: 2,
+        label: {
+          text: date.type,
+          rotation: 90,
+          y: 10,
+          style: {
+            fontSize: '10px'
+          }
+        }
+      }))
+    },
+    yAxis: [{
+      title: {
+        text: 'Sales ($)'
+      }
+    }, {
+      title: {
+        text: 'Price ($)'
+      },
+      opposite: true
+    }],
+    tooltip: {
+      shared: true,
+      useHTML: true,
+      formatter: function() {
+        if (!this.points) return '';
+        
+        const date = this.points[0].key;
+        const dataPoint = salesData.find(d => d.date === date);
+        
+        let html = `<div style="padding: 8px;">
+          <p style="font-weight: bold; margin-bottom: 4px;">${date}</p>`;
+        
+        if (dataPoint?.promotion) {
+          html += `<p style="color: #666; font-size: 12px; margin-bottom: 4px;">
+            ${dataPoint.promotion.type}
+          </p>`;
+        }
+        
+        html += `<div style="margin-top: 8px;">`;
+        this.points.forEach(point => {
+          html += `<p style="margin: 2px 0;">
+            ${point.series.name}: $${point.y.toFixed(2)}
+          </p>`;
+        });
+        html += `</div></div>`;
+        
+        return html;
+      }
+    },
+    series: [{
+      name: 'Sales',
+      type: 'line',
+      data: salesData.map(d => d.sales),
+      yAxis: 0,
+      color: '#1E3A8A'
+    }, {
+      name: 'Price',
+      type: 'line',
+      data: salesData.map(d => d.price),
+      yAxis: 1,
+      color: '#10B981'
+    }, {
+      name: 'Avg Unit Retail',
+      type: 'line',
+      data: salesData.map(d => d.aur),
+      yAxis: 1,
+      color: '#8B5CF6'
+    }, {
+      name: 'Promotion',
+      type: 'scatter',
+      data: salesData.filter(d => d.promotion).map(d => ({
+        x: salesData.findIndex(sd => sd.date === d.date),
+        y: d.sales
+      })),
+      yAxis: 0,
+      color: '#EF4444'
+    }]
   };
 
   if (isLoading) {
@@ -174,103 +231,10 @@ const ProductDetails = () => {
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={salesData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 25 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} height={60}>
-                  {salesData.map((entry, index) => {
-                    if (entry.promotion) {
-                      return (
-                        <ReferenceDot
-                          key={index}
-                          x={entry.date}
-                          y={0}
-                          r={4}
-                          fill="#EF4444"
-                          stroke="none"
-                          isFront={true}
-                        />
-                      );
-                    }
-                    return null;
-                  })}
-                </XAxis>
-                <YAxis
-                  yAxisId="left"
-                  tick={{ fontSize: 12 }}
-                  label={{
-                    value: "Sales ($)",
-                    angle: -90,
-                    position: "insideLeft",
-                    style: { textAnchor: "middle" },
-                  }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  tick={{ fontSize: 12 }}
-                  label={{
-                    value: "Price ($)",
-                    angle: 90,
-                    position: "insideRight",
-                    style: { textAnchor: "middle" },
-                  }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                {promotionDates.map((date, index) => (
-                  <ReferenceLine
-                    key={index}
-                    x={date.date}
-                    yAxisId="left"
-                    stroke="#8884d8"
-                    strokeDasharray="3 3"
-                    label={
-                      <Label
-                        value={date.type}
-                        position="top"
-                        fill="#8884d8"
-                        fontSize={10}
-                      />
-                    }
-                  />
-                ))}
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="sales"
-                  stroke="#1E3A8A"
-                  name="Sales"
-                  dot={false}
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="price"
-                  stroke="#10B981"
-                  name="Price"
-                  dot={false}
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="aur"
-                  stroke="#8B5CF6"
-                  name="Avg Unit Retail"
-                  dot={false}
-                />
-                <Scatter
-                  yAxisId="left"
-                  data={salesData.filter((d) => d.promotion)}
-                  dataKey="sales"
-                  fill="#EF4444"
-                  name="Promotion"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={chartOptions}
+            />
           </div>
         </CardContent>
       </Card>
