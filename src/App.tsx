@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
 import Collections from "./pages/Collections";
+import Products from "./pages/Products";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/promotions/:id" element={<PromotionDetails />} />
           <Route path="/collections" element={<Collections />} />
+          <Route path="/products" element={<Products />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
