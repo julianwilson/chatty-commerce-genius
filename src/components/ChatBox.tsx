@@ -2,17 +2,15 @@ import { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInterface } from "@/components/ChatInterface";
-import { useSidebar } from "@/components/ui/sidebar";
 
 export function ChatBox() {
   const [isExpanded, setIsExpanded] = useState(true);
-  const { state } = useSidebar();
 
   const toggleChat = () => {
     setIsExpanded(!isExpanded);
   };
 
-  if (state === "expanded") {
+  if (!isExpanded) {
     return (
       <div className="fixed bottom-4 right-4">
         <Button
