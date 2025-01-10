@@ -9,14 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 interface Message {
   text: string | JSX.Element;
@@ -105,6 +97,10 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       text: "Hey Julian. It looks like sales are a bit slower than last year this month. We may want to consider running a site wide sale. What's on your mind?",
+      isUser: false,
+    },
+    {
+      text: "I have a few recommendations on things we can do today...",
       isUser: false,
     },
     ...recommendations.map(rec => ({
