@@ -7,10 +7,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type ExperimentMetric = {
   metric: string;
@@ -19,14 +25,21 @@ type ExperimentMetric = {
   testB: number | string;
 };
 
+type ProductVariant = {
+  id: number;
+  title: string;
+  price: string;
+};
+
 type Product = {
   id: number;
   title: string;
   price: string;
+  variants: ProductVariant[];
   testWinner: "Control" | "Test A" | "Test B";
 };
 
-const generateExperimentData = (product: Product): ExperimentMetric[] => [
+const generateExperimentData = (product: Product | ProductVariant): ExperimentMetric[] => [
   {
     metric: "Original Price",
     control: product.price,
@@ -111,13 +124,15 @@ const defaultProduct = {
   id: 1,
   title: "Default Product",
   price: "$49.99",
+  variants: [],
   testWinner: "Control" as const
 };
 
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProduct);
+  const [selectedProduct, setSelectedProduct] = useState<Product | ProductVariant>(defaultProduct);
+  const [expandedProducts, setExpandedProducts] = useState<string[]>([]);
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -128,6 +143,11 @@ export default function ExperimentDetails() {
         id: p.id,
         title: p.title,
         price: p.variants[0]?.price ? `$${Number(p.variants[0].price).toFixed(2)}` : "$0.00",
+        variants: p.variants.map((v: any) => ({
+          id: v.id,
+          title: v.title,
+          price: `$${Number(v.price).toFixed(2)}`
+        })),
         testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B"
       }));
     },
@@ -196,15 +216,51 @@ export default function ExperimentDetails() {
             </TableHeader>
             <TableBody>
               {products?.map((product: Product) => (
-                <TableRow 
+                <Accordion
                   key={product.id}
-                  className={`cursor-pointer hover:bg-muted ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
-                  onClick={() => setSelectedProduct(product)}
+                  type="single"
+                  collapsible
+                  value={expandedProducts.includes(product.id.toString()) ? product.id.toString() : ""}
+                  onValueChange={(value) => {
+                    if (value) {
+                      setExpandedProducts([...expandedProducts, value]);
+                    } else {
+                      setExpandedProducts(expandedProducts.filter(id => id !== product.id.toString()));
+                    }
+                  }}
                 >
-                  <TableCell className="font-medium">{product.title}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>{product.testWinner}</TableCell>
-                </TableRow>
+                  <AccordionItem value={product.id.toString()} className="border-none">
+                    <TableRow 
+                      className={`cursor-pointer hover:bg-muted ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
+                      onClick={() => setSelectedProduct(product)}
+                    >
+                      <TableCell className="font-medium">
+                        <AccordionTrigger className="hover:no-underline">
+                          <span className="flex items-center gap-2">
+                            {product.title}
+                          </span>
+                        </AccordionTrigger>
+                      </TableCell>
+                      <TableCell>{product.price}</TableCell>
+                      <TableCell>{product.testWinner}</TableCell>
+                    </TableRow>
+                    <AccordionContent>
+                      <div className="pl-4">
+                        {product.variants.map((variant) => (
+                          <TableRow 
+                            key={variant.id}
+                            className={`cursor-pointer hover:bg-muted ${selectedProduct.id === variant.id ? 'bg-muted' : ''}`}
+                            onClick={() => setSelectedProduct(variant)}
+                          >
+                            <TableCell className="font-medium pl-8">{variant.title}</TableCell>
+                            <TableCell>{variant.price}</TableCell>
+                            <TableCell>{product.testWinner}</TableCell>
+                          </TableRow>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               ))}
             </TableBody>
           </Table>
