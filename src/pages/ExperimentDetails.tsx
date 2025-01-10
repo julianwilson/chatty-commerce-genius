@@ -116,23 +116,26 @@ export default function ExperimentDetails() {
     return "";
   };
 
-  const getHighestProfitColumn = (row: ExperimentMetric) => {
-    if (row.metric !== "Profit GM$") {
-      return () => ""; // Return a function that returns an empty string
-    }
+  const getHighestProfitColumn = () => {
+    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
+    if (!profitRow) return { control: false, testA: false, testB: false };
 
-    const values = [
-      parseFloat(row.control.toString().replace("$", "").replace(",", "")),
-      parseFloat(row.testA.toString().replace("$", "").replace(",", "")),
-      parseFloat(row.testB.toString().replace("$", "").replace(",", ""))
-    ];
+    const values = {
+      control: parseFloat(profitRow.control.toString().replace("$", "").replace(",", "")),
+      testA: parseFloat(profitRow.testA.toString().replace("$", "").replace(",", "")),
+      testB: parseFloat(profitRow.testB.toString().replace("$", "").replace(",", ""))
+    };
 
-    const maxValue = Math.max(...values);
-    return (value: string | number) => {
-      const numValue = parseFloat(value.toString().replace("$", "").replace(",", ""));
-      return numValue === maxValue ? "bg-green-100" : "";
+    const maxValue = Math.max(values.control, values.testA, values.testB);
+    
+    return {
+      control: values.control === maxValue,
+      testA: values.testA === maxValue,
+      testB: values.testB === maxValue
     };
   };
+
+  const highestProfitColumns = getHighestProfitColumn();
 
   return (
     <div className="p-8">
@@ -151,35 +154,32 @@ export default function ExperimentDetails() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead>Control</TableHead>
-              <TableHead>Test A</TableHead>
-              <TableHead>Test B</TableHead>
+              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
+              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
+              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {experimentData.map((row, index) => {
-              const highlightHighestProfit = getHighestProfitColumn(row);
-              return (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{row.metric}</TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.control, row.metric)} ${highlightHighestProfit(row.control)}`}
-                  >
-                    {row.control}
-                  </TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.testA, row.metric)} ${highlightHighestProfit(row.testA)}`}
-                  >
-                    {row.testA}
-                  </TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.testB, row.metric)} ${highlightHighestProfit(row.testB)}`}
-                  >
-                    {row.testB}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {experimentData.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{row.metric}</TableCell>
+                <TableCell 
+                  className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
+                >
+                  {row.control}
+                </TableCell>
+                <TableCell 
+                  className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
+                >
+                  {row.testA}
+                </TableCell>
+                <TableCell 
+                  className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
+                >
+                  {row.testB}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
