@@ -60,7 +60,25 @@ const CollectionDetails = () => {
       text: ''
     },
     xAxis: {
-      categories: salesData.map(d => d.date)
+      categories: salesData.map(d => d.date),
+      plotBands: salesData
+        .map((dataPoint, index) => {
+          if (dataPoint.promotion) {
+            return {
+              from: index - 0.5,
+              to: index + 0.5,
+              color: `${getPromotionColor(dataPoint.promotion.type)}20`,
+              label: {
+                text: dataPoint.promotion.type,
+                style: {
+                  color: getPromotionColor(dataPoint.promotion.type)
+                }
+              }
+            };
+          }
+          return null;
+        })
+        .filter(Boolean) as Highcharts.XAxisPlotBandsOptions[]
     },
     yAxis: [{
       title: {
@@ -75,15 +93,23 @@ const CollectionDetails = () => {
     tooltip: {
       shared: true,
       useHTML: true,
-      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
+      formatter: function(this: any): string {
         if (!this.points) return '';
         
         const date = this.x;
+        const dataPoint = salesData.find(d => d.date === date);
+        
         let html = `<div style="padding: 8px;">
           <p style="font-weight: bold; margin-bottom: 4px;">${date}</p>`;
         
+        if (dataPoint?.promotion) {
+          html += `<p style="color: ${getPromotionColor(dataPoint.promotion.type)}; font-size: 12px; margin-bottom: 4px;">
+            ${dataPoint.promotion.type}
+          </p>`;
+        }
+        
         html += `<div style="margin-top: 8px;">`;
-        this.points.forEach(point => {
+        this.points.forEach((point: any) => {
           html += `<p style="margin: 2px 0;">
             ${point.series.name}: $${point.y.toFixed(2)}
           </p>`;
@@ -112,6 +138,21 @@ const CollectionDetails = () => {
       yAxis: 1,
       color: '#8B5CF6'
     }]
+  };
+
+  const getPromotionColor = (type: string): string => {
+    const colors: { [key: string]: string } = {
+      "Sitewide Markdown Sale": "#F97316",
+      "Sitewide Discount Code Sale": "#8B5CF6",
+      "Collection Sale": "#0EA5E9",
+      "Bogo Sale": "#D946EF",
+      "Free Shipping Sale": "#33C3F0",
+      "Shipping Update": "#8E9196",
+      "Influencer": "#9b87f5",
+      "Event": "#6E59A5",
+      "Loyalty Bonus": "#F2FCE2"
+    };
+    return colors[type] || '#CBD5E1';
   };
 
   if (isLoading) {
