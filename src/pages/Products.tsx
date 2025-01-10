@@ -14,6 +14,8 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { ProductDetailsDrawer } from "@/components/ProductDetailsDrawer";
 import { Product } from "@/types/product";
+import { MiniBarChart } from "@/components/MiniBarChart";
+import { generateMockSalesHistory } from "@/lib/mockData";
 
 const Products = () => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
@@ -52,6 +54,7 @@ const Products = () => {
               <TableHead>Price</TableHead>
               <TableHead>Slash Price</TableHead>
               <TableHead>Date Created</TableHead>
+              <TableHead>Last 7 Days Sales</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -102,10 +105,13 @@ const Products = () => {
                   <TableCell>
                     {format(new Date(product.created_at), "MMM d, yyyy")}
                   </TableCell>
+                  <TableCell>
+                    <MiniBarChart data={generateMockSalesHistory()} />
+                  </TableCell>
                 </TableRow>
                 {expandedRows.includes(product.id) && (
                   <TableRow>
-                    <TableCell colSpan={7}>
+                    <TableCell colSpan={8}>
                       <div className="p-4 bg-muted/50">
                         <h3 className="font-semibold mb-2">Variants</h3>
                         <div className="grid grid-cols-3 gap-4">
@@ -114,19 +120,24 @@ const Products = () => {
                               key={variant.id}
                               className="p-3 bg-background rounded-lg border"
                             >
-                              <p className="font-medium">{variant.title}</p>
-                              <p className="text-sm text-muted-foreground">
-                                Price: ${Number(variant.price).toFixed(2)}
-                              </p>
-                              {variant.compare_at_price && (
-                                <p className="text-sm text-muted-foreground">
-                                  Compare at: $
-                                  {Number(variant.compare_at_price).toFixed(2)}
-                                </p>
-                              )}
-                              <p className="text-sm text-muted-foreground">
-                                Stock: {variant.inventory_quantity}
-                              </p>
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="font-medium">{variant.title}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Price: ${Number(variant.price).toFixed(2)}
+                                  </p>
+                                  {variant.compare_at_price && (
+                                    <p className="text-sm text-muted-foreground">
+                                      Compare at: $
+                                      {Number(variant.compare_at_price).toFixed(2)}
+                                    </p>
+                                  )}
+                                  <p className="text-sm text-muted-foreground">
+                                    Stock: {variant.inventory_quantity}
+                                  </p>
+                                </div>
+                                <MiniBarChart data={generateMockSalesHistory()} />
+                              </div>
                             </div>
                           ))}
                         </div>

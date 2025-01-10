@@ -56,3 +56,21 @@ export const generateMockSalesData = (days: number = 30): SalesDataPoint[] => {
 
   return data;
 };
+
+export const generateMockSalesHistory = (days: number = 7) => {
+  const data = [];
+  const baseSales = Math.floor(Math.random() * 1000) + 100; // Random base between 100-1100
+
+  for (let i = 0; i < days; i++) {
+    const date = addDays(new Date(), -days + i);
+    const variation = (Math.random() - 0.5) * 200; // Random variation ±100
+    const sales = Math.max(0, Math.round(baseSales + variation));
+
+    data.push({
+      date: format(date, 'MMM dd'),
+      sales,
+    });
+  }
+
+  return data;
+};
