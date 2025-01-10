@@ -32,7 +32,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" defaultCollapsed={true}>
       <SidebarContent>
         <SidebarGroup>
           <div className="flex items-center justify-between px-4 py-2">
