@@ -14,6 +14,8 @@ import {
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { TopProductsCard } from "@/components/TopProductsCard";
+import { TopDiscountCodesCard } from "@/components/TopDiscountCodesCard";
+import { FrequentlyPurchasedCard } from "@/components/FrequentlyPurchasedCard";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "@/types/product";
 import { useState } from "react";
@@ -192,6 +194,26 @@ const PromotionDetails = () => {
   };
 
   const metrics = calculateMetrics(selectedType, selectedItemId);
+
+  // Mock data for the new cards
+  const mockDiscountCodes = [
+    { code: "SUMMER25", usageCount: 156, discountAmount: 25 },
+    { code: "FLASH15", usageCount: 89, discountAmount: 15 },
+    { code: "SPECIAL20", usageCount: 67, discountAmount: 20 },
+  ];
+
+  const mockProductPairs = products ? [
+    {
+      product1: products[0],
+      product2: products[1],
+      purchaseCount: 45
+    },
+    {
+      product1: products[2],
+      product2: products[3],
+      purchaseCount: 32
+    },
+  ] : [];
 
   return (
     <SidebarProvider>
@@ -449,8 +471,13 @@ const PromotionDetails = () => {
               </Table>
             </div>
 
-            <div className="max-w-xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <TopProductsCard products={products || []} />
+              <TopDiscountCodesCard discountCodes={mockDiscountCodes} />
+            </div>
+
+            <div className="max-w-2xl mx-auto">
+              <FrequentlyPurchasedCard productPairs={mockProductPairs} />
             </div>
           </div>
         </main>
