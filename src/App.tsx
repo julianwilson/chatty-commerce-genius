@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
 import Collections from "./pages/Collections";
+import CollectionDetails from "./pages/CollectionDetails";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import Chat from "./pages/Chat";
@@ -38,6 +39,7 @@ const App = () => (
                   <Route path="/promotions" element={<Promotions />} />
                   <Route path="/promotions/:id" element={<PromotionDetails />} />
                   <Route path="/collections" element={<Collections />} />
+                  <Route path="/collections/:id" element={<CollectionDetails />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<ProductDetails />} />
                 </Routes>

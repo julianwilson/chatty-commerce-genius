@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const collectionsData = [
   {
@@ -35,6 +36,8 @@ const collectionsData = [
 ];
 
 export default function Collections() {
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -54,7 +57,11 @@ export default function Collections() {
                 </TableHeader>
                 <TableBody>
                   {collectionsData.map((collection) => (
-                    <TableRow key={collection.id}>
+                    <TableRow 
+                      key={collection.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => navigate(`/collections/${collection.id}`)}
+                    >
                       <TableCell>
                         <div className="relative w-16 h-16 overflow-hidden rounded-md">
                           <img
