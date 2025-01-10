@@ -57,12 +57,9 @@ const ProductDetails = () => {
     xAxis: {
       categories: salesData.map(d => d.date)
     },
-    yAxis: [{
+    yAxis: {
       title: { text: 'Sales ($)' }
-    }, {
-      title: { text: 'Units' },
-      opposite: true
-    }],
+    },
     tooltip: {
       shared: true,
       useHTML: true,
@@ -85,7 +82,7 @@ const ProductDetails = () => {
         html += `<div style="margin-top: 8px;">`;
         points.forEach((point: any) => {
           html += `<p style="margin: 2px 0;">
-            ${point.series.name}: ${point.series.name === 'Units' ? point.y : '$' + point.y.toFixed(2)}
+            ${point.series.name}: $${point.y.toFixed(2)}
           </p>`;
         });
         html += `</div></div>`;
@@ -97,25 +94,21 @@ const ProductDetails = () => {
       name: 'Sales',
       type: 'line',
       data: salesData.map(d => d.sales),
-      yAxis: 0,
       color: '#1E3A8A'
-    }, {
-      name: 'Units',
-      type: 'line',
-      data: salesData.map(d => d.units),
-      yAxis: 1,
-      color: '#10B981'
     }]
   };
 
-  const aurChartOptions: Highcharts.Options = {
+  const performanceChartOptions: Highcharts.Options = {
     title: { text: '' },
     xAxis: {
       categories: salesData.map(d => d.date)
     },
-    yAxis: {
+    yAxis: [{
       title: { text: 'Average Unit Retail ($)' }
-    },
+    }, {
+      title: { text: 'Units' },
+      opposite: true
+    }],
     tooltip: {
       shared: true,
       useHTML: true,
@@ -124,7 +117,13 @@ const ProductDetails = () => {
         if (!points) return '';
         return `<div style="padding: 8px;">
           <p style="font-weight: bold; margin-bottom: 4px;">${points[0].key}</p>
-          <p style="margin: 2px 0;">AUR: $${points[0].y.toFixed(2)}</p>
+          <div style="margin-top: 8px;">
+            ${points.map((point: any) => `
+              <p style="margin: 2px 0;">
+                ${point.series.name}: ${point.series.name === 'Units' ? point.y : '$' + point.y.toFixed(2)}
+              </p>
+            `).join('')}
+          </div>
         </div>`;
       }
     },
@@ -132,7 +131,14 @@ const ProductDetails = () => {
       name: 'AUR',
       type: 'line',
       data: salesData.map(d => d.aur),
-      color: '#8B5CF6'
+      color: '#8B5CF6',
+      yAxis: 0
+    }, {
+      name: 'Units',
+      type: 'line',
+      data: salesData.map(d => d.units),
+      color: '#10B981',
+      yAxis: 1
     }]
   };
 
@@ -226,11 +232,11 @@ const ProductDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sales & Units Analysis</CardTitle>
+          <CardTitle>Sales Analysis</CardTitle>
           <CardDescription>
             {promotionStartDate && promotionEndDate 
               ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of sales volume and units sold'}
+              : '30-day view of sales'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -245,18 +251,18 @@ const ProductDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Average Unit Retail (AUR)</CardTitle>
+          <CardTitle>Units & Average Unit Retail (AUR)</CardTitle>
           <CardDescription>
             {promotionStartDate && promotionEndDate 
-              ? `AUR data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of average unit retail'}
+              ? `Performance data from ${promotionStartDate} to ${promotionEndDate}`
+              : '30-day view of units sold and AUR'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] w-full">
             <HighchartsReact
               highcharts={Highcharts}
-              options={aurChartOptions}
+              options={performanceChartOptions}
             />
           </div>
         </CardContent>
