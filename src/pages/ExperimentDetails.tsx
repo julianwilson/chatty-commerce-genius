@@ -11,6 +11,12 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type ExperimentMetric = {
   metric: string;
@@ -186,28 +192,27 @@ export default function ExperimentDetails() {
       <div className="grid grid-cols-[400px,1fr] gap-6">
         {/* Products Table */}
         <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Test Winner</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products?.map((product: Product) => (
-                <TableRow 
-                  key={product.id}
-                  className={`cursor-pointer hover:bg-muted ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
+          <Accordion type="single" collapsible>
+            {products?.map((product: Product) => (
+              <AccordionItem key={product.id} value={product.id.toString()}>
+                <AccordionTrigger 
+                  className={`px-4 hover:no-underline ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
                   onClick={() => setSelectedProduct(product)}
                 >
-                  <TableCell className="font-medium">{product.title}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>{product.testWinner}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  <div className="grid grid-cols-3 w-full text-sm">
+                    <div className="font-medium">{product.title}</div>
+                    <div>{product.price}</div>
+                    <div>{product.testWinner}</div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="px-4 py-2 space-y-2">
+                    <p className="text-sm text-muted-foreground">Product variants coming soon...</p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
 
         {/* Experiment Details Table */}
