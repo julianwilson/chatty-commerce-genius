@@ -188,7 +188,39 @@ export function ChatInterface() {
                   : "bg-gray-100 text-gray-800"
               }`}
             >
-              {message.text}
+              {typeof message.text === 'string' ? (
+                message.text
+              ) : (
+                <div>
+                  <p className="text-sm">{message.text.props.children[0]}</p>
+                  <Dialog>
+                    <DialogTrigger className="text-primary underline mt-2 block text-sm">
+                      See products
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <DialogHeader>
+                        <DialogTitle>Product Details</DialogTitle>
+                      </DialogHeader>
+                      <p className="mt-4 text-sm text-muted-foreground">
+                        {message.text.props.children[1].props.children[1].props.children}
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-4">
+                        {message.text.props.children[1].props.children[1].props.children[2].props.children.map((product: any) => (
+                          <div key={product.key} className="space-y-2 bg-white rounded-lg p-3 shadow-sm">
+                            <img
+                              src={product.props.children[0].props.src}
+                              alt={product.props.children[0].props.alt}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <h3 className="font-medium text-sm">{product.props.children[1].props.children}</h3>
+                            <p className="text-sm text-muted-foreground">{product.props.children[2].props.children}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              )}
             </div>
           </div>
         ))}
