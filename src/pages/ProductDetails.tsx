@@ -94,10 +94,11 @@ const ProductDetails = () => {
     tooltip: {
       shared: true,
       useHTML: true,
-      formatter: function(this: Highcharts.TooltipFormatterContextObject): string {
-        if (!this.points) return '';
+      formatter: function(this: Highcharts.PointLabelObject): string {
+        const points = (this as any).points;
+        if (!points) return '';
         
-        const date = this.points[0].key;
+        const date = points[0].key;
         const dataPoint = salesData.find(d => d.date === date);
         
         let html = `<div style="padding: 8px;">
@@ -110,7 +111,7 @@ const ProductDetails = () => {
         }
         
         html += `<div style="margin-top: 8px;">`;
-        this.points.forEach(point => {
+        points.forEach((point: any) => {
           html += `<p style="margin: 2px 0;">
             ${point.series.name}: $${point.y.toFixed(2)}
           </p>`;
