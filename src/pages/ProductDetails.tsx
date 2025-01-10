@@ -18,6 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
 import Highcharts from 'highcharts';
@@ -30,11 +38,9 @@ const ProductDetails = () => {
   const location = useLocation();
   const [selectedVariant, setSelectedVariant] = useState<string>("all");
   
-  // Get promotion dates from URL state
   const promotionStartDate = location.state?.startDate;
   const promotionEndDate = location.state?.endDate;
 
-  // Generate and filter sales data based on promotion dates
   const allSalesData = generateMockSalesData(30);
   const salesData = promotionStartDate && promotionEndDate
     ? allSalesData.filter(dataPoint => {
@@ -46,21 +52,15 @@ const ProductDetails = () => {
       })
     : allSalesData;
 
-  const chartOptions: Highcharts.Options = {
-    title: {
-      text: ''
-    },
+  const salesChartOptions: Highcharts.Options = {
+    title: { text: '' },
     xAxis: {
       categories: salesData.map(d => d.date)
     },
     yAxis: [{
-      title: {
-        text: 'Sales ($)'
-      }
+      title: { text: 'Sales ($)' }
     }, {
-      title: {
-        text: 'Price ($)'
-      },
+      title: { text: 'Units' },
       opposite: true
     }],
     tooltip: {
@@ -85,7 +85,7 @@ const ProductDetails = () => {
         html += `<div style="margin-top: 8px;">`;
         points.forEach((point: any) => {
           html += `<p style="margin: 2px 0;">
-            ${point.series.name}: $${point.y.toFixed(2)}
+            ${point.series.name}: ${point.series.name === 'Units' ? point.y : '$' + point.y.toFixed(2)}
           </p>`;
         });
         html += `</div></div>`;
@@ -100,16 +100,38 @@ const ProductDetails = () => {
       yAxis: 0,
       color: '#1E3A8A'
     }, {
-      name: 'Price',
+      name: 'Units',
       type: 'line',
-      data: salesData.map(d => d.price),
+      data: salesData.map(d => d.units),
       yAxis: 1,
       color: '#10B981'
-    }, {
-      name: 'Avg Unit Retail',
+    }]
+  };
+
+  const aurChartOptions: Highcharts.Options = {
+    title: { text: '' },
+    xAxis: {
+      categories: salesData.map(d => d.date)
+    },
+    yAxis: {
+      title: { text: 'Average Unit Retail ($)' }
+    },
+    tooltip: {
+      shared: true,
+      useHTML: true,
+      formatter: function(): string {
+        const points = (this as any).points;
+        if (!points) return '';
+        return `<div style="padding: 8px;">
+          <p style="font-weight: bold; margin-bottom: 4px;">${points[0].key}</p>
+          <p style="margin: 2px 0;">AUR: $${points[0].y.toFixed(2)}</p>
+        </div>`;
+      }
+    },
+    series: [{
+      name: 'AUR',
       type: 'line',
       data: salesData.map(d => d.aur),
-      yAxis: 1,
       color: '#8B5CF6'
     }]
   };
@@ -204,20 +226,75 @@ const ProductDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sales & Price Analysis</CardTitle>
+          <CardTitle>Sales & Units Analysis</CardTitle>
           <CardDescription>
             {promotionStartDate && promotionEndDate 
               ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of sales volume, price, and average unit retail'}
+              : '30-day view of sales volume and units sold'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
             <HighchartsReact
               highcharts={Highcharts}
-              options={chartOptions}
+              options={salesChartOptions}
             />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Average Unit Retail (AUR)</CardTitle>
+          <CardDescription>
+            {promotionStartDate && promotionEndDate 
+              ? `AUR data from ${promotionStartDate} to ${promotionEndDate}`
+              : '30-day view of average unit retail'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] w-full">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={aurChartOptions}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Detailed Performance Metrics</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Units Sold</TableHead>
+                <TableHead>Sales ($)</TableHead>
+                <TableHead>Avg Unit Retail</TableHead>
+                <TableHead>Avg Markdown %</TableHead>
+                <TableHead>Sessions</TableHead>
+                <TableHead>Impressions</TableHead>
+                <TableHead>AOV</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {salesData.map((row) => (
+                <TableRow key={row.date}>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.units}</TableCell>
+                  <TableCell>${row.sales.toFixed(2)}</TableCell>
+                  <TableCell>${row.aur.toFixed(2)}</TableCell>
+                  <TableCell>{row.markdown}%</TableCell>
+                  <TableCell>{row.sessions}</TableCell>
+                  <TableCell>{row.impressions}</TableCell>
+                  <TableCell>${(row.sales / row.units).toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
