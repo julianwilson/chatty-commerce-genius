@@ -5,7 +5,6 @@ import {
   Rocket,
   Percent,
   ShoppingCart,
-  ChartLine,
   Settings,
   Users,
 } from "lucide-react";
@@ -18,25 +17,28 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Chat with Jeff", url: "/", icon: MessageSquare },
+  { title: "Chat with Jeff", url: "/home", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Collections", url: "/collections", icon: Users },
   { title: "Products", url: "/products", icon: ShoppingCart },
-  { title: "Experiments", url: "/experiments", icon: ChartLine },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>E-commerce Director</SidebarGroupLabel>
+          <div className="flex items-center justify-between px-4 py-2">
+            <SidebarGroupLabel>E-commerce Director</SidebarGroupLabel>
+            <SidebarTrigger />
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
