@@ -145,7 +145,7 @@ const PromotionDetails = () => {
     },
   });
 
-  const chartOptions = {
+  const salesChartOptions = {
     chart: {
       type: 'line',
       style: {
@@ -186,12 +186,6 @@ const PromotionDetails = () => {
         data: previousPeriodData.map(day => day.sales),
         color: '#9CA3AF',
         dashStyle: 'ShortDash'
-      },
-      {
-        name: 'Average Unit Retail',
-        data: dailyData.map(day => day.averageUnitRetail),
-        color: '#047857',
-        dashStyle: 'Solid'
       }
     ],
     tooltip: {
@@ -222,6 +216,79 @@ const PromotionDetails = () => {
     }
   };
 
+  const aurUnitsChartOptions = {
+    chart: {
+      type: 'line',
+      style: {
+        fontFamily: 'inherit'
+      }
+    },
+    title: {
+      text: 'Average Unit Retail & Units Sold',
+      style: {
+        fontSize: '16px',
+        fontWeight: 'bold'
+      }
+    },
+    xAxis: {
+      categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+      labels: {
+        style: {
+          fontSize: '12px'
+        }
+      }
+    },
+    yAxis: [{
+      title: {
+        text: 'Price ($)',
+        style: {
+          color: '#047857',
+          fontSize: '12px'
+        }
+      },
+      labels: {
+        style: {
+          color: '#047857'
+        }
+      }
+    }, {
+      title: {
+        text: 'Units Sold',
+        style: {
+          color: '#7C3AED',
+          fontSize: '12px'
+        }
+      },
+      opposite: true,
+      labels: {
+        style: {
+          color: '#7C3AED'
+        }
+      }
+    }],
+    series: [
+      {
+        name: 'Average Unit Retail',
+        data: dailyData.map(day => day.averageUnitRetail),
+        color: '#047857',
+        yAxis: 0
+      },
+      {
+        name: 'Units Sold',
+        data: dailyData.map(day => day.unitsSold),
+        color: '#7C3AED',
+        yAxis: 1
+      }
+    ],
+    tooltip: {
+      shared: true,
+      useHTML: true
+    },
+    credits: {
+      enabled: false
+    }
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -243,7 +310,15 @@ const PromotionDetails = () => {
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
-                options={chartOptions}
+                options={salesChartOptions}
+              />
+            </div>
+
+            {/* AUR and Units Chart */}
+            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={aurUnitsChartOptions}
               />
             </div>
 
