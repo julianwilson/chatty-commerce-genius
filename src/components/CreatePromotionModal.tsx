@@ -45,12 +45,18 @@ const promotionTypes = [
   "Loyalty Bonus",
 ] as const;
 
+interface Collection {
+  id: number;
+  title: string;
+}
+
 const formSchema = z.object({
   name: z.string().min(1, "Promotion name is required"),
   type: z.enum(promotionTypes),
   products: z.array(z.number()).min(1, "At least one product must be selected"),
   startDate: z.date(),
   endDate: z.date(),
+  collectionId: z.number().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -79,11 +85,22 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
     },
   });
 
+  const { data: collections } = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/collections.json");
+      const data = await response.json();
+      return data.collections as Collection[];
+    },
+  });
+
   const onSubmit = (values: FormValues) => {
     console.log("Form submitted:", values);
-    // Here you would typically send the data to your backend
     onClose();
   };
+
+  const selectedType = form.watch("type");
+  const showCollectionSelector = selectedType === "Collection Sale";
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -131,6 +148,39 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
                 </FormItem>
               )}
             />
+
+            {showCollectionSelector && (
+              <FormField
+                control={form.control}
+                name="collectionId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Collection</FormLabel>
+                    <Select 
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select collection" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {collections?.map((collection) => (
+                          <SelectItem 
+                            key={collection.id} 
+                            value={collection.id.toString()}
+                          >
+                            {collection.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
