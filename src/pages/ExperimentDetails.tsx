@@ -116,6 +116,22 @@ export default function ExperimentDetails() {
     return "";
   };
 
+  const getHighestProfitColumn = (row: ExperimentMetric) => {
+    if (row.metric !== "Profit GM$") return "";
+
+    const values = [
+      parseFloat(row.control.toString().replace("$", "").replace(",", "")),
+      parseFloat(row.testA.toString().replace("$", "").replace(",", "")),
+      parseFloat(row.testB.toString().replace("$", "").replace(",", ""))
+    ];
+
+    const maxValue = Math.max(...values);
+    return (value: string | number) => {
+      const numValue = parseFloat(value.toString().replace("$", "").replace(",", ""));
+      return numValue === maxValue ? "bg-green-100" : "";
+    };
+  };
+
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
@@ -139,20 +155,29 @@ export default function ExperimentDetails() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {experimentData.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{row.metric}</TableCell>
-                <TableCell className={getValueColor(row.control, row.metric)}>
-                  {row.control}
-                </TableCell>
-                <TableCell className={getValueColor(row.testA, row.metric)}>
-                  {row.testA}
-                </TableCell>
-                <TableCell className={getValueColor(row.testB, row.metric)}>
-                  {row.testB}
-                </TableCell>
-              </TableRow>
-            ))}
+            {experimentData.map((row, index) => {
+              const highlightHighestProfit = getHighestProfitColumn(row);
+              return (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{row.metric}</TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.control, row.metric)} ${highlightHighestProfit(row.control)}`}
+                  >
+                    {row.control}
+                  </TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.testA, row.metric)} ${highlightHighestProfit(row.testA)}`}
+                  >
+                    {row.testA}
+                  </TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.testB, row.metric)} ${highlightHighestProfit(row.testB)}`}
+                  >
+                    {row.testB}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
