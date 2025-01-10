@@ -22,7 +22,7 @@ const experimentsData = [
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
     uplift: 15.2,
-    confidence: 98.5,
+    rpv: 2.45,
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ const experimentsData = [
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
     uplift: -8.5,
-    confidence: 95.2,
+    rpv: 1.98,
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const experimentsData = [
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
     uplift: 22.3,
-    confidence: 99.1,
+    rpv: 3.12,
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ const experimentsData = [
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
     uplift: -4.7,
-    confidence: 92.8,
+    rpv: 2.15,
   },
   {
     id: 5,
@@ -62,7 +62,7 @@ const experimentsData = [
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
     uplift: 18.9,
-    confidence: 97.4,
+    rpv: 2.87,
   }
 ];
 
@@ -89,7 +89,7 @@ export default function Experiments() {
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead>Uplift %</TableHead>
-                <TableHead>Confidence %</TableHead>
+                <TableHead>RPV $</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -123,7 +123,7 @@ export default function Experiments() {
                   >
                     {experiment.uplift > 0 ? '+' : ''}{experiment.uplift}%
                   </TableCell>
-                  <TableCell>{experiment.confidence}%</TableCell>
+                  <TableCell>${experiment.rpv.toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
