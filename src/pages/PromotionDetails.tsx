@@ -377,18 +377,19 @@ const PromotionDetails = () => {
             {/* Metric Cards */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               <MetricCard
-                title="% of Total Sales"
+                title="% Change from Previous Period"
                 percentage={salesPercentageChange}
                 currentValue={currentTotalSales}
                 previousValue={previousTotalSales}
                 format="currency"
               />
               <MetricCard
-                title="% Change from Previous Period"
+                title="% of Total Sales"
                 percentage={salesPercentageChange}
                 currentValue={currentTotalSales}
                 previousValue={previousTotalSales}
                 format="currency"
+                disabled={selectedType === 'Site Wide'}
               />
             </div>
             

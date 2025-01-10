@@ -7,6 +7,7 @@ interface MetricCardProps {
   currentValue: number;
   previousValue: number;
   format?: "currency" | "number";
+  disabled?: boolean;
 }
 
 export const MetricCard = ({
@@ -15,6 +16,7 @@ export const MetricCard = ({
   currentValue,
   previousValue,
   format = "currency",
+  disabled = false,
 }: MetricCardProps) => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: format === "currency" ? "currency" : "decimal",
@@ -22,7 +24,7 @@ export const MetricCard = ({
   });
 
   return (
-    <Card>
+    <Card className={cn(disabled && "opacity-50")}>
       <CardContent className="pt-6">
         <h3 className="text-sm font-medium text-muted-foreground mb-2">{title}</h3>
         <div className="flex flex-col gap-1">
