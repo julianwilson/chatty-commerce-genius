@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Chat with Jeff", url: "/", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
+  { title: "Chat with Jeff", url: "/chat", icon: MessageSquare },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Collections", url: "/collections", icon: Users },
