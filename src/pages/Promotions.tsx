@@ -144,8 +144,8 @@ export default function Promotions() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Promotion Name</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Promotion Name</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
@@ -156,12 +156,6 @@ export default function Promotions() {
             <TableBody>
               {promotionsData.map((promotion) => (
                 <TableRow key={promotion.id}>
-                  <TableCell 
-                    className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
-                    onClick={() => navigate(`/promotions/${promotion.id}`)}
-                  >
-                    {promotion.name}
-                  </TableCell>
                   <TableCell>
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       promotion.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
@@ -171,6 +165,12 @@ export default function Promotions() {
                     }`}>
                       {promotion.status}
                     </span>
+                  </TableCell>
+                  <TableCell 
+                    className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
+                    onClick={() => navigate(`/promotions/${promotion.id}`)}
+                  >
+                    {promotion.name}
                   </TableCell>
                   <TableCell>{promotion.type}</TableCell>
                   <TableCell>{promotion.startDate}</TableCell>
