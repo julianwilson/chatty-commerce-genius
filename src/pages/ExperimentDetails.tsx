@@ -17,6 +17,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { MiniBarChart } from "@/components/MiniBarChart";
+import { generateMockSalesData } from "@/lib/mockData";
 
 type ExperimentMetric = {
   metric: string;
@@ -30,6 +32,12 @@ type Product = {
   title: string;
   price: string;
   testWinner: "Control" | "Test A" | "Test B";
+  variants: {
+    id: number;
+    title: string;
+    price: string;
+    compare_at_price: string | null;
+  }[];
 };
 
 const generateExperimentData = (product: Product): ExperimentMetric[] => [
@@ -117,7 +125,8 @@ const defaultProduct = {
   id: 1,
   title: "Default Product",
   price: "$49.99",
-  testWinner: "Control" as const
+  testWinner: "Control" as const,
+  variants: []
 };
 
 export default function ExperimentDetails() {
@@ -134,7 +143,13 @@ export default function ExperimentDetails() {
         id: p.id,
         title: p.title,
         price: p.variants[0]?.price ? `$${Number(p.variants[0].price).toFixed(2)}` : "$0.00",
-        testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B"
+        testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B",
+        variants: p.variants.map((v: any) => ({
+          id: v.id,
+          title: v.title,
+          price: v.price ? `$${Number(v.price).toFixed(2)}` : "$0.00",
+          compare_at_price: v.compare_at_price ? `$${Number(v.compare_at_price).toFixed(2)}` : null
+        }))
       }));
     },
     initialData: [defaultProduct]
@@ -207,7 +222,28 @@ export default function ExperimentDetails() {
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="px-4 py-2 space-y-2">
-                    <p className="text-sm text-muted-foreground">Product variants coming soon...</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {product.variants?.map((variant) => (
+                        <div
+                          key={variant.id}
+                          className="p-3 bg-background rounded-lg border cursor-pointer hover:bg-muted"
+                          onClick={() => setSelectedProduct({ ...product, price: variant.price })}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-medium">{variant.title}</p>
+                              <p className="text-sm text-muted-foreground">
+                                Price: {variant.price}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Slash Price: {variant.compare_at_price || "-"}
+                              </p>
+                            </div>
+                            <MiniBarChart data={generateMockSalesData(7)} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
