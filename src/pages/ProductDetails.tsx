@@ -201,7 +201,7 @@ const ProductDetails = () => {
   if (!product) return null;
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto py-6 space-y-12">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"

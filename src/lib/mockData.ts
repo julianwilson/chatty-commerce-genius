@@ -6,6 +6,13 @@ export const generateMockSalesData = (days: number) => {
   const aurLevels = [45, 35, 55];
   const changePoints = [Math.floor(days * 0.25), Math.floor(days * 0.6), Math.floor(days * 0.9)];
   
+  // Define promotional events
+  const promotionalEvents = [
+    { day: 5, type: 'Sitewide Markdown Sale' },
+    { day: 15, type: 'Collection Sale' },
+    { day: 25, type: 'Bogo Sale' }
+  ];
+  
   for (let i = 0; i < days; i++) {
     const date = new Date(baseDate);
     date.setDate(date.getDate() - i);
@@ -26,6 +33,9 @@ export const generateMockSalesData = (days: number) => {
     const impressions = sessions * (Math.floor(Math.random() * 3) + 2);
     const markdown = Math.floor(Math.random() * 30);
     
+    // Check if there's a promotional event for this day
+    const promotionalEvent = promotionalEvents.find(event => event.day === i);
+    
     data.unshift({
       date: date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }),
       sales: sales,
@@ -34,9 +44,7 @@ export const generateMockSalesData = (days: number) => {
       markdown: markdown,
       sessions: sessions,
       impressions: impressions,
-      promotion: Math.random() > 0.8 ? {
-        type: Math.random() > 0.5 ? '20% Off' : 'BOGO'
-      } : null
+      promotion: promotionalEvent ? { type: promotionalEvent.type } : null
     });
   }
   
