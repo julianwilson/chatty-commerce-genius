@@ -2,7 +2,6 @@ import {
   Calendar,
   MessageSquare,
   BarChart,
-  Rocket,
   Percent,
   ShoppingCart,
   Settings,
@@ -13,12 +12,15 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const items = [
   { title: "Chat with Jeff", url: "/home", icon: MessageSquare },
@@ -35,20 +37,22 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <div className="flex items-center justify-between px-4 py-2">
-            <SidebarGroupLabel>E-commerce Director</SidebarGroupLabel>
-            <SidebarTrigger />
-          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url} className="flex items-center gap-3">
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <a href={item.url} className="flex items-center justify-center">
+                          <item.icon className="h-5 w-5" />
+                        </a>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      {item.title}
+                    </TooltipContent>
+                  </Tooltip>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
