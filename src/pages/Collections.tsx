@@ -63,7 +63,7 @@ export default function Collections() {
                       onClick={() => navigate(`/collections/${collection.id}`)}
                     >
                       <TableCell>
-                        <divoverflow-hidden rounded-md">
+                        <div className="relative w-16 h-16 overflow-hidden rounded-md">
                           <img
                             src={collection.src}
                             alt={collection.title}
