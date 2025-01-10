@@ -212,23 +212,16 @@ const PromotionDetails = () => {
               <h1 className="text-2xl font-bold">Promotion Details</h1>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-              {/* Sales Chart */}
-              <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border p-4">
-                <HighchartsReact
-                  highcharts={Highcharts}
-                  options={chartOptions}
-                />
-              </div>
-
-              {/* Top Products Card */}
-              <div className="lg:col-span-1">
-                <TopProductsCard />
-              </div>
+            {/* Sales Chart */}
+            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={chartOptions}
+              />
             </div>
 
             {/* Metrics Table */}
-            <div className="bg-white rounded-lg shadow-sm border">
+            <div className="bg-white rounded-lg shadow-sm border mb-8">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -257,6 +250,11 @@ const PromotionDetails = () => {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+
+            {/* Top Products Card */}
+            <div className="max-w-xl mx-auto">
+              <TopProductsCard />
             </div>
           </div>
         </main>
