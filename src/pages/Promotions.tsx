@@ -117,49 +117,51 @@ export default function Promotions() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex">
         <AppSidebar />
-        <main className="flex-1 bg-white">
-          <div className="p-8 w-full">
+        <main className="flex-1 bg-white overflow-x-hidden">
+          <div className="p-8">
             <h1 className="text-2xl font-bold mb-6">Promotions</h1>
-            <div className="rounded-md border w-full">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Promotion Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Start Date</TableHead>
-                    <TableHead>End Date</TableHead>
-                    <TableHead>Total Sales $</TableHead>
-                    <TableHead>LY % Comp</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {promotionsData.map((promotion) => (
-                    <TableRow key={promotion.id}>
-                      <TableCell 
-                        className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
-                        onClick={() => navigate(`/promotions/${promotion.id}`)}
-                      >
-                        {promotion.name}
-                      </TableCell>
-                      <TableCell>{promotion.type}</TableCell>
-                      <TableCell>{promotion.startDate}</TableCell>
-                      <TableCell>{promotion.endDate}</TableCell>
-                      <TableCell>{promotion.totalSales}</TableCell>
-                      <TableCell 
-                        className={`font-medium ${
-                          promotion.lyComp >= 0 
-                            ? 'text-green-600' 
-                            : 'text-red-600'
-                        }`}
-                      >
-                        {promotion.lyComp > 0 ? '+' : ''}{promotion.lyComp}%
-                      </TableCell>
+            <div className="rounded-md border">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Promotion Name</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Start Date</TableHead>
+                      <TableHead>End Date</TableHead>
+                      <TableHead>Total Sales $</TableHead>
+                      <TableHead>LY % Comp</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {promotionsData.map((promotion) => (
+                      <TableRow key={promotion.id}>
+                        <TableCell 
+                          className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
+                          onClick={() => navigate(`/promotions/${promotion.id}`)}
+                        >
+                          {promotion.name}
+                        </TableCell>
+                        <TableCell>{promotion.type}</TableCell>
+                        <TableCell>{promotion.startDate}</TableCell>
+                        <TableCell>{promotion.endDate}</TableCell>
+                        <TableCell>{promotion.totalSales}</TableCell>
+                        <TableCell 
+                          className={`font-medium ${
+                            promotion.lyComp >= 0 
+                              ? 'text-green-600' 
+                              : 'text-red-600'
+                          }`}
+                        >
+                          {promotion.lyComp > 0 ? '+' : ''}{promotion.lyComp}%
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           </div>
         </main>
