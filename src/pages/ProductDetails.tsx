@@ -60,6 +60,24 @@ const ProductDetails = () => {
     yAxis: {
       title: { text: 'Sales ($)' }
     },
+    annotations: [{
+      labelOptions: {
+        backgroundColor: 'rgba(255,255,255,0.8)',
+        borderRadius: 5,
+        padding: 4,
+        style: {
+          fontSize: '0.7em'
+        },
+        verticalAlign: 'top'
+      },
+      labels: salesData
+        .map((dataPoint, index) => dataPoint.promotion ? {
+          point: { x: index, y: dataPoint.sales },
+          text: dataPoint.promotion.type,
+          y: -30
+        } : null)
+        .filter(label => label !== null)
+    }],
     tooltip: {
       shared: true,
       useHTML: true,
