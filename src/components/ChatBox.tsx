@@ -26,7 +26,7 @@ export function ChatBox() {
   }
 
   return (
-    <div className={`w-[400px] border-l bg-background h-screen flex flex-col`}>
+    <div className="fixed right-0 top-0 w-[400px] border-l bg-background h-screen flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
         <h2 className="font-semibold">Chat with Jeff</h2>
         <Button
