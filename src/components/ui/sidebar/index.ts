@@ -1,3 +1,3 @@
 export * from "./components"
-export * from "./context"
+export { SidebarProvider, useSidebar } from "./context"
 export * from "./types"
