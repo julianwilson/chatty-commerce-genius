@@ -25,7 +25,7 @@ const App = () => (
         <SidebarProvider defaultOpen={false}>
           <div className="min-h-screen flex w-full">
             <AppSidebar />
-            <main className="flex-1">
+            <main className="flex-1 pr-[400px]">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
