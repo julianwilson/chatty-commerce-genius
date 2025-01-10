@@ -17,7 +17,6 @@ const experimentsData = [
   {
     id: 1,
     name: "Dresses price test",
-    type: "Price Test",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
@@ -26,7 +25,6 @@ const experimentsData = [
   {
     id: 2,
     name: "Free shipping threshold",
-    type: "Shipping Test",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
@@ -35,7 +33,6 @@ const experimentsData = [
   {
     id: 3,
     name: "Product description length",
-    type: "Content Test",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
@@ -44,7 +41,6 @@ const experimentsData = [
   {
     id: 4,
     name: "Collection page layout",
-    type: "UI Test",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
@@ -53,7 +49,6 @@ const experimentsData = [
   {
     id: 5,
     name: "Cart abandonment email",
-    type: "Email Test",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
@@ -80,7 +75,6 @@ export default function Experiments() {
               <TableRow>
                 <TableHead>Status</TableHead>
                 <TableHead>Experiment Name</TableHead>
-                <TableHead>Type</TableHead>
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead>Uplift %</TableHead>
@@ -105,7 +99,6 @@ export default function Experiments() {
                   >
                     {experiment.name}
                   </TableCell>
-                  <TableCell>{experiment.type}</TableCell>
                   <TableCell>{experiment.startDate}</TableCell>
                   <TableCell>{experiment.endDate}</TableCell>
                   <TableCell 
