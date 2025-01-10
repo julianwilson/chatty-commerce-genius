@@ -1,5 +1,3 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import Highcharts from 'highcharts';
@@ -31,7 +29,6 @@ import {
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 
-// Monthly sales data for last year
 const monthlySalesData = [
   { month: 'Jan', salesPercentage: 8.5 },
   { month: 'Feb', salesPercentage: 7.2 },
@@ -251,209 +248,204 @@ const Dashboard = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <div className="container mx-auto p-6 space-y-6">
-          {/* Target Revenue Goal and Incremental Revenue */}
-          <div className="grid grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Target Revenue Goal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-2">
-                  <div className="text-3xl font-bold">${targetRevenue}</div>
-                  <Dialog>
-                    <DialogTrigger>
-                      <Pencil className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Edit Target Revenue</DialogTitle>
-                      </DialogHeader>
-                      <Input
-                        type="text"
-                        value={targetRevenue}
-                        onChange={(e) => handleRevenueChange(e.target.value)}
-                        className="mt-4"
-                      />
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <div className="text-sm text-muted-foreground mt-2">85% to goal</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>New Revenue from Jeff</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-secondary">$1.25M</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Recommendations */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recommendations</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {recommendations.map((recommendation) => (
-                  <div
-                    key={recommendation.id}
-                    className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
-                  >
-                    <div className="w-3 h-3 rounded-full mt-1.5 bg-blue-500" />
-                    <div className="flex-1">
-                      <p className="text-sm">
-                        {recommendation.text}
-                        <Dialog>
-                          <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
-                            See More
-                          </DialogTrigger>
-                          <DialogContent className="max-w-2xl">
-                            <DialogHeader>
-                              <DialogTitle>Detailed Recommendation</DialogTitle>
-                            </DialogHeader>
-                            <p className="mt-4 text-sm text-muted-foreground">
-                              {recommendation.details}
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                              {recommendation.products.map((product) => (
-                                <div key={product.id} className="space-y-2">
-                                  <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-full h-32 object-cover rounded-lg"
-                                  />
-                                  <h3 className="font-medium">{product.name}</h3>
-                                  <p className="text-sm text-muted-foreground">{product.price}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Monthly Sales Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>% of Sales by Month LY</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="h-[300px] w-full">
-                <HighchartsReact
-                  highcharts={Highcharts}
-                  options={chartOptions}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Top Down Collection Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Down Collection Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>LY % of Overall Sales $</TableHead>
-                    <TableHead>YTD Total Sales $</TableHead>
-                    <TableHead>% to Goal</TableHead>
-                    <TableHead>Total Units</TableHead>
-                    <TableHead>Avg. Unit Retail</TableHead>
-                    <TableHead># of Products</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {collections.map((collection) => (
-                    <TableRow key={collection.name}>
-                      <TableCell>{collection.name}</TableCell>
-                      <TableCell>{collection.salesPercentage}%</TableCell>
-                      <TableCell>${(collection.totalSales).toLocaleString()}</TableCell>
-                      <TableCell>{collection.percentToGoal}%</TableCell>
-                      <TableCell>{collection.totalUnits.toLocaleString()}</TableCell>
-                      <TableCell>${collection.avgUnitRetail}</TableCell>
-                      <TableCell>{collection.products}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          {/* Activity Feed */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Activity Feed</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {currentActivities.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
-                  >
-                    <div
-                      className={`w-3 h-3 rounded-full mt-1.5 ${
-                        activity.type === "collection"
-                          ? "bg-blue-500"
-                          : activity.type === "experiment"
-                          ? "bg-green-500"
-                          : "bg-orange-500"
-                      }`}
-                    />
-                    <p className="text-sm">{activity.text}</p>
-                  </div>
-                ))}
-              </div>
-              {totalPages > 1 && (
-                <div className="mt-4">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                        <PaginationItem key={page}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(page)}
-                            isActive={currentPage === page}
-                          >
-                            {page}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Target Revenue Goal and Incremental Revenue */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Target Revenue Goal</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
+              <div className="text-3xl font-bold">${targetRevenue}</div>
+              <Dialog>
+                <DialogTrigger>
+                  <Pencil className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Target Revenue</DialogTitle>
+                  </DialogHeader>
+                  <Input
+                    type="text"
+                    value={targetRevenue}
+                    onChange={(e) => handleRevenueChange(e.target.value)}
+                    className="mt-4"
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="text-sm text-muted-foreground mt-2">85% to goal</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>New Revenue from Jeff</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-secondary">$1.25M</div>
+          </CardContent>
+        </Card>
       </div>
-    </SidebarProvider>
+
+      {/* Recommendations */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recommendations</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recommendations.map((recommendation) => (
+              <div
+                key={recommendation.id}
+                className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+              >
+                <div className="w-3 h-3 rounded-full mt-1.5 bg-blue-500" />
+                <div className="flex-1">
+                  <p className="text-sm">
+                    {recommendation.text}
+                    <Dialog>
+                      <DialogTrigger className="text-blue-500 hover:text-blue-700 ml-2 text-sm">
+                        See More
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle>Detailed Recommendation</DialogTitle>
+                        </DialogHeader>
+                        <p className="mt-4 text-sm text-muted-foreground">
+                          {recommendation.details}
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                          {recommendation.products.map((product) => (
+                            <div key={product.id} className="space-y-2">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-32 object-cover rounded-lg"
+                              />
+                              <h3 className="font-medium">{product.name}</h3>
+                              <p className="text-sm text-muted-foreground">{product.price}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Monthly Sales Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>% of Sales by Month LY</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="h-[300px] w-full">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={chartOptions}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Top Down Collection Performance */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Down Collection Performance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>LY % of Overall Sales $</TableHead>
+                <TableHead>YTD Total Sales $</TableHead>
+                <TableHead>% to Goal</TableHead>
+                <TableHead>Total Units</TableHead>
+                <TableHead>Avg. Unit Retail</TableHead>
+                <TableHead># of Products</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {collections.map((collection) => (
+                <TableRow key={collection.name}>
+                  <TableCell>{collection.name}</TableCell>
+                  <TableCell>{collection.salesPercentage}%</TableCell>
+                  <TableCell>${(collection.totalSales).toLocaleString()}</TableCell>
+                  <TableCell>{collection.percentToGoal}%</TableCell>
+                  <TableCell>{collection.totalUnits.toLocaleString()}</TableCell>
+                  <TableCell>${collection.avgUnitRetail}</TableCell>
+                  <TableCell>{collection.products}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Activity Feed */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Activity Feed</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {currentActivities.map((activity, index) => (
+              <div
+                key={index}
+                className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
+              >
+                <div
+                  className={`w-3 h-3 rounded-full mt-1.5 ${
+                    activity.type === "collection"
+                      ? "bg-blue-500"
+                      : activity.type === "experiment"
+                      ? "bg-green-500"
+                      : "bg-orange-500"
+                  }`}
+                />
+                <p className="text-sm">{activity.text}</p>
+              </div>
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <div className="mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
