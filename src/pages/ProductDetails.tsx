@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -22,64 +22,36 @@ import { generateMockSalesData } from "@/lib/mockData";
 import { useState } from "react";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { parse, isWithinInterval } from 'date-fns';
 
 const ProductDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
   const [selectedVariant, setSelectedVariant] = useState<string>("all");
-  const salesData = generateMockSalesData(30);
+  
+  // Get promotion dates from URL state
+  const promotionStartDate = location.state?.startDate;
+  const promotionEndDate = location.state?.endDate;
 
-  // Find dates where promotions start or end
-  const promotionDates = salesData.reduce((acc: { date: string; type: string }[], curr, index, array) => {
-    if (curr.promotion) {
-      // Check if this is the start of a promotion
-      if (index === 0 || !array[index - 1].promotion) {
-        acc.push({ date: curr.date, type: 'Start: ' + curr.promotion.type });
-      }
-      // Check if this is the end of a promotion
-      if (index === array.length - 1 || !array[index + 1].promotion) {
-        acc.push({ date: curr.date, type: 'End: ' + curr.promotion.type });
-      }
-    }
-    return acc;
-  }, []);
-
-  const { data: product, isLoading, isError } = useQuery({
-    queryKey: ["product", id],
-    queryFn: async () => {
-      const response = await fetch("https://scentiment.com/products.json");
-      if (!response.ok) {
-        throw new Error(`Failed to fetch products (${response.status})`);
-      }
-      const data = await response.json();
-      const foundProduct = data.products.find((p: Product) => p.id === Number(id));
-      if (!foundProduct) {
-        throw new Error("Product not found");
-      }
-      return foundProduct;
-    },
-  });
+  // Generate and filter sales data based on promotion dates
+  const allSalesData = generateMockSalesData(30);
+  const salesData = promotionStartDate && promotionEndDate
+    ? allSalesData.filter(dataPoint => {
+        const currentDate = parse(dataPoint.date, 'MMM dd', new Date());
+        const startDate = parse(promotionStartDate, 'MMM dd yyyy', new Date());
+        const endDate = parse(promotionEndDate, 'MMM dd yyyy', new Date());
+        
+        return isWithinInterval(currentDate, { start: startDate, end: endDate });
+      })
+    : allSalesData;
 
   const chartOptions: Highcharts.Options = {
     title: {
       text: ''
     },
     xAxis: {
-      categories: salesData.map(d => d.date),
-      plotLines: promotionDates.map((date, index) => ({
-        value: salesData.findIndex(d => d.date === date.date),
-        color: '#8884d8',
-        dashStyle: 'Dash',
-        width: 2,
-        label: {
-          text: date.type,
-          rotation: 90,
-          y: 10,
-          style: {
-            fontSize: '10px'
-          }
-        }
-      }))
+      categories: salesData.map(d => d.date)
     },
     yAxis: [{
       title: {
@@ -139,17 +111,24 @@ const ProductDetails = () => {
       data: salesData.map(d => d.aur),
       yAxis: 1,
       color: '#8B5CF6'
-    }, {
-      name: 'Promotion',
-      type: 'scatter',
-      data: salesData.filter(d => d.promotion).map(d => ({
-        x: salesData.findIndex(sd => sd.date === d.date),
-        y: d.sales
-      })),
-      yAxis: 0,
-      color: '#EF4444'
     }]
   };
+
+  const { data: product, isLoading, isError } = useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/products.json");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products (${response.status})`);
+      }
+      const data = await response.json();
+      const foundProduct = data.products.find((p: Product) => p.id === Number(id));
+      if (!foundProduct) {
+        throw new Error("Product not found");
+      }
+      return foundProduct;
+    },
+  });
 
   if (isLoading) {
     return (
@@ -227,7 +206,9 @@ const ProductDetails = () => {
         <CardHeader>
           <CardTitle>Sales & Price Analysis</CardTitle>
           <CardDescription>
-            30-day view of sales volume, price, and average unit retail
+            {promotionStartDate && promotionEndDate 
+              ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
+              : '30-day view of sales volume, price, and average unit retail'}
           </CardDescription>
         </CardHeader>
         <CardContent>
