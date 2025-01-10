@@ -19,11 +19,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const items = [
   { title: "Chat with Jeff", url: "/", icon: MessageSquare },
@@ -49,17 +44,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a href={item.url} className="flex items-center gap-3">
-                          <item.icon className="h-5 w-5" />
-                          <span>{item.title}</span>
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        {item.title}
-                      </TooltipContent>
-                    </Tooltip>
+                    <a href={item.url} className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
