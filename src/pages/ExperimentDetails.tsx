@@ -117,7 +117,9 @@ export default function ExperimentDetails() {
   };
 
   const getHighestProfitColumn = (row: ExperimentMetric) => {
-    if (row.metric !== "Profit GM$") return "";
+    if (row.metric !== "Profit GM$") {
+      return () => ""; // Return a function that returns an empty string
+    }
 
     const values = [
       parseFloat(row.control.toString().replace("$", "").replace(",", "")),
