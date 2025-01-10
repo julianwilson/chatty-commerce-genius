@@ -229,3 +229,6 @@ const CollectionDetails = () => {
       </Card>
     </div>
   );
+};
+
+export default CollectionDetails;
