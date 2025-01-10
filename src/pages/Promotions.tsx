@@ -120,9 +120,9 @@ export default function Promotions() {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <main className="flex-1 bg-white">
-          <div className="container mx-auto py-8">
+          <div className="p-8 w-full">
             <h1 className="text-2xl font-bold mb-6">Promotions</h1>
-            <div className="rounded-md border">
+            <div className="rounded-md border w-full">
               <Table>
                 <TableHeader>
                   <TableRow>
