@@ -225,6 +225,11 @@ export default function ExperimentDetails() {
       
       <div className="grid grid-cols-[400px,1fr] gap-6">
         <div className="rounded-md border">
+          <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
+            <div>Product</div>
+            <div>Price</div>
+            <div>Winner</div>
+          </div>
           <Accordion type="single" collapsible>
             {products?.map((product: Product) => (
               <AccordionItem key={product.id} value={product.id.toString()}>
