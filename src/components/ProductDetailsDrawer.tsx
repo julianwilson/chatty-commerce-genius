@@ -15,6 +15,13 @@ import {
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   LineChart,
   Line,
   XAxis,
@@ -25,6 +32,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { generateMockSalesData } from "@/lib/mockData";
+import { useState } from "react";
 
 interface ProductDetailsDrawerProps {
   product: Product;
@@ -34,6 +42,7 @@ interface ProductDetailsDrawerProps {
 
 export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsDrawerProps) {
   const salesData = generateMockSalesData(30);
+  const [selectedVariant, setSelectedVariant] = useState<string>("all");
 
   return (
     <Drawer open={open} onClose={onClose}>
@@ -49,7 +58,26 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
           </Button>
           <DrawerTitle>{product.title}</DrawerTitle>
         </DrawerHeader>
-        <div className="px-4">
+        <div className="px-4 space-y-4">
+          <div className="w-full max-w-xs">
+            <Select
+              value={selectedVariant}
+              onValueChange={setSelectedVariant}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select variant" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Variants</SelectItem>
+                {product.variants.map((variant) => (
+                  <SelectItem key={variant.id} value={variant.id.toString()}>
+                    {variant.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <Card>
             <CardHeader>
               <CardTitle>Sales & Price Analysis</CardTitle>
