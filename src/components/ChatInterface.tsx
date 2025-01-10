@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -106,6 +106,9 @@ const productRecommendations = {
 export function ChatInterface() {
   const location = useLocation();
   const isProductPage = location.pathname.includes('/products/');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [userScrolled, setUserScrolled] = useState(false);
   
   const [messages, setMessages] = useState<Message[]>(() => {
     if (isProductPage) {
@@ -179,6 +182,22 @@ export function ChatInterface() {
   const [hasUserReplied, setHasUserReplied] = useState(false);
   const [input, setInput] = useState("");
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (!userScrolled) {
+      scrollToBottom();
+    }
+  }, [messages, userScrolled]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const isScrolledToBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 10;
+    setUserScrolled(!isScrolledToBottom);
+  };
+
   const handleInputClick = () => {
     if (!input) {
       setInput("Setup a promotion on Jeans for 20% off");
@@ -190,7 +209,6 @@ export function ChatInterface() {
       setMessages([...messages, { text: input, isUser: true }]);
       setHasUserReplied(true);
       
-      // Add Jeff's response if the message matches our specific case
       if (input.includes("Setup a promotion on Jeans for 20% off")) {
         setTimeout(() => {
           setMessages(prev => [
@@ -209,7 +227,11 @@ export function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div 
+        className="flex-1 overflow-y-auto p-6 space-y-6"
+        ref={chatContainerRef}
+        onScroll={handleScroll}
+      >
         {messages.map((message, index) => (
           <div
             key={index}
@@ -235,6 +257,7 @@ export function ChatInterface() {
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t">
         <div className="flex gap-2">
