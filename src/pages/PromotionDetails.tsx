@@ -167,154 +167,33 @@ const PromotionDetails = () => {
     },
   });
 
-  // Calculate total sales for current and previous periods
-  const currentTotalSales = dailyData.reduce((sum, day) => sum + day.sales, 0);
-  const previousTotalSales = previousPeriodData.reduce((sum, day) => sum + day.sales, 0);
-  const salesPercentageChange = ((currentTotalSales - previousTotalSales) / previousTotalSales) * 100;
-
-  const salesChartOptions = {
-    chart: {
-      type: 'line',
-      style: {
-        fontFamily: 'inherit'
-      }
-    },
-    title: {
-      text: 'Daily Sales',
-      style: {
-        fontSize: '16px',
-        fontWeight: 'bold'
-      }
-    },
-    xAxis: {
-      categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
-      labels: {
-        style: {
-          fontSize: '12px'
-        }
-      }
-    },
-    yAxis: {
-      title: {
-        text: 'Sales ($)',
-        style: {
-          fontSize: '12px'
-        }
-      }
-    },
-    series: [
-      {
-        name: 'Current Period',
-        data: dailyData.map(day => day.sales),
-        color: '#1E3A8A'
-      },
-      {
-        name: 'Same Period LY',
-        data: previousPeriodData.map(day => day.sales),
-        color: '#9CA3AF',
-        dashStyle: 'ShortDash'
-      }
-    ],
-    tooltip: {
-      headerFormat: '<b>{point.x}</b><br/>',
-      pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
-        'Units Sold: <b>{point.units}</b><br/>' +
-        'Average Unit Retail: <b>${point.aur}</b><br/>' +
-        'Average Markdown: <b>{point.markdown}%</b>',
-      shared: true,
-      useHTML: true
-    },
-    plotOptions: {
-      series: {
-        point: {
-          events: {
-            mouseOver: function() {
-              const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
-              this.units = data[this.index].unitsSold;
-              this.aur = data[this.index].averageUnitRetail;
-              this.markdown = data[this.index].averageMarkdown;
-            }
-          }
-        }
-      }
-    },
-    credits: {
-      enabled: false
+  const calculateMetrics = (type: PromotionType, itemId: string) => {
+    if (type === 'Site Wide') {
+      return {
+        percentage: 0,
+        currentValue: 0,
+        previousValue: 0
+      };
     }
+
+    // Mock different values based on selection
+    if (type === 'By Product') {
+      return {
+        percentage: itemId ? 15.5 : 8.2,
+        currentValue: itemId ? 25000 : 12000,
+        previousValue: itemId ? 21645 : 11090
+      };
+    }
+
+    // By Collection
+    return {
+      percentage: itemId ? 22.3 : 10.5,
+      currentValue: itemId ? 45000 : 18000,
+      previousValue: itemId ? 36795 : 16290
+    };
   };
 
-  const aurUnitsChartOptions = {
-    chart: {
-      type: 'line',
-      style: {
-        fontFamily: 'inherit'
-      }
-    },
-    title: {
-      text: 'Average Unit Retail & Units Sold',
-      style: {
-        fontSize: '16px',
-        fontWeight: 'bold'
-      }
-    },
-    xAxis: {
-      categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
-      labels: {
-        style: {
-          fontSize: '12px'
-        }
-      }
-    },
-    yAxis: [{
-      title: {
-        text: 'Price ($)',
-        style: {
-          color: '#047857',
-          fontSize: '12px'
-        }
-      },
-      labels: {
-        style: {
-          color: '#047857'
-        }
-      }
-    }, {
-      title: {
-        text: 'Units Sold',
-        style: {
-          color: '#7C3AED',
-          fontSize: '12px'
-        }
-      },
-      opposite: true,
-      labels: {
-        style: {
-          color: '#7C3AED'
-        }
-      }
-    }],
-    series: [
-      {
-        name: 'Average Unit Retail',
-        data: dailyData.map(day => day.averageUnitRetail),
-        color: '#047857',
-        yAxis: 0
-      },
-      {
-        name: 'Units Sold',
-        data: dailyData.map(day => day.unitsSold),
-        color: '#7C3AED',
-        yAxis: 1
-      }
-    ],
-    tooltip: {
-      shared: true,
-      useHTML: true
-    },
-    credits: {
-      enabled: false
-    }
-  };
+  const metrics = calculateMetrics(selectedType, selectedItemId);
 
   return (
     <SidebarProvider>
@@ -378,19 +257,88 @@ const PromotionDetails = () => {
             <div className="grid grid-cols-1 gap-4 mb-8">
               <MetricCard
                 title="% of Total Sales"
-                percentage={selectedType === 'Site Wide' ? 0 : salesPercentageChange}
-                currentValue={selectedType === 'Site Wide' ? 0 : currentTotalSales}
-                previousValue={selectedType === 'Site Wide' ? 0 : previousTotalSales}
+                percentage={metrics.percentage}
+                currentValue={metrics.currentValue}
+                previousValue={metrics.previousValue}
                 format="currency"
                 disabled={selectedType === 'Site Wide'}
               />
             </div>
-            
+
             {/* Sales Chart */}
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
-                options={salesChartOptions}
+                options={{
+                  chart: {
+                    type: 'line',
+                    style: {
+                      fontFamily: 'inherit'
+                    }
+                  },
+                  title: {
+                    text: 'Daily Sales',
+                    style: {
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }
+                  },
+                  xAxis: {
+                    categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+                    labels: {
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  yAxis: {
+                    title: {
+                      text: 'Sales ($)',
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  series: [
+                    {
+                      name: 'Current Period',
+                      data: dailyData.map(day => day.sales),
+                      color: '#1E3A8A'
+                    },
+                    {
+                      name: 'Same Period LY',
+                      data: previousPeriodData.map(day => day.sales),
+                      color: '#9CA3AF',
+                      dashStyle: 'ShortDash'
+                    }
+                  ],
+                  tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
+                      'Units Sold: <b>{point.units}</b><br/>' +
+                      'Average Unit Retail: <b>${point.aur}</b><br/>' +
+                      'Average Markdown: <b>{point.markdown}%</b>',
+                    shared: true,
+                    useHTML: true
+                  },
+                  plotOptions: {
+                    series: {
+                      point: {
+                        events: {
+                          mouseOver: function() {
+                            const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
+                            this.units = data[this.index].unitsSold;
+                            this.aur = data[this.index].averageUnitRetail;
+                            this.markdown = data[this.index].averageMarkdown;
+                          }
+                        }
+                      }
+                    }
+                  },
+                  credits: {
+                    enabled: false
+                  }
+                }}
               />
             </div>
 
@@ -398,7 +346,78 @@ const PromotionDetails = () => {
             <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
-                options={aurUnitsChartOptions}
+                options={{
+                  chart: {
+                    type: 'line',
+                    style: {
+                      fontFamily: 'inherit'
+                    }
+                  },
+                  title: {
+                    text: 'Average Unit Retail & Units Sold',
+                    style: {
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }
+                  },
+                  xAxis: {
+                    categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+                    labels: {
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  yAxis: [{
+                    title: {
+                      text: 'Price ($)',
+                      style: {
+                        color: '#047857',
+                        fontSize: '12px'
+                      }
+                    },
+                    labels: {
+                      style: {
+                        color: '#047857'
+                      }
+                    }
+                  }, {
+                    title: {
+                      text: 'Units Sold',
+                      style: {
+                        color: '#7C3AED',
+                        fontSize: '12px'
+                      }
+                    },
+                    opposite: true,
+                    labels: {
+                      style: {
+                        color: '#7C3AED'
+                      }
+                    }
+                  }],
+                  series: [
+                    {
+                      name: 'Average Unit Retail',
+                      data: dailyData.map(day => day.averageUnitRetail),
+                      color: '#047857',
+                      yAxis: 0
+                    },
+                    {
+                      name: 'Units Sold',
+                      data: dailyData.map(day => day.unitsSold),
+                      color: '#7C3AED',
+                      yAxis: 1
+                    }
+                  ],
+                  tooltip: {
+                    shared: true,
+                    useHTML: true
+                  },
+                  credits: {
+                    enabled: false
+                  }
+                }}
               />
             </div>
 
