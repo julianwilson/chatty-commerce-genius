@@ -147,7 +147,7 @@ const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<PromotionType>('Site Wide');
-  const [selectedItemId, setSelectedItemId] = useState<string>('288699236535');
+  const [selectedItemId, setSelectedItemId] = useState<string>('');
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -217,9 +217,7 @@ const PromotionDetails = () => {
                   variant={selectedType === type ? "default" : "outline"}
                   onClick={() => {
                     setSelectedType(type);
-                    if (type === 'By Collection') {
-                      setSelectedItemId('288699236535');
-                    } else if (type === 'Site Wide') {
+                    if (type === 'Site Wide') {
                       setSelectedItemId('');
                     }
                   }}
@@ -232,7 +230,6 @@ const PromotionDetails = () => {
                 <Select
                   value={selectedItemId}
                   onValueChange={setSelectedItemId}
-                  defaultValue="288699236535"
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder={`Select ${selectedType === 'By Product' ? 'product' : 'collection'}`} />
