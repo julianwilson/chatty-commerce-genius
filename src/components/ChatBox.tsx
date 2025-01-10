@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatInterface } from "@/components/ChatInterface";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -35,7 +35,7 @@ export function ChatBox() {
           onClick={toggleChat}
           className="h-8 w-8"
         >
-          <MessageSquare className="h-4 w-4" />
+          <X className="h-4 w-4" />
         </Button>
       </div>
       <div className="flex-1 overflow-hidden">
