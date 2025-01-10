@@ -42,12 +42,16 @@ const ProductDetails = () => {
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
-      const response = await fetch(`https://scentiment.com/products/${id}.json`);
+      const response = await fetch("https://scentiment.com/products.json");
       if (!response.ok) {
-        throw new Error(`Product not found (${response.status})`);
+        throw new Error(`Failed to fetch products (${response.status})`);
       }
       const data = await response.json();
-      return data.product as Product;
+      const foundProduct = data.products.find((p: Product) => p.id === Number(id));
+      if (!foundProduct) {
+        throw new Error("Product not found");
+      }
+      return foundProduct;
     },
   });
 
