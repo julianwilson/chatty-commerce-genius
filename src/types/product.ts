@@ -13,4 +13,5 @@ export interface Product {
   created_at: string;
   variants: Variant[];
   images: { src: string }[];
+  collections?: string[];
 }
