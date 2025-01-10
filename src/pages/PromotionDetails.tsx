@@ -13,6 +13,8 @@ import {
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { TopProductsCard } from "@/components/TopProductsCard";
+import { useQuery } from "@tanstack/react-query";
+import { Product } from "@/types/product";
 
 const dailyData = [
   {
@@ -123,6 +125,15 @@ const previousPeriodData = [
 const PromotionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { data: products } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/products.json");
+      const data = await response.json();
+      return data.products as Product[];
+    },
+  });
 
   const chartOptions = {
     chart: {
@@ -254,7 +265,7 @@ const PromotionDetails = () => {
 
             {/* Top Products Card */}
             <div className="max-w-xl mx-auto">
-              <TopProductsCard />
+              <TopProductsCard products={products || []} />
             </div>
           </div>
         </main>

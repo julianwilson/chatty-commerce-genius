@@ -15,6 +15,22 @@ interface TopProductsCardProps {
 export function TopProductsCard({ products }: TopProductsCardProps) {
   const navigate = useNavigate();
   
+  if (!products?.length) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>Top Products Sold</CardTitle>
+          <CardDescription>Most popular products in this promotion</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-center py-4">
+            No products available
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
