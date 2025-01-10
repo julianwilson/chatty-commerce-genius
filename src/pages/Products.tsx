@@ -119,7 +119,7 @@ const Products = () => {
             <SelectValue placeholder="Filter by Collection" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Collections</SelectItem>
+            <SelectItem value="all">All Collections</SelectItem>
             {collections?.map((collection: any) => (
               <SelectItem key={collection.id} value={collection.id.toString()}>
                 {collection.title}
