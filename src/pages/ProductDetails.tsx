@@ -94,7 +94,7 @@ const ProductDetails = () => {
     tooltip: {
       shared: true,
       useHTML: true,
-      formatter: function(this: Highcharts.PointLabelObject): string {
+      formatter: function(): string {
         const points = (this as any).points;
         if (!points) return '';
         
