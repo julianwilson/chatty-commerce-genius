@@ -25,6 +25,10 @@ export const generateMockSalesData = (days: number = 30): SalesDataPoint[] => {
   const basePrice = 100;
   const baseSales = 1000;
 
+  // Define two price change points
+  const firstPriceChangeDay = Math.floor(days * 0.3); // Around 30% through the timeline
+  const secondPriceChangeDay = Math.floor(days * 0.7); // Around 70% through the timeline
+
   // Define some random promotion dates
   const promotions: Array<{ day: number; type: PromotionType }> = [
     { day: 5, type: "Sitewide Markdown Sale" },
@@ -35,13 +39,21 @@ export const generateMockSalesData = (days: number = 30): SalesDataPoint[] => {
 
   for (let i = 0; i < days; i++) {
     const date = addDays(new Date(), -days + i);
-    // Create some price variations
-    const priceVariation = Math.sin(i / 5) * 10;
-    const price = basePrice + priceVariation;
+    
+    // Determine price based on the day
+    let price;
+    if (i < firstPriceChangeDay) {
+      price = basePrice;
+    } else if (i < secondPriceChangeDay) {
+      price = basePrice * 1.15; // 15% increase
+    } else {
+      price = basePrice * 0.9; // 10% decrease
+    }
     
     // Sales generally go down as price goes up (negative correlation)
-    const salesVariation = (-priceVariation * 5) + (Math.random() * 200 - 100);
-    const sales = Math.max(0, baseSales + salesVariation);
+    const priceEffect = (basePrice - price) * 5;
+    const randomVariation = (Math.random() * 200 - 100);
+    const sales = Math.max(0, baseSales + priceEffect + randomVariation);
 
     // Check if there's a promotion on this day
     const promotion = promotions.find(p => p.day === i);
