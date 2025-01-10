@@ -126,14 +126,13 @@ const Products = () => {
                                   <p className="text-sm text-muted-foreground">
                                     Price: ${Number(variant.price).toFixed(2)}
                                   </p>
-                                  {variant.compare_at_price && (
-                                    <p className="text-sm text-muted-foreground">
-                                      Compare at: $
-                                      {Number(variant.compare_at_price).toFixed(2)}
-                                    </p>
-                                  )}
                                   <p className="text-sm text-muted-foreground">
-                                    Stock: {variant.inventory_quantity}
+                                    Slash Price:{" "}
+                                    {variant.compare_at_price
+                                      ? `$${Number(
+                                          variant.compare_at_price
+                                        ).toFixed(2)}`
+                                      : "-"}
                                   </p>
                                 </div>
                                 <MiniBarChart data={generateMockSalesHistory()} />
