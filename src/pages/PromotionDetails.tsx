@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { TopProductsCard } from "@/components/TopProductsCard";
 
 const dailyData = [
   {
@@ -211,12 +212,19 @@ const PromotionDetails = () => {
               <h1 className="text-2xl font-bold">Promotion Details</h1>
             </div>
             
-            {/* Sales Chart */}
-            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={chartOptions}
-              />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              {/* Sales Chart */}
+              <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border p-4">
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={chartOptions}
+                />
+              </div>
+
+              {/* Top Products Card */}
+              <div className="lg:col-span-1">
+                <TopProductsCard />
+              </div>
             </div>
 
             {/* Metrics Table */}
