@@ -26,11 +26,11 @@ const App = () => (
           <div className="min-h-screen flex w-full">
             <AppSidebar />
             <ChatBox />
-            <main className="flex-1">
+            <main className="flex-1 flex flex-col">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
-              <div className="p-4">
+              <div className="p-4 flex-1 overflow-auto">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/home" element={<Index />} />
