@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
+import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
@@ -40,6 +41,7 @@ const App = () => (
                 </Routes>
               </div>
             </main>
+            <ChatBox />
           </div>
         </SidebarProvider>
       </BrowserRouter>
