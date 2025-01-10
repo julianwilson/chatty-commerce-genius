@@ -586,8 +586,8 @@ const SidebarMenuSubButton = React.forwardRef<
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
+// Export components individually
 export {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -607,6 +607,9 @@ export {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-  SidebarSeparator,
-  SidebarTrigger
+  SidebarSeparator
 }
+
+// Export these separately to avoid duplicate exports
+export type { SidebarProps }
+export { Sidebar, SidebarTrigger }
