@@ -11,26 +11,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
-
-interface Variant {
-  id: number;
-  title: string;
-  price: string;
-  compare_at_price: string | null;
-  inventory_quantity: number;
-}
-
-interface Product {
-  id: number;
-  title: string;
-  product_type: string;
-  created_at: string;
-  variants: Variant[];
-  images: { src: string }[];
-}
+import { ProductDetailsDrawer } from "@/components/ProductDetailsDrawer";
+import { Product } from "@/types/product";
 
 const Products = () => {
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -69,8 +55,8 @@ const Products = () => {
           </TableHeader>
           <TableBody>
             {products?.map((product) => (
-              <>
-                <TableRow key={product.id}>
+              <React.Fragment key={product.id}>
+                <TableRow>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -93,7 +79,14 @@ const Products = () => {
                       />
                     )}
                   </TableCell>
-                  <TableCell className="font-medium">{product.title}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => setSelectedProduct(product)}
+                      className="font-medium hover:text-primary hover:underline"
+                    >
+                      {product.title}
+                    </button>
+                  </TableCell>
                   <TableCell>{product.product_type}</TableCell>
                   <TableCell>
                     ${Number(product.variants[0]?.price || 0).toFixed(2)}
@@ -140,11 +133,19 @@ const Products = () => {
                     </TableCell>
                   </TableRow>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      {selectedProduct && (
+        <ProductDetailsDrawer
+          product={selectedProduct}
+          open={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };
