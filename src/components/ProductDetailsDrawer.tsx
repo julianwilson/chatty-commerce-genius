@@ -59,6 +59,7 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
           <div className="mt-2">
             <p className="text-sm">Sales: ${payload[0].payload.sales}</p>
             <p className="text-sm">Price: ${payload[0].payload.price}</p>
+            <p className="text-sm">Avg Unit Retail: ${payload[0].payload.aur}</p>
           </div>
         </div>
       );
@@ -104,7 +105,7 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
             <CardHeader>
               <CardTitle>Sales & Price Analysis</CardTitle>
               <CardDescription>
-                30-day view of sales volume and average unit price
+                30-day view of sales volume, price, and average unit retail
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -174,6 +175,14 @@ export function ProductDetailsDrawer({ product, open, onClose }: ProductDetailsD
                       dataKey="price"
                       stroke="#10B981"
                       name="Price"
+                      dot={false}
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="aur"
+                      stroke="#8B5CF6"
+                      name="Avg Unit Retail"
                       dot={false}
                     />
                     <Scatter

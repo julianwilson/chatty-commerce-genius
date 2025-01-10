@@ -15,6 +15,7 @@ export interface SalesDataPoint {
   date: string;
   sales: number;
   price: number;
+  aur: number;
   promotion?: {
     type: PromotionType;
   };
@@ -50,6 +51,9 @@ export const generateMockSalesData = (days: number = 30): SalesDataPoint[] => {
       price = basePrice * 0.9; // 10% decrease
     }
     
+    // Calculate AUR as 5% lower than price
+    const aur = price * 0.95;
+    
     // Sales generally go down as price goes up (negative correlation)
     const priceEffect = (basePrice - price) * 5;
     const randomVariation = (Math.random() * 200 - 100);
@@ -62,6 +66,7 @@ export const generateMockSalesData = (days: number = 30): SalesDataPoint[] => {
       date: format(date, 'MMM dd'),
       sales: Math.round(sales),
       price: Number(price.toFixed(2)),
+      aur: Number(aur.toFixed(2)),
       ...(promotion && { promotion: { type: promotion.type } })
     });
   }
