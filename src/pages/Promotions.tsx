@@ -7,6 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { CreatePromotionModal } from "@/components/CreatePromotionModal";
 
 const promotionsData = [
   {
@@ -112,10 +116,16 @@ const promotionsData = [
 
 export default function Promotions() {
   const navigate = useNavigate();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Promotions</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Promotions</h1>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" /> New Promotion
+        </Button>
+      </div>
       <div className="rounded-md border">
         <div className="overflow-x-auto">
           <Table>
@@ -157,6 +167,11 @@ export default function Promotions() {
           </Table>
         </div>
       </div>
+
+      <CreatePromotionModal 
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   );
 }
