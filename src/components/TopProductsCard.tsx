@@ -1,65 +1,51 @@
-import { useState } from "react";
-import { Product } from "@/types/product";
-import { ProductDetailsDrawer } from "@/components/ProductDetailsDrawer";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { Product } from "@/types/product";
 
-export function TopProductsCard() {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+interface TopProductsCardProps {
+  products: Product[];
+}
 
-  const { data: products } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const response = await fetch("https://scentiment.com/products.json");
-      const data = await response.json();
-      // For demo purposes, we'll just take the first 5 products
-      return data.products.slice(0, 5) as Product[];
-    },
-  });
-
+export function TopProductsCard({ products }: TopProductsCardProps) {
+  const navigate = useNavigate();
+  
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Products Sold</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {products?.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => setSelectedProduct(product)}
-                className="flex items-center gap-4 p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors"
-              >
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>Top Products Sold</CardTitle>
+        <CardDescription>Most popular products in this promotion</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {products.slice(0, 5).map((product) => (
+            <div
+              key={product.id}
+              onClick={() => navigate(`/products/${product.id}`)}
+              className="flex items-center gap-4 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
+            >
+              {product.images[0] && (
                 <img
-                  src={product.images[0]?.src}
+                  src={product.images[0].src}
                   alt={product.title}
                   className="w-12 h-12 object-cover rounded"
                 />
-                <div>
-                  <h3 className="font-medium">{product.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    ${Number(product.variants[0]?.price || 0).toFixed(2)}
-                  </p>
-                </div>
+              )}
+              <div>
+                <h3 className="font-medium">{product.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                  ${Number(product.variants[0]?.price || 0).toFixed(2)}
+                </p>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {selectedProduct && (
-        <ProductDetailsDrawer
-          product={selectedProduct}
-          open={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
-    </>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

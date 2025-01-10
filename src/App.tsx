@@ -12,6 +12,7 @@ import Promotions from "./pages/Promotions";
 import PromotionDetails from "./pages/PromotionDetails";
 import Collections from "./pages/Collections";
 import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
 import Chat from "./pages/Chat";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
                   <Route path="/promotions/:id" element={<PromotionDetails />} />
                   <Route path="/collections" element={<Collections />} />
                   <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetails />} />
                 </Routes>
               </div>
             </main>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -12,14 +13,13 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
-import { ProductDetailsDrawer } from "@/components/ProductDetailsDrawer";
 import { Product } from "@/types/product";
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { generateMockSalesHistory } from "@/lib/mockData";
 
 const Products = () => {
+  const navigate = useNavigate();
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -85,7 +85,7 @@ const Products = () => {
                   </TableCell>
                   <TableCell>
                     <button
-                      onClick={() => setSelectedProduct(product)}
+                      onClick={() => navigate(`/products/${product.id}`)}
                       className="font-medium hover:text-primary hover:underline"
                     >
                       {product.title}
@@ -149,14 +149,6 @@ const Products = () => {
           </TableBody>
         </Table>
       </div>
-
-      {selectedProduct && (
-        <ProductDetailsDrawer
-          product={selectedProduct}
-          open={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
     </div>
   );
 };
