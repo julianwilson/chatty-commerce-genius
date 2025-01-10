@@ -9,6 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 type ExperimentMetric = {
   metric: string;
@@ -17,18 +19,25 @@ type ExperimentMetric = {
   testB: number | string;
 };
 
-const experimentData: ExperimentMetric[] = [
+type Product = {
+  id: number;
+  title: string;
+  price: string;
+  testWinner: "Control" | "Test A" | "Test B";
+};
+
+const generateExperimentData = (product: Product): ExperimentMetric[] => [
   {
     metric: "Original Price",
-    control: "$49.99",
-    testA: "$44.99",
-    testB: "$54.99",
+    control: product.price,
+    testA: `$${(parseFloat(product.price.replace("$", "")) * 0.9).toFixed(2)}`,
+    testB: `$${(parseFloat(product.price.replace("$", "")) * 1.1).toFixed(2)}`,
   },
   {
     metric: "Price",
-    control: "$49.99",
-    testA: "$44.99",
-    testB: "$54.99",
+    control: product.price,
+    testA: `$${(parseFloat(product.price.replace("$", "")) * 0.9).toFixed(2)}`,
+    testB: `$${(parseFloat(product.price.replace("$", "")) * 1.1).toFixed(2)}`,
   },
   {
     metric: "Price Change %",
@@ -38,9 +47,9 @@ const experimentData: ExperimentMetric[] = [
   },
   {
     metric: "Slash Price",
-    control: "$59.99",
-    testA: "$54.99",
-    testB: "$64.99",
+    control: `$${(parseFloat(product.price.replace("$", "")) * 1.2).toFixed(2)}`,
+    testA: product.price,
+    testB: `$${(parseFloat(product.price.replace("$", "")) * 1.3).toFixed(2)}`,
   },
   {
     metric: "Units Sold",
@@ -98,15 +107,39 @@ const experimentData: ExperimentMetric[] = [
   },
 ];
 
+const defaultProduct = {
+  id: 1,
+  title: "Default Product",
+  price: "$49.99",
+  testWinner: "Control" as const
+};
+
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProduct);
+
+  const { data: products } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/products.json");
+      const data = await response.json();
+      return data.products.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        price: p.variants[0]?.price ? `$${Number(p.variants[0].price).toFixed(2)}` : "$0.00",
+        testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B"
+      }));
+    },
+    initialData: [defaultProduct]
+  });
+
+  const experimentData = generateExperimentData(selectedProduct);
 
   const getValueColor = (value: string | number, metric: string) => {
-    if (metric === "% of Traffic") return ""; // No color for traffic percentage
+    if (metric === "% of Traffic") return "";
     
     if (typeof value === "string") {
-      // Check if the value is a percentage
       if (value.includes("%")) {
         const numValue = parseFloat(value.replace("%", "").replace("+", ""));
         if (numValue > 0) return "text-green-600";
@@ -149,39 +182,69 @@ export default function ExperimentDetails() {
         </Button>
         <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
-              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
-              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {experimentData.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{row.metric}</TableCell>
-                <TableCell 
-                  className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
-                >
-                  {row.control}
-                </TableCell>
-                <TableCell 
-                  className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
-                >
-                  {row.testA}
-                </TableCell>
-                <TableCell 
-                  className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
-                >
-                  {row.testB}
-                </TableCell>
+      
+      <div className="grid grid-cols-[400px,1fr] gap-6">
+        {/* Products Table */}
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Test Winner</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {products?.map((product: Product) => (
+                <TableRow 
+                  key={product.id}
+                  className={`cursor-pointer hover:bg-muted ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  <TableCell className="font-medium">{product.title}</TableCell>
+                  <TableCell>{product.price}</TableCell>
+                  <TableCell>{product.testWinner}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Experiment Details Table */}
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">Metric</TableHead>
+                <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
+                <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
+                <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {experimentData.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{row.metric}</TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
+                  >
+                    {row.control}
+                  </TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
+                  >
+                    {row.testA}
+                  </TableCell>
+                  <TableCell 
+                    className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
+                  >
+                    {row.testB}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
