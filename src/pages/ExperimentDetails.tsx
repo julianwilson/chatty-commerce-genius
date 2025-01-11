@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Accordion,
   AccordionContent,
@@ -179,6 +180,9 @@ export default function ExperimentDetails() {
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<Product>(mockProducts[0]);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
+  const [publishMode, setPublishMode] = useState<'all' | 'selected'>('all');
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
 
   const experimentData = generateExperimentData(selectedProduct);
 
@@ -217,8 +221,28 @@ export default function ExperimentDetails() {
   const highestProfitColumns = getHighestProfitColumn();
 
   const handlePublishChanges = () => {
-    console.log("Publishing winning changes");
+    console.log("Publishing changes:", {
+      mode: publishMode,
+      selectedProducts: selectedProducts,
+      selectedVariants: selectedVariants
+    });
     setShowPublishDialog(false);
+  };
+
+  const handleProductSelect = (productId: number) => {
+    setSelectedProducts(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleVariantSelect = (variantId: number) => {
+    setSelectedVariants(prev => 
+      prev.includes(variantId) 
+        ? prev.filter(id => id !== variantId)
+        : [...prev, variantId]
+    );
   };
 
   return (
@@ -234,9 +258,24 @@ export default function ExperimentDetails() {
           </Button>
           <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
         </div>
-        <Button onClick={() => setShowPublishDialog(true)}>
-          Publish All Winning Changes
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => {
+              setPublishMode('selected');
+              setShowPublishDialog(true);
+            }}
+            disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
+          >
+            Publish Selected
+          </Button>
+          <Button onClick={() => {
+            setPublishMode('all');
+            setShowPublishDialog(true);
+          }}>
+            Publish All Winning Changes
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
@@ -271,7 +310,14 @@ export default function ExperimentDetails() {
                   onClick={() => setSelectedProduct(product)}
                 >
                   <div className="grid grid-cols-3 w-full text-sm">
-                    <div className="font-medium">{product.title}</div>
+                    <div className="font-medium flex items-center gap-2">
+                      <Checkbox 
+                        checked={selectedProducts.includes(product.id)}
+                        onCheckedChange={() => handleProductSelect(product.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      {product.title}
+                    </div>
                     <div>{product.price}</div>
                     <div>{product.testWinner}</div>
                   </div>
@@ -287,7 +333,14 @@ export default function ExperimentDetails() {
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="font-medium">{variant.title}</p>
+                              <div className="flex items-center gap-2">
+                                <Checkbox 
+                                  checked={selectedVariants.includes(variant.id)}
+                                  onCheckedChange={() => handleVariantSelect(variant.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <p className="font-medium">{variant.title}</p>
+                              </div>
                               <p className="text-sm text-muted-foreground">
                                 Price: {variant.price}
                               </p>
@@ -348,7 +401,10 @@ export default function ExperimentDetails() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will publish all winning changes from this experiment to your live store. This action cannot be undone.
+              {publishMode === 'all' 
+                ? "This action will publish all winning changes from this experiment to your live store."
+                : `This action will publish ${selectedProducts.length} selected products and ${selectedVariants.length} variants to your live store.`
+              } This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
