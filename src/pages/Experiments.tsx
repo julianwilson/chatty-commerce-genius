@@ -28,6 +28,7 @@ const experimentsData = [
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
     uplift: 15.2,
+    sessions: 2451,
   },
   {
     id: 2,
@@ -36,6 +37,7 @@ const experimentsData = [
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
     uplift: -8.5,
+    sessions: 1832,
   },
   {
     id: 3,
@@ -44,6 +46,7 @@ const experimentsData = [
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
     uplift: 22.3,
+    sessions: 3102,
   },
   {
     id: 4,
@@ -52,6 +55,7 @@ const experimentsData = [
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
     uplift: -4.7,
+    sessions: 2789,
   },
   {
     id: 5,
@@ -60,6 +64,7 @@ const experimentsData = [
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
     uplift: 18.9,
+    sessions: 1945,
   }
 ];
 
@@ -73,6 +78,7 @@ const columns: Column[] = [
   { id: "name", label: "Experiment Name" },
   { id: "startDate", label: "Start Date" },
   { id: "endDate", label: "End Date" },
+  { id: "sessions", label: "Sessions" },
   { id: "uplift", label: "Uplift %" },
 ];
 
@@ -164,6 +170,9 @@ export default function Experiments() {
                   )}
                   {visibleColumns.includes('endDate') && (
                     <TableCell>{experiment.endDate}</TableCell>
+                  )}
+                  {visibleColumns.includes('sessions') && (
+                    <TableCell>{experiment.sessions.toLocaleString()}</TableCell>
                   )}
                   {visibleColumns.includes('uplift') && (
                     <TableCell 
