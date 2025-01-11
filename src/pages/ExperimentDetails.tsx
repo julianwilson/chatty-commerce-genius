@@ -342,10 +342,13 @@ export default function ExperimentDetails() {
           <Accordion type="single" collapsible>
             {mockProducts.map((product: Product) => (
               <AccordionItem key={product.id} value={product.id.toString()}>
-                <div className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline">
                   <div 
-                    className="grid grid-cols-3 w-full text-sm py-3 cursor-pointer"
-                    onClick={() => setSelectedProduct(product)}
+                    className="grid grid-cols-3 w-full text-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProduct(product);
+                    }}
                   >
                     <div className="font-medium flex items-center gap-2">
                       <Checkbox 
@@ -358,7 +361,7 @@ export default function ExperimentDetails() {
                     <div>{product.price}</div>
                     <div>{product.testWinner}</div>
                   </div>
-                </div>
+                </AccordionTrigger>
                 <AccordionContent>
                   <div className="px-4 py-2 space-y-2">
                     <div className="grid grid-cols-1 gap-2">
