@@ -281,10 +281,11 @@ export default function ExperimentDetails() {
     const testAPrice = basePrice * 0.9; // -10%
     const testBPrice = basePrice * 1.1; // +10%
 
+    // Calculate percentage changes relative to control
     return {
-      control: 0,
-      testA: -10,
-      testB: 10
+      control: 0, // Control is always the baseline (0%)
+      testA: ((testAPrice - basePrice) / basePrice) * 100, // Will be -10
+      testB: ((testBPrice - basePrice) / basePrice) * 100  // Will be +10
     };
   };
 
