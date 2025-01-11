@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -8,9 +10,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -40,6 +39,49 @@ type Product = {
     compare_at_price: string | null;
   }[];
 };
+
+const mockProducts: Product[] = [
+  {
+    id: 1,
+    title: "Sample Product 1",
+    price: "$49.99",
+    testWinner: "Control",
+    variants: [
+      {
+        id: 11,
+        title: "Small",
+        price: "$49.99",
+        compare_at_price: "$59.99"
+      },
+      {
+        id: 12,
+        title: "Medium",
+        price: "$54.99",
+        compare_at_price: "$64.99"
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Sample Product 2",
+    price: "$29.99",
+    testWinner: "Test A",
+    variants: [
+      {
+        id: 21,
+        title: "Red",
+        price: "$29.99",
+        compare_at_price: "$39.99"
+      },
+      {
+        id: 22,
+        title: "Blue",
+        price: "$29.99",
+        compare_at_price: "$39.99"
+      }
+    ]
+  }
+];
 
 const generateExperimentData = (product: Product): ExperimentMetric[] => [
   {
@@ -122,39 +164,10 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
   },
 ];
 
-const defaultProduct = {
-  id: 1,
-  title: "Default Product",
-  price: "$49.99",
-  testWinner: "Control" as const,
-  variants: []
-};
-
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState<Product>(defaultProduct);
-
-  const { data: products } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const response = await fetch("https://scentiment.com/products.json");
-      const data = await response.json();
-      return data.products.map((p: any) => ({
-        id: p.id,
-        title: p.title,
-        price: p.variants[0]?.price ? `$${Number(p.variants[0].price).toFixed(2)}` : "$0.00",
-        testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B",
-        variants: p.variants.map((v: any) => ({
-          id: v.id,
-          title: v.title,
-          price: v.price ? `$${Number(v.price).toFixed(2)}` : "$0.00",
-          compare_at_price: v.compare_at_price ? `$${Number(v.compare_at_price).toFixed(2)}` : null
-        }))
-      }));
-    },
-    initialData: [defaultProduct]
-  });
+  const [selectedProduct, setSelectedProduct] = useState<Product>(mockProducts[0]);
 
   const experimentData = generateExperimentData(selectedProduct);
 
@@ -205,7 +218,6 @@ export default function ExperimentDetails() {
         <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
       </div>
 
-      {/* Add Metric Cards */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         <MetricCard
           title="Overall Change"
@@ -231,7 +243,7 @@ export default function ExperimentDetails() {
             <div>Winner</div>
           </div>
           <Accordion type="single" collapsible>
-            {products?.map((product: Product) => (
+            {mockProducts.map((product: Product) => (
               <AccordionItem key={product.id} value={product.id.toString()}>
                 <AccordionTrigger 
                   className={`px-4 hover:no-underline ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
@@ -274,7 +286,6 @@ export default function ExperimentDetails() {
           </Accordion>
         </div>
 
-        {/* Experiment Details Table */}
         <div className="rounded-md border">
           <Table>
             <TableHeader>
