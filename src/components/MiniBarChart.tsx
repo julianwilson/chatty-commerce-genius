@@ -38,15 +38,14 @@ export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const value = payload[0].value as number;
-                  const formattedValue = value >= 0 ? `+${value}%` : `${value}%`;
                   return (
                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                       <div className="grid grid-cols-2 gap-2">
                         <div className="text-[0.70rem] text-muted-foreground">
                           {payload[0].payload.name}
                         </div>
-                        <div className={`text-[0.70rem] font-bold ${value >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {formattedValue}
+                        <div className="text-[0.70rem] font-bold">
+                          {value.toFixed(1)}%
                         </div>
                       </div>
                     </div>
@@ -61,7 +60,6 @@ export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
     );
   }
 
-  // Fallback to original sales data chart if no test data is provided
   return (
     <div className="h-10 w-24">
       <ResponsiveContainer width="100%" height="100%">
