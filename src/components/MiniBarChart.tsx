@@ -42,7 +42,7 @@ export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                       <div className="grid grid-cols-2 gap-2">
                         <div className="text-[0.70rem] text-muted-foreground">
-                          {payload[0].payload.name}
+                          % of Sales
                         </div>
                         <div className="text-[0.70rem] font-bold">
                           {value.toFixed(1)}%
