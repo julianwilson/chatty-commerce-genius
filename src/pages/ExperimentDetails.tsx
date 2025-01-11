@@ -403,7 +403,7 @@ export default function ExperimentDetails() {
                                 Slash Price: {variant.compare_at_price || "-"}
                               </p>
                             </div>
-                            <MiniBarChart testData={getTestSalesPercentages(product)} />
+                            <MiniBarChart testData={getTestSalesPercentages(product)} winner={product.testWinner} />
                           </div>
                         </div>
                       ))}

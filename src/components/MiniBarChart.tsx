@@ -14,14 +14,30 @@ interface MiniBarChartProps {
     testA: number;
     testB: number;
   };
+  winner?: "Control" | "Test A" | "Test B";
 }
 
-export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
+export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
   if (testData) {
+    // Adjust values based on winner
+    const getAdjustedData = () => {
+      if (!winner) return testData;
+
+      const highestValue = 100;
+      const otherValues = 65; // Lower percentage for non-winners
+
+      return {
+        control: winner === "Control" ? highestValue : otherValues,
+        testA: winner === "Test A" ? highestValue : otherValues,
+        testB: winner === "Test B" ? highestValue : otherValues,
+      };
+    };
+
+    const adjustedData = getAdjustedData();
     const transformedData = [
-      { name: "Control", value: testData.control },
-      { name: "Test A", value: testData.testA },
-      { name: "Test B", value: testData.testB },
+      { name: "Control", value: adjustedData.control },
+      { name: "Test A", value: adjustedData.testA },
+      { name: "Test B", value: adjustedData.testB },
     ];
 
     return (
