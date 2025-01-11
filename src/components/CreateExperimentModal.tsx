@@ -83,14 +83,7 @@ export function CreateExperimentModal({ open, onClose }: CreateExperimentModalPr
     },
   });
 
-  const { data: products } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const response = await fetch("https://scentiment.com/products.json");
-      const data = await response.json();
-      return data.products as Product[];
-    },
-  });
+  const selectedType = form.watch("type");
 
   const onSubmit = (values: FormValues) => {
     console.log("Form submitted:", values);
@@ -145,38 +138,25 @@ export function CreateExperimentModal({ open, onClose }: CreateExperimentModalPr
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="products"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Products</FormLabel>
-                    <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-md p-2">
-                      {products?.map((product) => (
-                        <div key={product.id} className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id={`product-${product.id}`}
-                            checked={selectedProducts.includes(product.id)}
-                            onChange={(e) => {
-                              const newSelected = e.target.checked
-                                ? [...selectedProducts, product.id]
-                                : selectedProducts.filter((id) => id !== product.id);
-                              setSelectedProducts(newSelected);
-                              field.onChange(newSelected);
-                            }}
-                            className="rounded border-gray-300"
-                          />
-                          <label htmlFor={`product-${product.id}`} className="text-sm">
-                            {product.title}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!selectedType}
+                  onClick={() => console.log("Add Products clicked")}
+                >
+                  Add Products
+                </Button>
+                <span className="text-sm text-muted-foreground">or</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!selectedType}
+                  onClick={() => console.log("Add Collection clicked")}
+                >
+                  Add Collection
+                </Button>
+              </div>
 
               <FormField
                 control={form.control}
