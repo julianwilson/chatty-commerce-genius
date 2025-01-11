@@ -276,6 +276,18 @@ export default function ExperimentDetails() {
     }
   };
 
+  const getTestPriceChanges = (product: Product) => {
+    const basePrice = parseFloat(product.price.replace("$", ""));
+    const testAPrice = basePrice * 0.9; // -10%
+    const testBPrice = basePrice * 1.1; // +10%
+
+    return {
+      control: 0,
+      testA: -10,
+      testB: 10
+    };
+  };
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between gap-4 mb-6">
@@ -387,7 +399,7 @@ export default function ExperimentDetails() {
                                 Slash Price: {variant.compare_at_price || "-"}
                               </p>
                             </div>
-                            <MiniBarChart data={generateMockSalesData(7)} />
+                            <MiniBarChart testData={getTestPriceChanges(product)} />
                           </div>
                         </div>
                       ))}
