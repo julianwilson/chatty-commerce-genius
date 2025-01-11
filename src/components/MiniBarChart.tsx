@@ -25,7 +25,7 @@ export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
     ];
 
     return (
-      <div className="h-10 w-24">
+      <div className="h-16 w-32">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={transformedData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <XAxis
@@ -61,7 +61,7 @@ export const MiniBarChart = ({ data, testData }: MiniBarChartProps) => {
   }
 
   return (
-    <div className="h-10 w-24">
+    <div className="h-16 w-32">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <Bar dataKey="sales" fill="#4f46e5" radius={[2, 2, 0, 0]} />
