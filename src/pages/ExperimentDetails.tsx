@@ -276,18 +276,19 @@ export default function ExperimentDetails() {
     }
   };
 
-  const getTestProfitChanges = (product: Product) => {
-    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
-    if (!profitRow) return { control: 0, testA: 0, testB: 0 };
+  const getTestSalesPercentages = (product: Product) => {
+    const salesRow = experimentData.find(row => row.metric === "Units Sold");
+    if (!salesRow) return { control: 0, testA: 0, testB: 0 };
 
-    const controlProfit = parseFloat(profitRow.control.toString().replace("$", "").replace(",", ""));
-    const testAProfit = parseFloat(profitRow.testA.toString().replace("$", "").replace(",", ""));
-    const testBProfit = parseFloat(profitRow.testB.toString().replace("$", "").replace(",", ""));
+    const controlSales = Number(salesRow.control);
+    const testASales = Number(salesRow.testA);
+    const testBSales = Number(salesRow.testB);
+    const totalSales = controlSales + testASales + testBSales;
 
     return {
-      control: 0, // Control is the baseline
-      testA: ((testAProfit - controlProfit) / controlProfit) * 100,
-      testB: ((testBProfit - controlProfit) / controlProfit) * 100
+      control: (controlSales / totalSales) * 100,
+      testA: (testASales / totalSales) * 100,
+      testB: (testBSales / totalSales) * 100
     };
   };
 
@@ -402,7 +403,7 @@ export default function ExperimentDetails() {
                                 Slash Price: {variant.compare_at_price || "-"}
                               </p>
                             </div>
-                            <MiniBarChart testData={getTestProfitChanges(product)} />
+                            <MiniBarChart testData={getTestSalesPercentages(product)} />
                           </div>
                         </div>
                       ))}
