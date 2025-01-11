@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { CreateExperimentModal } from "@/components/CreateExperimentModal";
 
 const experimentStatuses = ["Draft", "Running", "Paused", "Completed"] as const;
 
@@ -121,6 +122,11 @@ export default function Experiments() {
           </Table>
         </div>
       </div>
+
+      <CreateExperimentModal 
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   );
 }
