@@ -7,6 +7,7 @@ import {
   Settings,
   Users,
   FlaskConical,
+  TrendingUp,
 } from "lucide-react";
 import {
   Sidebar,
@@ -24,6 +25,7 @@ const items = [
   { title: "Chat with Jeff", url: "/chat", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
   { title: "Calendar", url: "/calendar", icon: Calendar },
+  { title: "Sales Plan", url: "/sales-plan", icon: TrendingUp },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
   { title: "Collections", url: "/collections", icon: Users },
