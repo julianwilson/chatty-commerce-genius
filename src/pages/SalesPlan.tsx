@@ -7,6 +7,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
+import { useState } from "react";
 
 const SalesPlan = () => {
   const collections = [
@@ -62,11 +71,41 @@ const SalesPlan = () => {
     },
   ];
 
+  const [visibleCollections, setVisibleCollections] = useState<string[]>(
+    collections.map(c => c.name)
+  );
+
+  const toggleCollection = (collectionName: string) => {
+    setVisibleCollections(current =>
+      current.includes(collectionName)
+        ? current.filter(name => name !== collectionName)
+        : [...current, collectionName]
+    );
+  };
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>Collection Performance</CardTitle>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="ml-auto">
+                <Settings2 className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-white">
+              {collections.map((collection) => (
+                <DropdownMenuCheckboxItem
+                  key={collection.name}
+                  checked={visibleCollections.includes(collection.name)}
+                  onCheckedChange={() => toggleCollection(collection.name)}
+                >
+                  {collection.name}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </CardHeader>
         <CardContent>
           <Table>
@@ -83,7 +122,9 @@ const SalesPlan = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {collections.map((collection) => (
+              {collections
+                .filter(collection => visibleCollections.includes(collection.name))
+                .map((collection) => (
                 <TableRow key={collection.name}>
                   <TableCell>{collection.name}</TableCell>
                   <TableCell>{collection.salesPercentage}%</TableCell>
