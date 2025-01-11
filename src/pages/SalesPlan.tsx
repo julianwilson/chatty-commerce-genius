@@ -17,7 +17,8 @@ const SalesPlan = () => {
       percentToGoal: 85,
       totalUnits: 25000,
       avgUnitRetail: 350,
-      products: 120 
+      products: 120,
+      sessions: 145000
     },
     { 
       name: "Jeans", 
@@ -26,7 +27,8 @@ const SalesPlan = () => {
       percentToGoal: 75,
       totalUnits: 15000,
       avgUnitRetail: 416,
-      products: 80 
+      products: 80,
+      sessions: 98000
     },
     { 
       name: "Tops", 
@@ -35,7 +37,8 @@ const SalesPlan = () => {
       percentToGoal: 65,
       totalUnits: 20000,
       avgUnitRetail: 250,
-      products: 150 
+      products: 150,
+      sessions: 125000
     },
     { 
       name: "Accessories", 
@@ -44,7 +47,8 @@ const SalesPlan = () => {
       percentToGoal: 55,
       totalUnits: 12500,
       avgUnitRetail: 300,
-      products: 200 
+      products: 200,
+      sessions: 85000
     },
     { 
       name: "Shoes", 
@@ -53,7 +57,8 @@ const SalesPlan = () => {
       percentToGoal: 45,
       totalUnits: 2500,
       avgUnitRetail: 500,
-      products: 50 
+      products: 50,
+      sessions: 45000
     },
   ];
 
@@ -74,6 +79,7 @@ const SalesPlan = () => {
                 <TableHead>Total Units</TableHead>
                 <TableHead>Avg. Unit Retail</TableHead>
                 <TableHead># of Products</TableHead>
+                <TableHead>Sessions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,6 +92,7 @@ const SalesPlan = () => {
                   <TableCell>{collection.totalUnits.toLocaleString()}</TableCell>
                   <TableCell>${collection.avgUnitRetail}</TableCell>
                   <TableCell>{collection.products}</TableCell>
+                  <TableCell>{collection.sessions.toLocaleString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
