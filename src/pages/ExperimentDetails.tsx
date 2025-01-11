@@ -16,6 +16,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { generateMockSalesData } from "@/lib/mockData";
 import { MetricCard } from "@/components/MetricCard";
@@ -168,6 +178,7 @@ export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<Product>(mockProducts[0]);
+  const [showPublishDialog, setShowPublishDialog] = useState(false);
 
   const experimentData = generateExperimentData(selectedProduct);
 
@@ -205,17 +216,27 @@ export default function ExperimentDetails() {
 
   const highestProfitColumns = getHighestProfitColumn();
 
+  const handlePublishChanges = () => {
+    console.log("Publishing winning changes");
+    setShowPublishDialog(false);
+  };
+
   return (
     <div className="p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => navigate('/experiments')}
-        >
-          <ArrowLeft className="h-4 w-4" />
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => navigate('/experiments')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
+        </div>
+        <Button onClick={() => setShowPublishDialog(true)}>
+          Publish All Winning Changes
         </Button>
-        <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
@@ -321,6 +342,23 @@ export default function ExperimentDetails() {
           </Table>
         </div>
       </div>
+
+      <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will publish all winning changes from this experiment to your live store. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handlePublishChanges}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
