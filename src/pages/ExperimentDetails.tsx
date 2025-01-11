@@ -291,7 +291,6 @@ export default function ExperimentDetails() {
         </div>
         <div className="flex gap-2">
           <Button 
-            variant="outline"
             onClick={() => {
               setPublishMode('selected');
               setShowPublishDialog(true);
