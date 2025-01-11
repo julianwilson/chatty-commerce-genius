@@ -276,16 +276,18 @@ export default function ExperimentDetails() {
     }
   };
 
-  const getTestPriceChanges = (product: Product) => {
-    const basePrice = parseFloat(product.price.replace("$", ""));
-    const testAPrice = basePrice * 0.9; // -10%
-    const testBPrice = basePrice * 1.1; // +10%
+  const getTestProfitChanges = (product: Product) => {
+    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
+    if (!profitRow) return { control: 0, testA: 0, testB: 0 };
 
-    // Calculate percentage changes relative to control
+    const controlProfit = parseFloat(profitRow.control.toString().replace("$", "").replace(",", ""));
+    const testAProfit = parseFloat(profitRow.testA.toString().replace("$", "").replace(",", ""));
+    const testBProfit = parseFloat(profitRow.testB.toString().replace("$", "").replace(",", ""));
+
     return {
-      control: 0, // Control is always the baseline (0%)
-      testA: ((testAPrice - basePrice) / basePrice) * 100, // Will be -10
-      testB: ((testBPrice - basePrice) / basePrice) * 100  // Will be +10
+      control: 0, // Control is the baseline
+      testA: ((testAProfit - controlProfit) / controlProfit) * 100,
+      testB: ((testBProfit - controlProfit) / controlProfit) * 100
     };
   };
 
@@ -400,7 +402,7 @@ export default function ExperimentDetails() {
                                 Slash Price: {variant.compare_at_price || "-"}
                               </p>
                             </div>
-                            <MiniBarChart testData={getTestPriceChanges(product)} />
+                            <MiniBarChart testData={getTestProfitChanges(product)} />
                           </div>
                         </div>
                       ))}
