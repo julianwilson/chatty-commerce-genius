@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -30,6 +31,7 @@ import {
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { generateMockSalesData } from "@/lib/mockData";
 import { MetricCard } from "@/components/MetricCard";
+import { useToast } from "@/components/ui/use-toast";
 
 type ExperimentMetric = {
   metric: string;
@@ -50,49 +52,6 @@ type Product = {
     compare_at_price: string | null;
   }[];
 };
-
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    title: "Sample Product 1",
-    price: "$49.99",
-    testWinner: "Control",
-    variants: [
-      {
-        id: 11,
-        title: "Small",
-        price: "$49.99",
-        compare_at_price: "$59.99"
-      },
-      {
-        id: 12,
-        title: "Medium",
-        price: "$54.99",
-        compare_at_price: "$64.99"
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: "Sample Product 2",
-    price: "$29.99",
-    testWinner: "Test A",
-    variants: [
-      {
-        id: 21,
-        title: "Red",
-        price: "$29.99",
-        compare_at_price: "$39.99"
-      },
-      {
-        id: 22,
-        title: "Blue",
-        price: "$29.99",
-        compare_at_price: "$39.99"
-      }
-    ]
-  }
-];
 
 const generateExperimentData = (product: Product): ExperimentMetric[] => [
   {
@@ -178,13 +137,50 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState<Product>(mockProducts[0]);
+  const { toast } = useToast();
+  const [mockProducts, setMockProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [publishMode, setPublishMode] = useState<'all' | 'selected'>('all');
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const experimentData = generateExperimentData(selectedProduct);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://scentiment.com/products.json');
+        const scentimentProducts = response.data.products.slice(0, 5).map((product: any) => ({
+          id: product.id,
+          title: product.title,
+          price: `$${product.variants[0]?.price || '0.00'}`,
+          testWinner: ["Control", "Test A", "Test B"][Math.floor(Math.random() * 3)] as "Control" | "Test A" | "Test B",
+          variants: product.variants.map((variant: any) => ({
+            id: variant.id,
+            title: variant.title,
+            price: `$${variant.price}`,
+            compare_at_price: variant.compare_at_price ? `$${variant.compare_at_price}` : null
+          }))
+        }));
+        
+        setMockProducts(scentimentProducts);
+        setSelectedProduct(scentimentProducts[0]);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch products. Using fallback data.",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [toast]);
+
+  const experimentData = selectedProduct ? generateExperimentData(selectedProduct) : [];
 
   const getValueColor = (value: string | number, metric: string) => {
     if (metric === "% of Traffic") return "";
@@ -291,6 +287,14 @@ export default function ExperimentDetails() {
       testB: (testBSales / totalSales) * 100
     };
   };
+
+  if (loading) {
+    return (
+      <div className="p-8 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8">
