@@ -230,19 +230,50 @@ export default function ExperimentDetails() {
   };
 
   const handleProductSelect = (productId: number) => {
-    setSelectedProducts(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
+    const product = mockProducts.find(p => p.id === productId);
+    const variantIds = product?.variants.map(v => v.id) || [];
+    
+    setSelectedProducts(prev => {
+      if (prev.includes(productId)) {
+        // Unselect product and its variants
+        setSelectedVariants(prev => prev.filter(id => !variantIds.includes(id)));
+        return prev.filter(id => id !== productId);
+      } else {
+        // Select product and its variants
+        setSelectedVariants(prev => [...new Set([...prev, ...variantIds])]);
+        return [...prev, productId];
+      }
+    });
   };
 
-  const handleVariantSelect = (variantId: number) => {
-    setSelectedVariants(prev => 
-      prev.includes(variantId) 
-        ? prev.filter(id => id !== variantId)
-        : [...prev, variantId]
-    );
+  const handleVariantSelect = (variantId: number, productId: number) => {
+    setSelectedVariants(prev => {
+      if (prev.includes(variantId)) {
+        const newVariants = prev.filter(id => id !== variantId);
+        // If all variants of a product are unselected, unselect the product too
+        const product = mockProducts.find(p => p.id === productId);
+        if (product && !product.variants.some(v => newVariants.includes(v.id))) {
+          setSelectedProducts(prev => prev.filter(id => id !== productId));
+        }
+        return newVariants;
+      } else {
+        return [...prev, variantId];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProducts.length === mockProducts.length) {
+      // Unselect all
+      setSelectedProducts([]);
+      setSelectedVariants([]);
+    } else {
+      // Select all products and their variants
+      const allProductIds = mockProducts.map(p => p.id);
+      const allVariantIds = mockProducts.flatMap(p => p.variants.map(v => v.id));
+      setSelectedProducts(allProductIds);
+      setSelectedVariants(allVariantIds);
+    }
   };
 
   return (
@@ -298,18 +329,24 @@ export default function ExperimentDetails() {
       <div className="grid grid-cols-[400px,1fr] gap-6">
         <div className="rounded-md border">
           <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
-            <div>Product</div>
+            <div className="flex items-center gap-2">
+              <Checkbox 
+                checked={selectedProducts.length === mockProducts.length}
+                onCheckedChange={handleSelectAll}
+              />
+              Product
+            </div>
             <div>Price</div>
             <div>Winner</div>
           </div>
           <Accordion type="single" collapsible>
             {mockProducts.map((product: Product) => (
               <AccordionItem key={product.id} value={product.id.toString()}>
-                <AccordionTrigger 
-                  className={`px-4 hover:no-underline ${selectedProduct.id === product.id ? 'bg-muted' : ''}`}
-                  onClick={() => setSelectedProduct(product)}
-                >
-                  <div className="grid grid-cols-3 w-full text-sm">
+                <div className="px-4 hover:no-underline">
+                  <div 
+                    className="grid grid-cols-3 w-full text-sm py-3 cursor-pointer"
+                    onClick={() => setSelectedProduct(product)}
+                  >
                     <div className="font-medium flex items-center gap-2">
                       <Checkbox 
                         checked={selectedProducts.includes(product.id)}
@@ -321,7 +358,7 @@ export default function ExperimentDetails() {
                     <div>{product.price}</div>
                     <div>{product.testWinner}</div>
                   </div>
-                </AccordionTrigger>
+                </div>
                 <AccordionContent>
                   <div className="px-4 py-2 space-y-2">
                     <div className="grid grid-cols-1 gap-2">
@@ -336,7 +373,7 @@ export default function ExperimentDetails() {
                               <div className="flex items-center gap-2">
                                 <Checkbox 
                                   checked={selectedVariants.includes(variant.id)}
-                                  onCheckedChange={() => handleVariantSelect(variant.id)}
+                                  onCheckedChange={() => handleVariantSelect(variant.id, product.id)}
                                   onClick={(e) => e.stopPropagation()}
                                 />
                                 <p className="font-medium">{variant.title}</p>
