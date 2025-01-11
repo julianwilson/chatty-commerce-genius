@@ -18,6 +18,7 @@ import Chat from "./pages/Chat";
 import Experiments from "./pages/Experiments";
 import ExperimentDetails from "./pages/ExperimentDetails";
 import SalesPlan from "./pages/SalesPlan";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
                   <Route path="/experiments" element={<Experiments />} />
                   <Route path="/experiments/:id" element={<ExperimentDetails />} />
                   <Route path="/sales-plan" element={<SalesPlan />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Routes>
               </div>
             </main>
