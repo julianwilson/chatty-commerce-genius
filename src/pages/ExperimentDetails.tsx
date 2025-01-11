@@ -347,7 +347,7 @@ export default function ExperimentDetails() {
       
       <div className="grid grid-cols-[400px,1fr] gap-6">
         <div className="rounded-md border">
-          <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
+          <div className="grid grid-cols-2 w-full text-sm p-3 font-medium bg-muted">
             <div className="flex items-center gap-2">
               <Checkbox 
                 checked={selectedProducts.length === mockProducts.length}
@@ -355,15 +355,14 @@ export default function ExperimentDetails() {
               />
               Product
             </div>
-            <div>Price</div>
-            <div>Winner</div>
+            <div>Overall Winner</div>
           </div>
           <Accordion type="single" collapsible>
             {mockProducts.map((product: Product) => (
               <AccordionItem key={product.id} value={product.id.toString()}>
                 <AccordionTrigger className="px-4 hover:no-underline">
                   <div 
-                    className="grid grid-cols-3 w-full text-sm"
+                    className="grid grid-cols-2 w-full text-sm"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedProduct(product);
@@ -377,7 +376,6 @@ export default function ExperimentDetails() {
                       />
                       {product.title}
                     </div>
-                    <div>{product.price}</div>
                     <div>{product.testWinner}</div>
                   </div>
                 </AccordionTrigger>
