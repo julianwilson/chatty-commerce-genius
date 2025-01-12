@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Switch } from "@/components/ui/switch";
 import {
   Popover,
   PopoverContent,
@@ -28,6 +27,7 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const promotionTypes = [
   "Sitewide Markdown Sale",
@@ -56,7 +56,7 @@ const formSchema = z.object({
   type: z.enum(promotionTypes),
   priceAdjustmentType: z.enum(["Lower by", "Increase By"]),
   priceAdjustmentPercentage: z.number().min(0).max(100),
-  changeSlashPriceOnly: z.boolean().default(false),
+  priceUpdateOptions: z.array(z.enum(["Slash Price", "Update", "Only Update"])).default([]),
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
@@ -74,7 +74,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
     defaultValues: {
       priceAdjustmentType: "Lower by",
       priceAdjustmentPercentage: 10,
-      changeSlashPriceOnly: false,
+      priceUpdateOptions: ["Slash Price"],
       timezone: "America/New_York",
       startDateTime: new Date(),
       endDateTime: new Date(),
@@ -175,20 +175,29 @@ export function SetupStep({ onNext }: SetupStepProps) {
 
         <FormField
           control={form.control}
-          name="changeSlashPriceOnly"
+          name="priceUpdateOptions"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-gray-50">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">
-                  Change Slash Price Only
-                </FormLabel>
-              </div>
+            <FormItem className="space-y-3">
+              <FormLabel>Price Update Options</FormLabel>
               <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+                <ToggleGroup
+                  type="multiple"
+                  className="justify-start"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <ToggleGroupItem value="Slash Price" className="bg-gray-50">
+                    Slash Price
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="Update" className="bg-gray-50">
+                    Update
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="Only Update" className="bg-gray-50">
+                    Only Update
+                  </ToggleGroupItem>
+                </ToggleGroup>
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
