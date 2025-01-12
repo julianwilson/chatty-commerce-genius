@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Bot } from "lucide-react";
+import { CalendarIcon, Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { generatePromotionName } from "@/utils/promotionUtils";
@@ -163,7 +163,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
             onClick={handleAISuggestion}
             className="h-10 w-10"
           >
-            <Bot className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
           </Button>
         </div>
 
