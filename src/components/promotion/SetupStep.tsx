@@ -19,14 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Robot } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { generatePromotionName } from "@/utils/promotionUtils";
+import { useToast } from "@/components/ui/use-toast";
 
 const promotionTypes = [
   "Sitewide Markdown Sale",
@@ -74,6 +72,7 @@ interface SetupStepProps {
 }
 
 export function SetupStep({ onNext }: SetupStepProps) {
+  const { toast } = useToast();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,6 +85,38 @@ export function SetupStep({ onNext }: SetupStepProps) {
     },
   });
 
+  const handleAISuggestion = async () => {
+    const formValues = form.getValues();
+    if (!localStorage.getItem('PERPLEXITY_API_KEY')) {
+      const apiKey = prompt('Please enter your Perplexity API key:');
+      if (apiKey) {
+        localStorage.setItem('PERPLEXITY_API_KEY', apiKey);
+      } else {
+        toast({
+          title: "API Key Required",
+          description: "Please provide a Perplexity API key to use the AI suggestion feature.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    const suggestedName = await generatePromotionName(formValues);
+    if (suggestedName) {
+      form.setValue('name', suggestedName);
+      toast({
+        title: "Name Generated",
+        description: "AI has suggested a new promotion name.",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to generate a promotion name. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const onSubmit = (values: FormValues) => {
     console.log("Setup values:", values);
     onNext();
@@ -94,19 +125,30 @@ export function SetupStep({ onNext }: SetupStepProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Promotion Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter promotion name" {...field} className="bg-gray-50" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex items-end gap-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Promotion Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter promotion name" {...field} className="bg-gray-50" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={handleAISuggestion}
+            className="h-10 w-10"
+          >
+            <Robot className="h-4 w-4" />
+          </Button>
+        </div>
 
         <FormField
           control={form.control}
