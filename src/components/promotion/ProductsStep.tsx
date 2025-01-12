@@ -11,6 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface ProductsStepProps {
@@ -18,9 +25,22 @@ interface ProductsStepProps {
   onBack: () => void;
 }
 
+interface PriceEditorState {
+  variantId: number | null;
+  column: "testA" | "control" | "testB" | null;
+  price: string;
+  compareAtPrice: string;
+}
+
 export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [priceEditor, setPriceEditor] = useState<PriceEditorState>({
+    variantId: null,
+    column: null,
+    price: "",
+    compareAtPrice: "",
+  });
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -45,6 +65,38 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
         ? current.filter((id) => id !== productId)
         : [...current, productId]
     );
+  };
+
+  const openPriceEditor = (variantId: number, column: "testA" | "control" | "testB", currentPrice: string, currentCompareAtPrice: string = "") => {
+    setPriceEditor({
+      variantId,
+      column,
+      price: currentPrice,
+      compareAtPrice: currentCompareAtPrice,
+    });
+  };
+
+  const closePriceEditor = () => {
+    setPriceEditor({
+      variantId: null,
+      column: null,
+      price: "",
+      compareAtPrice: "",
+    });
+  };
+
+  const handlePriceChange = (value: string) => {
+    setPriceEditor((prev) => ({
+      ...prev,
+      price: value,
+    }));
+  };
+
+  const handleCompareAtPriceChange = (value: string) => {
+    setPriceEditor((prev) => ({
+      ...prev,
+      compareAtPrice: value,
+    }));
   };
 
   return (
@@ -109,13 +161,43 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
                               <TableRow key={variant.id}>
                                 <TableCell>{variant.title}</TableCell>
                                 <TableCell>
-                                  ${Number(variant.price).toFixed(2)}
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => openPriceEditor(variant.id, "testA", variant.price, variant.compare_at_price || "")}
+                                  >
+                                    ${Number(variant.price).toFixed(2)}
+                                    {variant.compare_at_price && (
+                                      <span className="ml-2 text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </Button>
                                 </TableCell>
                                 <TableCell>
-                                  ${Number(variant.price).toFixed(2)}
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => openPriceEditor(variant.id, "control", variant.price, variant.compare_at_price || "")}
+                                  >
+                                    ${Number(variant.price).toFixed(2)}
+                                    {variant.compare_at_price && (
+                                      <span className="ml-2 text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </Button>
                                 </TableCell>
                                 <TableCell>
-                                  ${Number(variant.price).toFixed(2)}
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => openPriceEditor(variant.id, "testB", variant.price, variant.compare_at_price || "")}
+                                  >
+                                    ${Number(variant.price).toFixed(2)}
+                                    {variant.compare_at_price && (
+                                      <span className="ml-2 text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </Button>
                                 </TableCell>
                               </TableRow>
                             ))}
@@ -139,6 +221,42 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
           Next
         </Button>
       </div>
+
+      <Dialog open={priceEditor.variantId !== null} onOpenChange={() => closePriceEditor()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Price</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="price" className="text-sm font-medium">
+                Price
+              </label>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                value={priceEditor.price}
+                onChange={(e) => handlePriceChange(e.target.value)}
+                placeholder="Enter price"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="compareAtPrice" className="text-sm font-medium">
+                Compare at Price
+              </label>
+              <Input
+                id="compareAtPrice"
+                type="number"
+                step="0.01"
+                value={priceEditor.compareAtPrice}
+                onChange={(e) => handleCompareAtPriceChange(e.target.value)}
+                placeholder="Enter compare at price"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
