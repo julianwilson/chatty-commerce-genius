@@ -18,11 +18,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductsStepProps {
   onNext: () => void;
   onBack: () => void;
+}
+
+interface FilterRule {
+  id: string;
+  field: string;
+  operator: string;
+  value: string;
 }
 
 interface PriceEditorState {
@@ -32,9 +46,24 @@ interface PriceEditorState {
   compareAtPrice: string;
 }
 
+const FIELD_OPTIONS = [
+  { value: "collection", label: "Collection" },
+  { value: "productTitle", label: "Product Title" },
+  { value: "productPrice", label: "Product Price" },
+  { value: "productTags", label: "Product Tags" },
+];
+
+const OPERATOR_OPTIONS = [
+  { value: "contains", label: "Contains" },
+  { value: "doesNotContain", label: "Does not contain" },
+];
+
 export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [filterRules, setFilterRules] = useState<FilterRule[]>([
+    { id: "1", field: "", operator: "", value: "" },
+  ]);
   const [priceEditor, setPriceEditor] = useState<PriceEditorState>({
     variantId: null,
     column: null,
@@ -50,6 +79,32 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
       return data.products as Product[];
     },
   });
+
+  const addFilterRule = () => {
+    const newRule: FilterRule = {
+      id: Date.now().toString(),
+      field: "",
+      operator: "",
+      value: "",
+    };
+    setFilterRules([...filterRules, newRule]);
+  };
+
+  const removeFilterRule = (id: string) => {
+    setFilterRules(filterRules.filter((rule) => rule.id !== id));
+  };
+
+  const updateFilterRule = (
+    id: string,
+    field: keyof FilterRule,
+    value: string
+  ) => {
+    setFilterRules(
+      filterRules.map((rule) =>
+        rule.id === id ? { ...rule, [field]: value } : rule
+      )
+    );
+  };
 
   const handleProductToggle = (productId: number) => {
     setSelectedProducts((current) =>
@@ -67,7 +122,12 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
     );
   };
 
-  const openPriceEditor = (variantId: number, column: "testA" | "control" | "testB", currentPrice: string, currentCompareAtPrice: string = "") => {
+  const openPriceEditor = (
+    variantId: number,
+    column: "testA" | "control" | "testB",
+    currentPrice: string,
+    currentCompareAtPrice: string = ""
+  ) => {
     setPriceEditor({
       variantId,
       column,
@@ -101,6 +161,72 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
 
   return (
     <div className="space-y-6">
+      <div className="space-y-4">
+        {filterRules.map((rule) => (
+          <div key={rule.id} className="flex gap-4 items-center">
+            <Select
+              value={rule.field}
+              onValueChange={(value) => updateFilterRule(rule.id, "field", value)}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Product Rules" />
+              </SelectTrigger>
+              <SelectContent>
+                {FIELD_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={rule.operator}
+              onValueChange={(value) =>
+                updateFilterRule(rule.id, "operator", value)
+              }
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select an option" />
+              </SelectTrigger>
+              <SelectContent>
+                {OPERATOR_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Input
+              placeholder="Value"
+              value={rule.value}
+              onChange={(e) =>
+                updateFilterRule(rule.id, "value", e.target.value)
+              }
+              className="w-[200px]"
+            />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => removeFilterRule(rule.id)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={addFilterRule}
+          className="flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" /> Add Filter
+        </Button>
+      </div>
+
       <ScrollArea className="h-[500px] w-full rounded-md border">
         <Table>
           <TableHeader>
@@ -222,7 +348,10 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
         </Button>
       </div>
 
-      <Dialog open={priceEditor.variantId !== null} onOpenChange={() => closePriceEditor()}>
+      <Dialog
+        open={priceEditor.variantId !== null}
+        onOpenChange={() => closePriceEditor()}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Price</DialogTitle>
