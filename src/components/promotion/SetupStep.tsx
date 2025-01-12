@@ -96,7 +96,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
             <FormItem>
               <FormLabel>Promotion Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter promotion name" {...field} className="bg-gray-50" />
+                <Input placeholder="Enter promotion name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -111,7 +111,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
               <FormLabel>Type</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select promotion type" />
                   </SelectTrigger>
                 </FormControl>
@@ -137,7 +137,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
                 <FormLabel>Price Adjustment</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-gray-50">
+                    <SelectTrigger>
                       <SelectValue placeholder="Select adjustment type" />
                     </SelectTrigger>
                   </FormControl>
@@ -164,7 +164,6 @@ export function SetupStep({ onNext }: SetupStepProps) {
                     max="100"
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
-                    className="bg-gray-50"
                   />
                 </FormControl>
                 <FormMessage />
@@ -177,7 +176,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
           control={form.control}
           name="changeSlashPriceOnly"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-gray-50">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">
                   Change Slash Price Only
@@ -206,7 +205,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -248,7 +247,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -287,7 +286,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
               <FormLabel>Timezone</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                 </FormControl>
