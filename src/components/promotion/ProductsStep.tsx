@@ -39,6 +39,11 @@ interface FilterRule {
   value: string;
 }
 
+interface Collection {
+  id: number;
+  title: string;
+}
+
 interface PriceEditorState {
   variantId: number | null;
   column: "testA" | "control" | "testB" | null;
@@ -77,6 +82,15 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
       const response = await fetch("https://scentiment.com/products.json");
       const data = await response.json();
       return data.products as Product[];
+    },
+  });
+
+  const { data: collections } = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/collections.json");
+      const data = await response.json();
+      return data.collections as Collection[];
     },
   });
 
@@ -159,6 +173,40 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
     }));
   };
 
+  const renderValueInput = (rule: FilterRule) => {
+    if (rule.field === "collection" && rule.operator === "contains") {
+      return (
+        <Select
+          value={rule.value}
+          onValueChange={(value) => updateFilterRule(rule.id, "value", value)}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Select collection" />
+          </SelectTrigger>
+          <SelectContent>
+            {collections?.map((collection) => (
+              <SelectItem 
+                key={collection.id} 
+                value={collection.id.toString()}
+              >
+                {collection.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
+
+    return (
+      <Input
+        placeholder="Value"
+        value={rule.value}
+        onChange={(e) => updateFilterRule(rule.id, "value", e.target.value)}
+        className="w-[200px]"
+      />
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -198,14 +246,7 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
               </SelectContent>
             </Select>
 
-            <Input
-              placeholder="Value"
-              value={rule.value}
-              onChange={(e) =>
-                updateFilterRule(rule.id, "value", e.target.value)
-              }
-              className="w-[200px]"
-            />
+            {renderValueInput(rule)}
 
             <Button
               variant="ghost"
