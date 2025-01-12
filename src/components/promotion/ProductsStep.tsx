@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -109,6 +109,51 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
     setSelectedVariants(current =>
       current.filter(id => id !== variantId)
     );
+  };
+
+  const toggleRow = (productId: number) => {
+    setExpandedRows((current) =>
+      current.includes(productId)
+        ? current.filter((id) => id !== productId)
+        : [...current, productId]
+    );
+  };
+
+  const openPriceEditor = (
+    variantId: number,
+    column: "testA" | "control" | "testB",
+    currentPrice: string,
+    currentCompareAtPrice: string = ""
+  ) => {
+    setPriceEditor({
+      variantId,
+      column,
+      price: currentPrice,
+      compareAtPrice: currentCompareAtPrice,
+    });
+  };
+
+  const closePriceEditor = () => {
+    setPriceEditor({
+      variantId: null,
+      column: null,
+      price: "",
+      compareAtPrice: "",
+    });
+  };
+
+  const handlePriceChange = (value: string) => {
+    setPriceEditor((prev) => ({
+      ...prev,
+      price: value,
+    }));
+  };
+
+  const handleCompareAtPriceChange = (value: string) => {
+    setPriceEditor((prev) => ({
+      ...prev,
+      compareAtPrice: value,
+    }));
   };
 
   const addFilterRule = () => {
