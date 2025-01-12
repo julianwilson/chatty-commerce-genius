@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
+import { ChevronDown, ChevronRight, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -65,6 +65,7 @@ const OPERATOR_OPTIONS = [
 
 export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [filterRules, setFilterRules] = useState<FilterRule[]>([
     { id: "1", field: "", operator: "", value: "" },
@@ -94,6 +95,22 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
     },
   });
 
+  const removeProduct = (productId: number) => {
+    setSelectedProducts((current) =>
+      current.filter((id) => id !== productId)
+    );
+    const productVariants = products?.find(p => p.id === productId)?.variants.map(v => v.id) || [];
+    setSelectedVariants(current => 
+      current.filter(id => !productVariants.includes(id))
+    );
+  };
+
+  const removeVariant = (variantId: number) => {
+    setSelectedVariants(current =>
+      current.filter(id => id !== variantId)
+    );
+  };
+
   const addFilterRule = () => {
     const newRule: FilterRule = {
       id: Date.now().toString(),
@@ -118,57 +135,6 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
         rule.id === id ? { ...rule, [field]: value } : rule
       )
     );
-  };
-
-  const removeProduct = (productId: number) => {
-    setSelectedProducts((current) =>
-      current.filter((id) => id !== productId)
-    );
-  };
-
-  const toggleRow = (productId: number) => {
-    setExpandedRows((current) =>
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId]
-    );
-  };
-
-  const openPriceEditor = (
-    variantId: number,
-    column: "testA" | "control" | "testB",
-    currentPrice: string,
-    currentCompareAtPrice: string = ""
-  ) => {
-    setPriceEditor({
-      variantId,
-      column,
-      price: currentPrice,
-      compareAtPrice: currentCompareAtPrice,
-    });
-  };
-
-  const closePriceEditor = () => {
-    setPriceEditor({
-      variantId: null,
-      column: null,
-      price: "",
-      compareAtPrice: "",
-    });
-  };
-
-  const handlePriceChange = (value: string) => {
-    setPriceEditor((prev) => ({
-      ...prev,
-      price: value,
-    }));
-  };
-
-  const handleCompareAtPriceChange = (value: string) => {
-    setPriceEditor((prev) => ({
-      ...prev,
-      compareAtPrice: value,
-    }));
   };
 
   const renderValueInput = (rule: FilterRule) => {
@@ -312,6 +278,7 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
                         <Table>
                           <TableHeader>
                             <TableRow>
+                              <TableHead className="w-[50px]"></TableHead>
                               <TableHead>Variant</TableHead>
                               <TableHead>Test A</TableHead>
                               <TableHead>Control</TableHead>
@@ -321,6 +288,15 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
                           <TableBody>
                             {product.variants.map((variant) => (
                               <TableRow key={variant.id}>
+                                <TableCell>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeVariant(variant.id)}
+                                  >
+                                    <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
+                                  </Button>
+                                </TableCell>
                                 <TableCell>{variant.title}</TableCell>
                                 <TableCell>
                                   <Button
