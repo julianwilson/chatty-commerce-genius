@@ -120,11 +120,9 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
     );
   };
 
-  const handleProductToggle = (productId: number) => {
+  const removeProduct = (productId: number) => {
     setSelectedProducts((current) =>
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId]
+      current.filter((id) => id !== productId)
     );
   };
 
@@ -296,12 +294,13 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <input
-                      type="checkbox"
-                      checked={selectedProducts.includes(product.id)}
-                      onChange={() => handleProductToggle(product.id)}
-                      className="rounded border-gray-300"
-                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeProduct(product.id)}
+                    >
+                      <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
+                    </Button>
                   </TableCell>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.product_type}</TableCell>
