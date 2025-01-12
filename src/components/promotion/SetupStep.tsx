@@ -58,7 +58,9 @@ const formSchema = z.object({
   priceAdjustmentPercentage: z.number().min(0).max(100),
   changeSlashPriceOnly: z.boolean().default(false),
   startDate: z.date(),
+  startTime: z.string(),
   endDate: z.date(),
+  endTime: z.string(),
   timezone: z.enum(timezones),
 });
 
@@ -77,7 +79,9 @@ export function SetupStep({ onNext }: SetupStepProps) {
       changeSlashPriceOnly: false,
       timezone: "America/New_York",
       startDate: new Date(),
+      startTime: "00:00",
       endDate: new Date(),
+      endTime: "23:59",
     },
   });
 
@@ -96,7 +100,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
             <FormItem>
               <FormLabel>Promotion Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter promotion name" {...field} />
+                <Input placeholder="Enter promotion name" {...field} className="bg-gray-50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -111,7 +115,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
               <FormLabel>Type</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-gray-50">
                     <SelectValue placeholder="Select promotion type" />
                   </SelectTrigger>
                 </FormControl>
@@ -137,7 +141,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
                 <FormLabel>Price Adjustment</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-50">
                       <SelectValue placeholder="Select adjustment type" />
                     </SelectTrigger>
                   </FormControl>
@@ -162,6 +166,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
                     type="number"
                     min="0"
                     max="100"
+                    className="bg-gray-50"
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
@@ -176,7 +181,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
           control={form.control}
           name="changeSlashPriceOnly"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-gray-50">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">
                   Change Slash Price Only
@@ -193,89 +198,129 @@ export function SetupStep({ onNext }: SetupStepProps) {
         />
 
         <div className="flex gap-4">
-          <FormField
-            control={form.control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Start Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date > form.getValues("endDate")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex-1 space-y-4">
+            <FormField
+              control={form.control}
+              name="startDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal bg-gray-50",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date() || date > form.getValues("endDate")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>End Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < form.getValues("startDate")
-                      }
-                      initialFocus
+            <FormField
+              control={form.control}
+              name="startTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="time"
+                      className="bg-gray-50"
+                      {...field}
                     />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex-1 space-y-4">
+            <FormField
+              control={form.control}
+              name="endDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal bg-gray-50",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < form.getValues("startDate")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="endTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="time"
+                      className="bg-gray-50"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <FormField
@@ -286,7 +331,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
               <FormLabel>Timezone</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-gray-50">
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                 </FormControl>
