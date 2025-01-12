@@ -9,6 +9,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
+import CreatePromotion from "./pages/CreatePromotion";
 import PromotionDetails from "./pages/PromotionDetails";
 import Collections from "./pages/Collections";
 import CollectionDetails from "./pages/CollectionDetails";
@@ -41,6 +42,7 @@ const App = () => (
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/promotions" element={<Promotions />} />
+                  <Route path="/promotions/create" element={<CreatePromotion />} />
                   <Route path="/promotions/:id" element={<PromotionDetails />} />
                   <Route path="/collections" element={<Collections />} />
                   <Route path="/collections/:id" element={<CollectionDetails />} />
