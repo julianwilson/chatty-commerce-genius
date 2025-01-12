@@ -276,7 +276,6 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>Product Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Price</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -306,13 +305,10 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
                   </TableCell>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.product_type}</TableCell>
-                  <TableCell>
-                    ${Number(product.variants[0]?.price || 0).toFixed(2)}
-                  </TableCell>
                 </TableRow>
                 {expandedRows.includes(product.id) && (
                   <TableRow>
-                    <TableCell colSpan={5}>
+                    <TableCell colSpan={4}>
                       <div className="p-4 bg-muted/50">
                         <Table>
                           <TableHeader>
