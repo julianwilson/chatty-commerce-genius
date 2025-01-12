@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -62,6 +63,7 @@ const formSchema = z.object({
   collectionId: z.number().optional(),
   priceAdjustmentType: z.enum(priceAdjustmentTypes),
   priceAdjustmentPercentage: z.number().min(0).max(100),
+  changeSlashPriceOnly: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -80,6 +82,7 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
       products: [],
       priceAdjustmentType: "Lower by",
       priceAdjustmentPercentage: 10,
+      changeSlashPriceOnly: false,
     },
   });
 
@@ -118,126 +121,34 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
         <ScrollArea className="h-full max-h-[calc(90vh-80px)] pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Promotion Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter promotion name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select promotion type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {promotionTypes.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {showCollectionSelector && (
               <FormField
                 control={form.control}
-                name="collectionId"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Collection</FormLabel>
-                    <Select 
-                      onValueChange={(value) => field.onChange(Number(value))}
-                      value={field.value?.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select collection" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {collections?.map((collection) => (
-                          <SelectItem 
-                            key={collection.id} 
-                            value={collection.id.toString()}
-                          >
-                            {collection.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Promotion Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter promotion name" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
 
-            <FormField
-              control={form.control}
-              name="products"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Products</FormLabel>
-                  <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-md p-2">
-                    {products?.map((product) => (
-                      <div key={product.id} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id={`product-${product.id}`}
-                          checked={selectedProducts.includes(product.id)}
-                          onChange={(e) => {
-                            const newSelected = e.target.checked
-                              ? [...selectedProducts, product.id]
-                              : selectedProducts.filter((id) => id !== product.id);
-                            setSelectedProducts(newSelected);
-                            field.onChange(newSelected);
-                          }}
-                          className="rounded border-gray-300"
-                        />
-                        <label htmlFor={`product-${product.id}`} className="text-sm">
-                          {product.title}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex gap-4 items-end">
               <FormField
                 control={form.control}
-                name="priceAdjustmentType"
+                name="type"
                 render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Price Adjustment</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select adjustment type" />
+                          <SelectValue placeholder="Select promotion type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {priceAdjustmentTypes.map((type) => (
+                        {promotionTypes.map((type) => (
                           <SelectItem key={type} value={type}>
                             {type}
                           </SelectItem>
@@ -249,117 +160,229 @@ export function CreatePromotionModal({ open, onClose }: CreatePromotionModalProp
                 )}
               />
 
+              {showCollectionSelector && (
+                <FormField
+                  control={form.control}
+                  name="collectionId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Collection</FormLabel>
+                      <Select 
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select collection" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {collections?.map((collection) => (
+                            <SelectItem 
+                              key={collection.id} 
+                              value={collection.id.toString()}
+                            >
+                              {collection.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <FormField
                 control={form.control}
-                name="priceAdjustmentPercentage"
+                name="products"
                 render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Percentage</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
+                  <FormItem>
+                    <FormLabel>Products</FormLabel>
+                    <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-md p-2">
+                      {products?.map((product) => (
+                        <div key={product.id} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`product-${product.id}`}
+                            checked={selectedProducts.includes(product.id)}
+                            onChange={(e) => {
+                              const newSelected = e.target.checked
+                                ? [...selectedProducts, product.id]
+                                : selectedProducts.filter((id) => id !== product.id);
+                              setSelectedProducts(newSelected);
+                              field.onChange(newSelected);
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                          <label htmlFor={`product-${product.id}`} className="text-sm">
+                            {product.title}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Start Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
+              <div className="flex gap-4 items-end">
+                <FormField
+                  control={form.control}
+                  name="priceAdjustmentType"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Price Adjustment</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select adjustment type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {priceAdjustmentTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="priceAdjustmentPercentage"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Percentage</FormLabel>
                       <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="100"
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
                       </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date < new Date()
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <FormField
-              control={form.control}
-              name="endDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>End Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date < new Date() || (form.watch("startDate") && date < form.watch("startDate"))
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Start Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date < new Date()
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" type="button" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit">Create Promotion</Button>
-            </div>
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>End Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date < new Date() || (form.watch("startDate") && date < form.watch("startDate"))
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="changeSlashPriceOnly"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">
+                        Change Slash Price Only
+                      </FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" type="button" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit">Create Promotion</Button>
+              </div>
             </form>
           </Form>
         </ScrollArea>
