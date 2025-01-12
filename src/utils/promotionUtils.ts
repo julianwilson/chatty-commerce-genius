@@ -1,11 +1,13 @@
-export async function generatePromotionName(formData: {
+interface GeneratePromotionNameParams {
   type: string;
   priceAdjustmentType: string;
   priceAdjustmentPercentage: number;
   priceUpdateOption: string;
   startDateTime: Date;
   endDateTime: Date;
-}) {
+}
+
+export async function generatePromotionName(params: GeneratePromotionNameParams) {
   try {
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
@@ -22,11 +24,11 @@ export async function generatePromotionName(formData: {
           },
           {
             role: 'user',
-            content: `Generate a catchy promotion name for a ${formData.type} with the following details:
-              - Price adjustment: ${formData.priceAdjustmentType} ${formData.priceAdjustmentPercentage}%
-              - Price update strategy: ${formData.priceUpdateOption}
-              - Start date: ${formData.startDateTime.toLocaleDateString()}
-              - End date: ${formData.endDateTime.toLocaleDateString()}`
+            content: `Generate a catchy promotion name for a ${params.type} with the following details:
+              - Price adjustment: ${params.priceAdjustmentType} ${params.priceAdjustmentPercentage}%
+              - Price update strategy: ${params.priceUpdateOption}
+              - Start date: ${params.startDateTime.toLocaleDateString()}
+              - End date: ${params.endDateTime.toLocaleDateString()}`
           }
         ],
         temperature: 0.8,

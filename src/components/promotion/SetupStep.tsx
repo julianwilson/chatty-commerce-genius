@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Robot } from "lucide-react";
+import { CalendarIcon, Bot } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { generatePromotionName } from "@/utils/promotionUtils";
@@ -87,6 +87,15 @@ export function SetupStep({ onNext }: SetupStepProps) {
 
   const handleAISuggestion = async () => {
     const formValues = form.getValues();
+    if (!formValues.type || !formValues.priceAdjustmentType || !formValues.priceUpdateOption) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields before generating a name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!localStorage.getItem('PERPLEXITY_API_KEY')) {
       const apiKey = prompt('Please enter your Perplexity API key:');
       if (apiKey) {
@@ -101,7 +110,15 @@ export function SetupStep({ onNext }: SetupStepProps) {
       }
     }
 
-    const suggestedName = await generatePromotionName(formValues);
+    const suggestedName = await generatePromotionName({
+      type: formValues.type,
+      priceAdjustmentType: formValues.priceAdjustmentType,
+      priceAdjustmentPercentage: formValues.priceAdjustmentPercentage,
+      priceUpdateOption: formValues.priceUpdateOption,
+      startDateTime: formValues.startDateTime,
+      endDateTime: formValues.endDateTime,
+    });
+
     if (suggestedName) {
       form.setValue('name', suggestedName);
       toast({
@@ -146,7 +163,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
             onClick={handleAISuggestion}
             className="h-10 w-10"
           >
-            <Robot className="h-4 w-4" />
+            <Bot className="h-4 w-4" />
           </Button>
         </div>
 
