@@ -27,7 +27,6 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const promotionTypes = [
   "Sitewide Markdown Sale",
@@ -51,12 +50,18 @@ const timezones = [
   "America/Puerto_Rico",
 ] as const;
 
+const priceUpdateOptions = [
+  "Update Prices Only",
+  "Update Prices + Slash Prices",
+  "Update Slash Prices Only",
+] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, "Promotion name is required"),
   type: z.enum(promotionTypes),
   priceAdjustmentType: z.enum(["Lower by", "Increase By"]),
   priceAdjustmentPercentage: z.number().min(0).max(100),
-  priceUpdateOptions: z.array(z.enum(["Slash Price", "Update", "Only Update"])).default([]),
+  priceUpdateOption: z.enum(priceUpdateOptions),
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
@@ -74,7 +79,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
     defaultValues: {
       priceAdjustmentType: "Lower by",
       priceAdjustmentPercentage: 10,
-      priceUpdateOptions: ["Slash Price"],
+      priceUpdateOption: "Update Prices Only",
       timezone: "America/New_York",
       startDateTime: new Date(),
       endDateTime: new Date(),
@@ -175,28 +180,24 @@ export function SetupStep({ onNext }: SetupStepProps) {
 
         <FormField
           control={form.control}
-          name="priceUpdateOptions"
+          name="priceUpdateOption"
           render={({ field }) => (
-            <FormItem className="space-y-3">
+            <FormItem>
               <FormLabel>Price Update Options</FormLabel>
-              <FormControl>
-                <ToggleGroup
-                  type="multiple"
-                  className="justify-start"
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <ToggleGroupItem value="Slash Price" className="bg-gray-50">
-                    Slash Price
-                  </ToggleGroupItem>
-                  <ToggleGroupItem value="Update" className="bg-gray-50">
-                    Update
-                  </ToggleGroupItem>
-                  <ToggleGroupItem value="Only Update" className="bg-gray-50">
-                    Only Update
-                  </ToggleGroupItem>
-                </ToggleGroup>
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-gray-50">
+                    <SelectValue placeholder="Select price update option" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {priceUpdateOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
