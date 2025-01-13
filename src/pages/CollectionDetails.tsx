@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { generateMockSalesData } from "@/lib/mockData";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -76,7 +83,10 @@ const CollectionDetails = () => {
   const [topSellersDateRange, setTopSellersDateRange] = useState("30d");
   const [hotNewArrivalsDateRange, setHotNewArrivalsDateRange] = useState("30d");
   const [slowSellersDateRange, setSlowSellersDateRange] = useState("30d");
+  const [salesAnalysisRange, setSalesAnalysisRange] = useState("30d");
+  const [salesPercentageRange, setSalesPercentageRange] = useState("12m");
   const dailySalesData = generateDailySalesData();
+  const monthlySalesData = generateSalesPercentageData();
 
   const { data: collection, isLoading, isError } = useQuery({
     queryKey: ["collection", id],
@@ -113,6 +123,44 @@ const CollectionDetails = () => {
     },
   });
 
+  const getFilteredSalesData = (range: string) => {
+    const now = new Date();
+    let filteredData = [...dailySalesData];
+    
+    switch(range) {
+      case "7d":
+        filteredData = dailySalesData.slice(-7);
+        break;
+      case "14d":
+        filteredData = dailySalesData.slice(-14);
+        break;
+      case "30d":
+        filteredData = dailySalesData;
+        break;
+    }
+    
+    return filteredData;
+  };
+
+  const getFilteredPercentageData = (range: string) => {
+    const now = new Date();
+    let filteredData = [...monthlySalesData];
+    
+    switch(range) {
+      case "3m":
+        filteredData = monthlySalesData.slice(-3);
+        break;
+      case "6m":
+        filteredData = monthlySalesData.slice(-6);
+        break;
+      case "12m":
+        filteredData = monthlySalesData;
+        break;
+    }
+    
+    return filteredData;
+  };
+
   const chartOptions: Highcharts.Options = {
     title: {
       text: ''
@@ -142,22 +190,9 @@ const CollectionDetails = () => {
     series: [{
       type: 'line',
       name: '% of Sales',
-      data: monthlySalesData.map(data => data.salesPercentage),
+      data: getFilteredPercentageData(salesPercentageRange).map(data => data.salesPercentage),
       color: '#10B981'
     }],
-    credits: {
-      enabled: false
-    },
-    tooltip: {
-      formatter: function(this: any): string {
-        return `<b>${this.x}</b><br/>${this.y}%`;
-      }
-    },
-    legend: {
-      itemStyle: {
-        color: 'var(--foreground)'
-      }
-    }
   };
 
   const salesAnalysisOptions: Highcharts.Options = {
@@ -202,31 +237,15 @@ const CollectionDetails = () => {
     series: [{
       name: 'Gross Sales',
       type: 'line',
-      data: dailySalesData.map(data => data.sales),
+      data: getFilteredSalesData(salesAnalysisRange).map(data => data.sales),
       color: '#10B981'
     }, {
       name: 'Units',
       type: 'line',
-      data: dailySalesData.map(data => data.units),
+      data: getFilteredSalesData(salesAnalysisRange).map(data => data.units),
       yAxis: 1,
       color: '#6366F1'
     }],
-    credits: {
-      enabled: false
-    },
-    tooltip: {
-      shared: true,
-      formatter: function(this: any): string {
-        return `<b>${this.x}</b><br/>
-                Gross Sales: $${this.points[0].y}<br/>
-                Units: ${this.points[1].y}`;
-      }
-    },
-    legend: {
-      itemStyle: {
-        color: 'var(--foreground)'
-      }
-    }
   };
 
   if (isLoading) {
@@ -429,11 +448,23 @@ const CollectionDetails = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Collection Sales Analysis</CardTitle>
-          <CardDescription>
-            Last 30 days of sales and units performance
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Collection Sales Analysis</CardTitle>
+            <CardDescription>
+              Sales and units performance
+            </CardDescription>
+          </div>
+          <Select value={salesAnalysisRange} onValueChange={setSalesAnalysisRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="14d">Last 14 days</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+            </SelectContent>
+          </Select>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
@@ -446,11 +477,23 @@ const CollectionDetails = () => {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>% of Sales by Month</CardTitle>
-          <CardDescription>
-            Last 12 months of sales performance
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>% of Sales by Month</CardTitle>
+            <CardDescription>
+              Sales performance over time
+            </CardDescription>
+          </div>
+          <Select value={salesPercentageRange} onValueChange={setSalesPercentageRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="3m">Last 3 months</SelectItem>
+              <SelectItem value="6m">Last 6 months</SelectItem>
+              <SelectItem value="12m">Last 12 months</SelectItem>
+            </SelectContent>
+          </Select>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
