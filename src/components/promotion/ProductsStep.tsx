@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Product } from "@/types/product";
+import { X, Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -244,7 +245,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
               size="icon"
               onClick={() => removeFilterRule(rule.id)}
             >
-              Remove
+              <X className="h-4 w-4" />
             </Button>
           </div>
         ))}
@@ -255,7 +256,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           onClick={addFilterRule}
           className="flex items-center gap-2"
         >
-          Add Filter
+          <Plus className="h-4 w-4" /> Add Filter
         </Button>
       </div>
 
@@ -266,6 +267,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>Product Name</TableHead>
               <TableHead>Type</TableHead>
+              <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -287,6 +289,18 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                   </TableCell>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.product_type}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        // Add your remove product logic here
+                        console.log('Remove product:', product.id);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
                 {expandedRows.includes(product.id) && (
                   <TableRow>
@@ -297,6 +311,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                             <TableRow>
                               <TableHead>Variant</TableHead>
                               <TableHead>New Price</TableHead>
+                              <TableHead className="w-[50px]"></TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -314,6 +329,18 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                                         ${Number(variant.compare_at_price).toFixed(2)}
                                       </span>
                                     )}
+                                  </Button>
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      // Add your remove variant logic here
+                                      console.log('Remove variant:', variant.id);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
                                   </Button>
                                 </TableCell>
                               </TableRow>
