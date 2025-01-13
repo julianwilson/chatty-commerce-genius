@@ -16,6 +16,18 @@ export default function CreatePromotion() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const goToNextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const handleInputClick = () => {
     if (!aiPrompt) {
       setAiPrompt("Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals");
