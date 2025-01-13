@@ -24,6 +24,14 @@ interface TopSellersCardProps {
 export function TopSellersCard({ products, dateRange, onDateRangeChange }: TopSellersCardProps) {
   const navigate = useNavigate();
 
+  const getCompressedImageUrl = (url: string) => {
+    if (!url) return '';
+    const [pathPart, queryPart] = url.split('?');
+    const extension = pathPart.match(/\.[^.]+$/)?.[0] || '';
+    const basePath = pathPart.slice(0, -extension.length);
+    return `${basePath}_200x200${extension}?${queryPart}`;
+  };
+
   if (!products?.length) {
     return (
       <Card className="w-full max-w-2xl mx-auto">
@@ -74,15 +82,15 @@ export function TopSellersCard({ products, dateRange, onDateRangeChange }: TopSe
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {products.map((product) => (
+          {products.slice(0, 5).map((product) => (
             <div
               key={product.id}
               onClick={() => navigate(`/products/${product.id}`)}
               className="flex items-center gap-4 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
             >
-              {product.images[0] && (
+              {product.variants[0]?.src && (
                 <img
-                  src={product.images[0].src}
+                  src={getCompressedImageUrl(product.variants[0].src)}
                   alt={product.title}
                   className="w-12 h-12 object-cover rounded"
                 />

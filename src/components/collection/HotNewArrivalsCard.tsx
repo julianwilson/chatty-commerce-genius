@@ -24,8 +24,16 @@ interface HotNewArrivalsCardProps {
 export function HotNewArrivalsCard({ products, dateRange, onDateRangeChange }: HotNewArrivalsCardProps) {
   const navigate = useNavigate();
 
+  const getCompressedImageUrl = (url: string) => {
+    if (!url) return '';
+    const [pathPart, queryPart] = url.split('?');
+    const extension = pathPart.match(/\.[^.]+$/)?.[0] || '';
+    const basePath = pathPart.slice(0, -extension.length);
+    return `${basePath}_200x200${extension}?${queryPart}`;
+  };
+
   const filteredProducts = products
-    .filter(product => product.images?.[0]?.src)
+    .filter(product => product.variants?.[0]?.src)
     .slice(0, 5);
 
   if (!filteredProducts?.length) {
@@ -85,7 +93,7 @@ export function HotNewArrivalsCard({ products, dateRange, onDateRangeChange }: H
               className="flex items-center gap-4 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
             >
               <img
-                src={product.images[0].src}
+                src={getCompressedImageUrl(product.variants[0].src)}
                 alt={product.title}
                 className="w-12 h-12 object-cover rounded"
               />
