@@ -372,7 +372,10 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onNext} disabled={selectedProducts.length === 0}>
+        <Button 
+          onClick={onNext} 
+          disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
+        >
           Next
         </Button>
       </div>
