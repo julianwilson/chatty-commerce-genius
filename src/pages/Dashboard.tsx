@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 
 // Mock recommendations data
@@ -55,6 +58,18 @@ const activities = [
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [targetRevenue, setTargetRevenue] = useState("25M");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const navigate = useNavigate();
+
+  const handleInputClick = () => {
+    if (!aiPrompt) {
+      setAiPrompt("Setup an A/B test for our Best Sellers collection with a 20% price increase");
+    }
+  };
+
+  const handleAiContinue = () => {
+    navigate('/experiments/create');
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -106,6 +121,34 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
+
+      {/* AI Experiment Card */}
+      <Card className="max-w-[500px] mx-auto">
+        <CardContent className="pt-6">
+          <div className="space-y-6">
+            <div className="space-y-2 text-center">
+              <h2 className="text-3xl font-bold tracking-tight">Let's get started on generating more revenue!</h2>
+              <p className="text-muted-foreground text-lg">
+                Get help from AI and start optimizing in no time.
+              </p>
+            </div>
+
+            <Textarea
+              placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
+              className="min-h-[120px] text-lg p-4"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onClick={handleInputClick}
+            />
+
+            <div className="flex flex-col gap-3 pt-4">
+              <Button size="lg" onClick={handleAiContinue}>
+                Start with AI
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Activity Feed */}
       <Card>
