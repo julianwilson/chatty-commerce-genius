@@ -42,10 +42,39 @@ const generateSalesPercentageData = () => {
 
 const monthlySalesData = generateSalesPercentageData();
 
+// Generate last 30 days of sales and units data
+const generateDailySalesData = () => {
+  const data = [];
+  const currentDate = new Date();
+  
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(currentDate.getDate() - i);
+    
+    const dayMonth = date.toLocaleDateString('en-US', { 
+      month: 'short',
+      day: 'numeric'
+    });
+    
+    // Generate random sales between $1000 and $5000
+    const sales = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+    // Generate random units between 10 and 50
+    const units = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
+    
+    data.push({
+      date: dayMonth,
+      sales,
+      units
+    });
+  }
+  
+  return data;
+};
+
 const CollectionDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const salesData = generateMockSalesData(30);
+  const dailySalesData = generateDailySalesData();
 
   const { data: collection, isLoading, isError } = useQuery({
     queryKey: ["collection", id],
@@ -120,6 +149,75 @@ const CollectionDetails = () => {
     tooltip: {
       formatter: function(this: any): string {
         return `<b>${this.x}</b><br/>${this.y}%`;
+      }
+    },
+    legend: {
+      itemStyle: {
+        color: 'var(--foreground)'
+      }
+    }
+  };
+
+  const salesAnalysisOptions: Highcharts.Options = {
+    title: {
+      text: ''
+    },
+    xAxis: {
+      categories: dailySalesData.map(data => data.date),
+      labels: {
+        style: {
+          color: 'var(--foreground)'
+        }
+      }
+    },
+    yAxis: [{
+      title: {
+        text: 'Gross Sales ($)',
+        style: {
+          color: 'var(--foreground)'
+        }
+      },
+      labels: {
+        format: '${value}',
+        style: {
+          color: 'var(--foreground)'
+        }
+      }
+    }, {
+      title: {
+        text: 'Units Sold',
+        style: {
+          color: 'var(--foreground)'
+        }
+      },
+      opposite: true,
+      labels: {
+        style: {
+          color: 'var(--foreground)'
+        }
+      }
+    }],
+    series: [{
+      name: 'Gross Sales',
+      type: 'line',
+      data: dailySalesData.map(data => data.sales),
+      color: '#10B981'
+    }, {
+      name: 'Units',
+      type: 'line',
+      data: dailySalesData.map(data => data.units),
+      yAxis: 1,
+      color: '#6366F1'
+    }],
+    credits: {
+      enabled: false
+    },
+    tooltip: {
+      shared: true,
+      formatter: function(this: any): string {
+        return `<b>${this.x}</b><br/>
+                Gross Sales: $${this.points[0].y}<br/>
+                Units: ${this.points[1].y}`;
       }
     },
     legend: {
@@ -206,14 +304,14 @@ const CollectionDetails = () => {
         <CardHeader>
           <CardTitle>Collection Sales Analysis</CardTitle>
           <CardDescription>
-            30-day view of collection sales performance
+            Last 30 days of sales and units performance
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
             <HighchartsReact
               highcharts={Highcharts}
-              options={chartOptions}
+              options={salesAnalysisOptions}
             />
           </div>
         </CardContent>
