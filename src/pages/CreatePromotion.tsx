@@ -30,7 +30,7 @@ export default function CreatePromotion() {
 
   const handleInputClick = () => {
     if (!aiPrompt) {
-      setAiPrompt("Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals");
+      setAiPrompt("Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in Best Sellers");
     }
   };
 
