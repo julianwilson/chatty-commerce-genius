@@ -161,7 +161,7 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>New Revenue from Jeff</CardTitle>
+            <CardTitle>New Revenue Generated</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-secondary">$1.25M</div>
