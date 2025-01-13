@@ -13,8 +13,11 @@ import {
 import { generateMockSalesData } from "@/lib/mockData";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { HotNewArrivalsCard } from "@/components/collection/HotNewArrivalsCard";
+import { SlowSellersCard } from "@/components/collection/SlowSellersCard";
+import { TopSellersCard } from "@/components/collection/TopSellersCard";
+import { useState } from "react";
 
-// Generate last 12 months of dates including 2024 and 2025
 const generateSalesPercentageData = () => {
   const data = [];
   const currentDate = new Date();
@@ -74,6 +77,7 @@ const generateDailySalesData = () => {
 const CollectionDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [topSellersDateRange, setTopSellersDateRange] = useState("30d");
   const dailySalesData = generateDailySalesData();
 
   const { data: collection, isLoading, isError } = useQuery({
@@ -269,6 +273,22 @@ const CollectionDetails = () => {
 
   if (!collection) return null;
 
+  // Mock data for the new cards
+  const mockProducts = [
+    {
+      id: 1,
+      title: "Sample Product 1",
+      variants: [{ price: "29.99" }],
+      images: [{ src: "https://via.placeholder.com/150" }],
+    },
+    {
+      id: 2,
+      title: "Sample Product 2",
+      variants: [{ price: "39.99" }],
+      images: [{ src: "https://via.placeholder.com/150" }],
+    },
+  ];
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center gap-4">
@@ -316,6 +336,17 @@ const CollectionDetails = () => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TopSellersCard 
+          products={mockProducts}
+          dateRange={topSellersDateRange}
+          onDateRangeChange={setTopSellersDateRange}
+        />
+        <HotNewArrivalsCard products={mockProducts} />
+      </div>
+
+      <SlowSellersCard products={mockProducts} />
     </div>
   );
 };
