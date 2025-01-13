@@ -85,7 +85,7 @@ export default function CreatePromotion() {
 
           <Textarea
             placeholder="E.g. Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals"
-            className="min-h-[120px] text-lg p-4"
+            className="min-h-[120px] text-lg p-4 border-2 border-gray-300"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             onClick={handleInputClick}
