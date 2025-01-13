@@ -145,14 +145,14 @@ export default function CreatePromotion() {
           <ProductsStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
-            initialFilters={aiPrompt ? [
+            initialFilters={[
               {
                 id: "1",
                 field: "collection",
                 operator: "doesNotContain",
                 value: "New Arrivals"
               }
-            ] : undefined}
+            ]}
           />
         )}
         {currentStep === 2 && <LaunchStep onBack={goToPreviousStep} />}
