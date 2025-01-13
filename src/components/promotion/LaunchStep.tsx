@@ -1,89 +1,62 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
-import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-
-const formSchema = z.object({
-  notificationEmails: z.string().refine((emails) => {
-    if (!emails) return true;
-    const emailArray = emails.split(',').map(e => e.trim());
-    return emailArray.every(email => 
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    );
-  }, {
-    message: "Please enter valid email addresses separated by commas",
-  }),
-});
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { isValidEmail } from "@/lib/utils";
 
 interface LaunchStepProps {
-  onBack: () => void;
-  setupData?: {
+  setupData: {
     name: string;
     type: string;
+    startDate: Date;
+    endDate: Date;
     priceAdjustmentType: string;
     priceAdjustmentPercentage: number;
-    startDateTime: Date;
-    endDateTime: Date;
-    timezone: string;
+    changeSlashPriceOnly: boolean;
   };
+  selectedProducts: number[];
+  onBack: () => void;
 }
 
-export function LaunchStep({ onBack, setupData }: LaunchStepProps) {
-  const navigate = useNavigate();
-  const { toast } = useToast();
+export function LaunchStep({ setupData, selectedProducts, onBack }: LaunchStepProps) {
+  const [notificationEmails, setNotificationEmails] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      notificationEmails: "",
-    },
-  });
+  const handleSubmit = async () => {
+    // Validate emails if any are provided
+    if (notificationEmails) {
+      const emails = notificationEmails.split(",").map(email => email.trim());
+      const invalidEmails = emails.filter(email => !isValidEmail(email));
+      
+      if (invalidEmails.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Invalid email addresses",
+          description: `Please check: ${invalidEmails.join(", ")}`
+        });
+        return;
+      }
+    }
 
-  const { data: products } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const response = await fetch("https://scentiment.com/products.json");
-      const data = await response.json();
-      return data.products as Product[];
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
+    
     try {
-      // Here you would implement the actual promotion creation
-      // and email notification logic
-      console.log("Creating promotion with notification emails:", values.notificationEmails);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
-        title: "Promotion created successfully",
-        description: "The promotion has been created and notifications have been sent.",
+        title: "Promotion launched successfully!",
+        description: "All stakeholders have been notified."
       });
       
-      navigate("/promotions");
+      // Here you would typically redirect to the promotions list
     } catch (error) {
       toast({
-        title: "Error creating promotion",
-        description: "There was an error creating the promotion. Please try again.",
         variant: "destructive",
+        title: "Failed to launch promotion",
+        description: "Please try again later."
       });
     } finally {
       setIsSubmitting(false);
@@ -91,103 +64,57 @@ export function LaunchStep({ onBack, setupData }: LaunchStepProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Promotion Preview</h2>
+        <h2 className="text-lg font-semibold">Review Promotion Details</h2>
         
-        <div className="rounded-lg border p-4 space-y-4">
-          <div className="space-y-2">
-            <h3 className="font-medium">Basic Details</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Name:</span>
-                <p>{setupData?.name}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Type:</span>
-                <p>{setupData?.type}</p>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <h3 className="font-medium">Price Adjustment</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Adjustment Type:</span>
-                <p>{setupData?.priceAdjustmentType}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Percentage:</span>
-                <p>{setupData?.priceAdjustmentPercentage}%</p>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <h3 className="font-medium">Schedule</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Start Date:</span>
-                <p>{setupData?.startDateTime ? format(setupData.startDateTime, 'PPP p') : 'Not set'}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">End Date:</span>
-                <p>{setupData?.endDateTime ? format(setupData.endDateTime, 'PPP p') : 'Not set'}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Timezone:</span>
-                <p>{setupData?.timezone}</p>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <h3 className="font-medium">Products Affected</h3>
-            <p className="text-sm">
-              This promotion will affect <span className="font-medium">{products?.length || 0}</span> products
-            </p>
-          </div>
+        <div className="space-y-2">
+          <p><span className="font-medium">Name:</span> {setupData.name}</p>
+          <p><span className="font-medium">Type:</span> {setupData.type}</p>
+          <p>
+            <span className="font-medium">Duration:</span> {setupData.startDate.toLocaleDateString()} - {setupData.endDate.toLocaleDateString()}
+          </p>
+          <p>
+            <span className="font-medium">Price Adjustment:</span> {setupData.priceAdjustmentType} {setupData.priceAdjustmentPercentage}%
+          </p>
+          <p>
+            <span className="font-medium">Affected Products:</span> {selectedProducts.length} products
+          </p>
+          <p>
+            <span className="font-medium">Slash Price Only:</span> {setupData.changeSlashPriceOnly ? "Yes" : "No"}
+          </p>
         </div>
+      </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="notificationEmails"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notification Emails</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="email1@example.com, email2@example.com" 
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Enter email addresses separated by commas to notify about this promotion
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="notification-emails">Notification Emails</Label>
+          <Input
+            id="notification-emails"
+            placeholder="Enter email addresses separated by commas"
+            value={notificationEmails}
+            onChange={(e) => setNotificationEmails(e.target.value)}
+          />
+          <p className="text-sm text-muted-foreground">
+            These people will be notified when the promotion goes live
+          </p>
+        </div>
+      </div>
 
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={onBack} type="button">
-                Back
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Promotion"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={onBack}
+          disabled={isSubmitting}
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Launching..." : "Launch Promotion"}
+        </Button>
       </div>
     </div>
   );
