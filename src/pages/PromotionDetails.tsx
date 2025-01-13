@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PromotionAISummary } from "@/components/promotion/PromotionAISummary";
 
 type PromotionType = 'Site Wide' | 'By Product' | 'By Collection';
 
@@ -283,6 +284,13 @@ const PromotionDetails = () => {
                 previousValue={metrics.previousValue}
                 format="currency"
                 disabled={selectedType === 'Site Wide'}
+              />
+            </div>
+
+            <div className="mb-8">
+              <PromotionAISummary
+                dailyData={dailyData}
+                previousPeriodData={previousPeriodData}
               />
             </div>
 
