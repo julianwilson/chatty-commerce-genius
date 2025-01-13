@@ -4,7 +4,6 @@ import {
   Percent,
   ShoppingCart,
   Settings,
-  Users,
   FlaskConical,
   TrendingUp,
 } from "lucide-react";
@@ -26,7 +25,6 @@ const items = [
   { title: "Sales Plan", url: "/sales-plan", icon: TrendingUp },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
-  { title: "Collections", url: "/collections", icon: Users },
   { title: "Products", url: "/products", icon: ShoppingCart },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
