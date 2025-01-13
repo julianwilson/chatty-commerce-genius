@@ -4,6 +4,7 @@ export interface Variant {
   price: string;
   compare_at_price: string | null;
   inventory_quantity: number;
+  src?: string;
 }
 
 export interface Product {
