@@ -19,6 +19,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
+import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 
 const monthlySalesData = [
   { month: 'Jan', salesPercentage: 8.5 },
@@ -94,6 +95,37 @@ const Dashboard = () => {
   const [targetRevenue, setTargetRevenue] = useState("25M");
   const itemsPerPage = 25;
 
+  // Mock recommendations data - in a real app, this would come from an API
+  const recommendations = [
+    {
+      type: 'seasonality' as const,
+      title: 'Summer Collection Opportunity',
+      description: 'Historical data shows increased demand for summer dresses starting next month. Consider launching a summer collection promotion.',
+      action: {
+        label: 'Create Promotion',
+        path: '/promotions/create'
+      }
+    },
+    {
+      type: 'sales' as const,
+      title: 'Dresses Performance',
+      description: 'Dress sales have increased by 25% in the last week. Consider expanding inventory.',
+      action: {
+        label: 'View Collection',
+        path: '/collections/dresses'
+      }
+    },
+    {
+      type: 'alert' as const,
+      title: 'Seasonal Inventory Alert',
+      description: 'Winter collection items are showing high stock levels. Consider a clearance promotion.',
+      action: {
+        label: 'View Products',
+        path: '/products'
+      }
+    }
+  ];
+
   const activities = [
     { type: "collection", text: "Created New Collections (Summer Dresses, Going out dresses)" },
     { type: "experiment", text: "Started Experiment (Dresses +- 5%)" },
@@ -102,15 +134,6 @@ const Dashboard = () => {
     { type: "experiment", text: "Started Experiment (Lower Ground Shipping to $5)" },
     { type: "promotion", text: "Started Promotion (20% off site wide)" },
   ];
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentActivities = activities.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(activities.length / itemsPerPage);
-
-  const handleRevenueChange = (value: string) => {
-    setTargetRevenue(value);
-  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -134,7 +157,7 @@ const Dashboard = () => {
                   <Input
                     type="text"
                     value={targetRevenue}
-                    onChange={(e) => handleRevenueChange(e.target.value)}
+                    onChange={(e) => setTargetRevenue(e.target.value)}
                     className="mt-4"
                   />
                 </DialogContent>
@@ -151,6 +174,16 @@ const Dashboard = () => {
             <div className="text-3xl font-bold text-secondary">$1.25M</div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Recommendations Section */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4">Recommendations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {recommendations.map((recommendation, index) => (
+            <RecommendationCard key={index} recommendation={recommendation} />
+          ))}
+        </div>
       </div>
 
       {/* Monthly Sales Chart */}
@@ -175,7 +208,7 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {currentActivities.map((activity, index) => (
+            {activities.map((activity, index) => (
               <div
                 key={index}
                 className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
@@ -193,36 +226,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          {totalPages > 1 && (
-            <div className="mt-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        isActive={currentPage === page}
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          {/* Pagination logic can be added here if needed */}
         </CardContent>
       </Card>
     </div>
