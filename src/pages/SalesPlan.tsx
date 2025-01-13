@@ -16,10 +16,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SalesPlan = () => {
+  const navigate = useNavigate();
   const collections = [
     { 
+      id: 288699203767,
       name: "Dresses", 
       salesPercentage: 35, 
       totalSales: 8750000,
@@ -30,6 +33,7 @@ const SalesPlan = () => {
       sessions: 145000
     },
     { 
+      id: 288699236535,
       name: "Jeans", 
       salesPercentage: 25, 
       totalSales: 6250000,
@@ -40,6 +44,7 @@ const SalesPlan = () => {
       sessions: 98000
     },
     { 
+      id: 288699269303,
       name: "Tops", 
       salesPercentage: 20, 
       totalSales: 5000000,
@@ -50,6 +55,7 @@ const SalesPlan = () => {
       sessions: 125000
     },
     { 
+      id: 288699269304,
       name: "Accessories", 
       salesPercentage: 15, 
       totalSales: 3750000,
@@ -60,6 +66,7 @@ const SalesPlan = () => {
       sessions: 85000
     },
     { 
+      id: 288699269305,
       name: "Shoes", 
       salesPercentage: 5, 
       totalSales: 1250000,
@@ -126,7 +133,14 @@ const SalesPlan = () => {
                 .filter(collection => visibleCollections.includes(collection.name))
                 .map((collection) => (
                 <TableRow key={collection.name}>
-                  <TableCell>{collection.name}</TableCell>
+                  <TableCell>
+                    <button 
+                      onClick={() => navigate(`/collections/${collection.id}`)}
+                      className="text-primary hover:underline focus:outline-none"
+                    >
+                      {collection.name}
+                    </button>
+                  </TableCell>
                   <TableCell>{collection.salesPercentage}%</TableCell>
                   <TableCell>${(collection.totalSales).toLocaleString()}</TableCell>
                   <TableCell>{collection.percentToGoal}%</TableCell>
