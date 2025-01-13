@@ -16,15 +16,9 @@ export default function CreatePromotion() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const goToNextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const goToPreviousStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+  const handleInputClick = () => {
+    if (!aiPrompt) {
+      setAiPrompt("Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals");
     }
   };
 
@@ -37,8 +31,7 @@ export default function CreatePromotion() {
       });
       return;
     }
-    // TODO: Process AI prompt
-    setCurrentStep(0);
+    setCurrentStep(1); // Go directly to Products step
   };
 
   if (currentStep === -1) {
@@ -68,6 +61,7 @@ export default function CreatePromotion() {
             className="min-h-[120px] text-lg p-4"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
+            onClick={handleInputClick}
           />
 
           <div className="flex flex-col gap-3 pt-4">
@@ -136,7 +130,18 @@ export default function CreatePromotion() {
       <div className="mt-8">
         {currentStep === 0 && <SetupStep onNext={goToNextStep} />}
         {currentStep === 1 && (
-          <ProductsStep onNext={goToNextStep} onBack={goToPreviousStep} />
+          <ProductsStep 
+            onNext={goToNextStep} 
+            onBack={goToPreviousStep}
+            initialFilters={aiPrompt ? [
+              {
+                id: "1",
+                field: "collection",
+                operator: "doesNotContain",
+                value: "New Arrivals"
+              }
+            ] : undefined}
+          />
         )}
         {currentStep === 2 && <LaunchStep onBack={goToPreviousStep} />}
       </div>

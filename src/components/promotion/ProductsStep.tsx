@@ -30,6 +30,7 @@ import {
 interface ProductsStepProps {
   onNext: () => void;
   onBack: () => void;
+  initialFilters?: FilterRule[];
 }
 
 interface FilterRule {
@@ -63,13 +64,13 @@ const OPERATOR_OPTIONS = [
   { value: "doesNotContain", label: "Does not contain" },
 ];
 
-export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
+export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepProps) {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [filterRules, setFilterRules] = useState<FilterRule[]>([
-    { id: "1", field: "", operator: "", value: "" },
-  ]);
+  const [filterRules, setFilterRules] = useState<FilterRule[]>(() => 
+    initialFilters || [{ id: "1", field: "", operator: "", value: "" }]
+  );
   const [priceEditor, setPriceEditor] = useState<PriceEditorState>({
     variantId: null,
     column: null,
