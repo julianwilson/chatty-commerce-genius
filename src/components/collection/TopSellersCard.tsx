@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -6,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Product } from "@/types/product";
-import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -89,9 +89,6 @@ export function TopSellersCard({ products, dateRange, onDateRangeChange }: TopSe
               )}
               <div>
                 <h3 className="font-medium">{product.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  ${Number(product.variants[0]?.price || 0).toFixed(2)}
-                </p>
               </div>
             </div>
           ))}

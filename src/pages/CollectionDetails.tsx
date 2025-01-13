@@ -31,7 +31,6 @@ const generateSalesPercentageData = () => {
       year: 'numeric'
     });
     
-    // Generate a random percentage between 7 and 12
     const salesPercentage = (Math.random() * (12 - 7) + 7).toFixed(1);
     
     data.push({
@@ -45,7 +44,6 @@ const generateSalesPercentageData = () => {
 
 const monthlySalesData = generateSalesPercentageData();
 
-// Generate last 30 days of sales and units data
 const generateDailySalesData = () => {
   const data = [];
   const currentDate = new Date();
@@ -59,9 +57,7 @@ const generateDailySalesData = () => {
       day: 'numeric'
     });
     
-    // Generate random sales between $1000 and $5000
     const sales = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
-    // Generate random units between 10 and 50
     const units = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
     
     data.push({
@@ -273,24 +269,147 @@ const CollectionDetails = () => {
 
   if (!collection) return null;
 
-  // Mock data for the new cards
   const mockProducts = [
     {
-      id: 1,
-      title: "Sample Product 1",
-      product_type: "Physical",
+      id: 7664801349847,
+      title: "Scentiment Diffuser Mini - The One Fragrance Oil",
+      product_type: "Diffuser",
       created_at: "2024-01-01T00:00:00Z",
-      variants: [{ price: "29.99" }],
-      images: [{ src: "https://via.placeholder.com/150" }],
+      variants: [{
+        id: 42758461776087,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_The_One_Fragrance_Oil.jpg" }],
     },
     {
-      id: 2,
-      title: "Sample Product 2",
-      product_type: "Physical",
+      id: 7664801382615,
+      title: "Scentiment Diffuser Mini - Vanilla Bean Fragrance Oil",
+      product_type: "Diffuser",
       created_at: "2024-01-02T00:00:00Z",
-      variants: [{ price: "39.99" }],
-      images: [{ src: "https://via.placeholder.com/150" }],
+      variants: [{
+        id: 42758461808855,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Vanilla_Bean_Fragrance_Oil.jpg" }],
     },
+    {
+      id: 7664801415383,
+      title: "Scentiment Diffuser Mini - Fresh Linen Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-03T00:00:00Z",
+      variants: [{
+        id: 42758461841623,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Fresh_Linen_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801448151,
+      title: "Scentiment Diffuser Mini - Ocean Breeze Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-04T00:00:00Z",
+      variants: [{
+        id: 42758461874391,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Ocean_Breeze_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801480919,
+      title: "Scentiment Diffuser Mini - Lavender Fields Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-05T00:00:00Z",
+      variants: [{
+        id: 42758461907159,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Lavender_Fields_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801513687,
+      title: "Scentiment Diffuser Mini - Sweet Pea Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-06T00:00:00Z",
+      variants: [{
+        id: 42758461939927,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Sweet_Pea_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801546455,
+      title: "Scentiment Diffuser Mini - Citrus Burst Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-07T00:00:00Z",
+      variants: [{
+        id: 42758461972695,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Citrus_Burst_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801579223,
+      title: "Scentiment Diffuser Mini - Coconut Paradise Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-08T00:00:00Z",
+      variants: [{
+        id: 42758462005463,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Coconut_Paradise_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801611991,
+      title: "Scentiment Diffuser Mini - Apple Cinnamon Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-09T00:00:00Z",
+      variants: [{
+        id: 42758462038231,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Apple_Cinnamon_Fragrance_Oil.jpg" }],
+    },
+    {
+      id: 7664801644759,
+      title: "Scentiment Diffuser Mini - Eucalyptus Mint Fragrance Oil",
+      product_type: "Diffuser",
+      created_at: "2024-01-10T00:00:00Z",
+      variants: [{
+        id: 42758462070999,
+        title: "Default Title",
+        price: "24.99",
+        compare_at_price: null,
+        inventory_quantity: 100
+      }],
+      images: [{ src: "https://cdn.shopify.com/s/files/1/0652/1729/8679/files/Scentiment_Diffuser_Mini_Eucalyptus_Mint_Fragrance_Oil.jpg" }],
+    }
   ];
 
   return (

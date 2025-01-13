@@ -54,9 +54,6 @@ export function SlowSellersCard({ products }: SlowSellersCardProps) {
               )}
               <div>
                 <h3 className="font-medium">{product.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  ${Number(product.variants[0]?.price || 0).toFixed(2)}
-                </p>
               </div>
             </div>
           ))}
