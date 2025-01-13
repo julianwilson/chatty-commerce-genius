@@ -13,6 +13,16 @@ const steps = ["Setup", "Products", "Launch"] as const;
 export default function CreatePromotion() {
   const [currentStep, setCurrentStep] = useState(-1);
   const [aiPrompt, setAiPrompt] = useState("");
+  const [setupData, setSetupData] = useState({
+    name: "",
+    type: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    priceAdjustmentType: "",
+    priceAdjustmentPercentage: 0,
+    changeSlashPriceOnly: false,
+  });
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -155,7 +165,13 @@ export default function CreatePromotion() {
             ] : undefined}
           />
         )}
-        {currentStep === 2 && <LaunchStep onBack={goToPreviousStep} />}
+        {currentStep === 2 && (
+          <LaunchStep 
+            onBack={goToPreviousStep}
+            setupData={setupData}
+            selectedProducts={selectedProducts}
+          />
+        )}
       </div>
     </div>
   );
