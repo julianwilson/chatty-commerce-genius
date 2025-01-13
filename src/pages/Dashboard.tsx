@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil } from "lucide-react";
+import { Pencil, CheckCircle2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -73,7 +73,7 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* AI Experiment Card - Now at the top */}
+      {/* AI Experiment Card */}
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-6">
@@ -97,6 +97,35 @@ const Dashboard = () => {
                 Start with AI
               </Button>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* To-Do Checklist */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Getting Started Checklist</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[
+              { text: "Set target revenue goal", path: "#target-revenue" },
+              { text: "Identify collections that are key to sales", path: "/collections" },
+              { text: "Agree on a sales plan", path: "/sales-plan" },
+              { text: "Start running promotions & experiments!", path: "/experiments/create" }
+            ].map((item, index) => (
+              <div key={index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
+                <span className="flex-1">{item.text}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(item.path)}
+                >
+                  Get Started
+                </Button>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
