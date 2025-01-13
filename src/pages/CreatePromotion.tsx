@@ -26,6 +26,10 @@ export default function CreatePromotion() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const handleStepChange = (step: number) => {
+    setCurrentStep(step);
+  };
+
   const goToNextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -170,6 +174,7 @@ export default function CreatePromotion() {
             onBack={goToPreviousStep}
             setupData={setupData}
             selectedProducts={selectedProducts}
+            onStepChange={handleStepChange}
           />
         )}
       </div>

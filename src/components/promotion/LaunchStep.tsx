@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { isValidEmail } from "@/lib/utils";
+import { format } from "date-fns";
 
 interface LaunchStepProps {
   setupData: {
@@ -11,15 +12,22 @@ interface LaunchStepProps {
     type: string;
     startDate: Date;
     endDate: Date;
+    timezone: string;
     priceAdjustmentType: string;
     priceAdjustmentPercentage: number;
     changeSlashPriceOnly: boolean;
   };
   selectedProducts: number[];
   onBack: () => void;
+  onStepChange?: (step: number) => void;
 }
 
-export function LaunchStep({ setupData, selectedProducts, onBack }: LaunchStepProps) {
+export function LaunchStep({ 
+  setupData, 
+  selectedProducts, 
+  onBack,
+  onStepChange 
+}: LaunchStepProps) {
   const [notificationEmails, setNotificationEmails] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -63,26 +71,74 @@ export function LaunchStep({ setupData, selectedProducts, onBack }: LaunchStepPr
     }
   };
 
+  const handleProductsClick = () => {
+    if (onStepChange) {
+      onStepChange(1); // Navigate to products step (step 2)
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Review Promotion Details</h2>
         
-        <div className="space-y-2">
-          <p><span className="font-medium">Name:</span> {setupData.name}</p>
-          <p><span className="font-medium">Type:</span> {setupData.type}</p>
-          <p>
-            <span className="font-medium">Duration:</span> {setupData.startDate.toLocaleDateString()} - {setupData.endDate.toLocaleDateString()}
-          </p>
-          <p>
-            <span className="font-medium">Price Adjustment:</span> {setupData.priceAdjustmentType} {setupData.priceAdjustmentPercentage}%
-          </p>
-          <p>
-            <span className="font-medium">Affected Products:</span> {selectedProducts.length} products
-          </p>
-          <p>
-            <span className="font-medium">Slash Price Only:</span> {setupData.changeSlashPriceOnly ? "Yes" : "No"}
-          </p>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="font-medium">Name:</span>
+              <p className="text-gray-600">{setupData.name}</p>
+            </div>
+            <div>
+              <span className="font-medium">Type:</span>
+              <p className="text-gray-600">{setupData.type}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="font-medium">Start Date & Time:</span>
+              <p className="text-gray-600">
+                {format(setupData.startDate, "PPP p")}
+              </p>
+            </div>
+            <div>
+              <span className="font-medium">End Date & Time:</span>
+              <p className="text-gray-600">
+                {format(setupData.endDate, "PPP p")}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <span className="font-medium">Timezone:</span>
+            <p className="text-gray-600">{setupData.timezone}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="font-medium">Price Adjustment:</span>
+              <p className="text-gray-600">
+                {setupData.priceAdjustmentType} {setupData.priceAdjustmentPercentage}%
+              </p>
+            </div>
+            <div>
+              <span className="font-medium">Update Type:</span>
+              <p className="text-gray-600">
+                {setupData.changeSlashPriceOnly ? "Slash Prices Only" : "All Prices"}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <span className="font-medium">Affected Products:</span>
+            <Button
+              variant="link"
+              className="p-0 h-auto font-normal text-primary hover:underline"
+              onClick={handleProductsClick}
+            >
+              {selectedProducts.length} products
+            </Button>
+          </div>
         </div>
       </div>
 
