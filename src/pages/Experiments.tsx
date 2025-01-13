@@ -9,8 +9,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Settings2 } from "lucide-react";
-import { useState } from "react";
-import { CreateExperimentModal } from "@/components/CreateExperimentModal";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -84,7 +82,6 @@ const columns: Column[] = [
 
 export default function Experiments() {
   const navigate = useNavigate();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>(
     columns.map(col => col.id)
   );
@@ -124,7 +121,7 @@ export default function Experiments() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => setIsCreateModalOpen(true)}>
+          <Button onClick={() => navigate('/experiments/create')}>
             <Plus className="mr-2 h-4 w-4" /> New Experiment
           </Button>
         </div>
@@ -191,11 +188,6 @@ export default function Experiments() {
           </Table>
         </div>
       </div>
-
-      <CreateExperimentModal 
-        open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
     </div>
   );
 }
