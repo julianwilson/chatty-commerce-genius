@@ -47,7 +47,7 @@ export default function CreateExperiment() {
 
   if (currentStep === -1) {
     return (
-      <div className="max-w-[500px] mx-auto pt-8">
+      <div className="container mx-auto pt-8">
         <div className="space-y-6">
           <div className="space-y-2 text-center">
             <h2 className="text-3xl font-bold tracking-tight">Let's work on your next experiment!</h2>
