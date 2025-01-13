@@ -58,7 +58,7 @@ export default function CreateExperiment() {
 
           <Textarea
             placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
-            className="min-h-[120px] text-lg p-4 border-2 border-gray-400"
+            className="min-h-[120px] text-lg p-4 border-2 border-gray-300"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             onClick={handleInputClick}
