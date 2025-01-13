@@ -29,18 +29,7 @@ import { useNavigate } from "react-router-dom";
 const SalesPlan = () => {
   const navigate = useNavigate();
   const [targetRevenue, setTargetRevenue] = useState("25M");
-  const [visibleCollections, setVisibleCollections] = useState<string[]>(
-    collections.map(c => c.name)
-  );
-
-  const toggleCollection = (collectionName: string) => {
-    setVisibleCollections(current =>
-      current.includes(collectionName)
-        ? current.filter(name => name !== collectionName)
-        : [...current, collectionName]
-    );
-  };
-
+  
   const collections = [
     { 
       id: 288699203767,
@@ -113,6 +102,18 @@ const SalesPlan = () => {
       sessions: 45000
     },
   ];
+
+  const [visibleCollections, setVisibleCollections] = useState<string[]>(
+    collections.map(c => c.name)
+  );
+
+  const toggleCollection = (collectionName: string) => {
+    setVisibleCollections(current =>
+      current.includes(collectionName)
+        ? current.filter(name => name !== collectionName)
+        : [...current, collectionName]
+    );
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
