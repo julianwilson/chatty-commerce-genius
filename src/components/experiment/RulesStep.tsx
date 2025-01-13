@@ -45,19 +45,22 @@ const getTestGroupLetter = (index: number) => {
   return String.fromCharCode(65 + index); // A = 65 in ASCII
 };
 
-const createTestGroupSchema = (letter: string) => ({
-  [`test${letter}PriceAdjustmentType`]: z.enum(priceAdjustmentTypes),
-  [`test${letter}PriceAdjustmentPercentage`]: z.number().min(0).max(100),
-});
+// Create a dynamic schema based on test groups
+const createFormSchema = (testGroups: string[]) => {
+  const testGroupFields = testGroups.reduce((acc, letter) => ({
+    ...acc,
+    [`test${letter}PriceAdjustmentType`]: z.enum(priceAdjustmentTypes),
+    [`test${letter}PriceAdjustmentPercentage`]: z.number().min(0).max(100),
+  }), {});
 
-const formSchema = z.object({
-  priceRounding: z.enum(priceRoundingOptions),
-  ...createTestGroupSchema("A"),
-  ...createTestGroupSchema("B"),
-  activateViaUtm: z.boolean().default(false),
-});
+  return z.object({
+    priceRounding: z.enum(priceRoundingOptions),
+    activateViaUtm: z.boolean(),
+    ...testGroupFields,
+  });
+};
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
 
 interface RulesStepProps {
   onNext: () => void;
@@ -66,16 +69,17 @@ interface RulesStepProps {
 
 export function RulesStep({ onNext, onBack }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
+  const formSchema = createFormSchema(testGroups);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       priceRounding: "No Rounding",
+      activateViaUtm: false,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
-      activateViaUtm: false,
     },
   });
 
