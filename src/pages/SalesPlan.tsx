@@ -13,13 +13,34 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Settings2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Settings2, Pencil } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SalesPlan = () => {
   const navigate = useNavigate();
+  const [targetRevenue, setTargetRevenue] = useState("25M");
+  const [visibleCollections, setVisibleCollections] = useState<string[]>(
+    collections.map(c => c.name)
+  );
+
+  const toggleCollection = (collectionName: string) => {
+    setVisibleCollections(current =>
+      current.includes(collectionName)
+        ? current.filter(name => name !== collectionName)
+        : [...current, collectionName]
+    );
+  };
+
   const collections = [
     { 
       id: 288699203767,
@@ -93,20 +114,38 @@ const SalesPlan = () => {
     },
   ];
 
-  const [visibleCollections, setVisibleCollections] = useState<string[]>(
-    collections.map(c => c.name)
-  );
-
-  const toggleCollection = (collectionName: string) => {
-    setVisibleCollections(current =>
-      current.includes(collectionName)
-        ? current.filter(name => name !== collectionName)
-        : [...current, collectionName]
-    );
-  };
-
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* Target Revenue Goal Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Target Revenue Goal</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-2">
+            <div className="text-3xl font-bold">${targetRevenue}</div>
+            <Dialog>
+              <DialogTrigger>
+                <Pencil className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Target Revenue</DialogTitle>
+                </DialogHeader>
+                <Input
+                  type="text"
+                  value={targetRevenue}
+                  onChange={(e) => setTargetRevenue(e.target.value)}
+                  className="mt-4"
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">$5,235,982 of $25,000,000</div>
+        </CardContent>
+      </Card>
+
+      {/* Collection Performance Table */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>Collection Performance</CardTitle>

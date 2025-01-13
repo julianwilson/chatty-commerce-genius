@@ -1,18 +1,11 @@
 import { useState } from "react";
-import { Pencil, CheckCircle2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
+import { CheckCircle2 } from "lucide-react";
 
 // Mock recommendations data
 const recommendations = [
@@ -57,7 +50,7 @@ const activities = [
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [targetRevenue, setTargetRevenue] = useState("25M");
+  const [targetRevenue] = useState("25M");
   const [aiPrompt, setAiPrompt] = useState("");
   const navigate = useNavigate();
 
@@ -137,25 +130,7 @@ const Dashboard = () => {
             <CardTitle>Target Revenue Goal</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-2">
-              <div className="text-3xl font-bold">${targetRevenue}</div>
-              <Dialog>
-                <DialogTrigger>
-                  <Pencil className="h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700" />
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Edit Target Revenue</DialogTitle>
-                  </DialogHeader>
-                  <Input
-                    type="text"
-                    value={targetRevenue}
-                    onChange={(e) => setTargetRevenue(e.target.value)}
-                    className="mt-4"
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
+            <div className="text-3xl font-bold">${targetRevenue}</div>
             <div className="text-sm text-muted-foreground mt-2">$5,235,982 of $25,000,000</div>
           </CardContent>
         </Card>
