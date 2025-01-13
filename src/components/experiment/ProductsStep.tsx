@@ -288,9 +288,36 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                                   </Button>
                                 </TableCell>
                                 <TableCell>{variant.title}</TableCell>
-                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
-                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
-                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
+                                <TableCell>
+                                  <div className="flex flex-col">
+                                    <span>${Number(variant.price).toFixed(2)}</span>
+                                    {variant.compare_at_price && (
+                                      <span className="text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex flex-col">
+                                    <span>${Number(variant.price).toFixed(2)}</span>
+                                    {variant.compare_at_price && (
+                                      <span className="text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex flex-col">
+                                    <span>${Number(variant.price).toFixed(2)}</span>
+                                    {variant.compare_at_price && (
+                                      <span className="text-sm text-muted-foreground line-through">
+                                        ${Number(variant.compare_at_price).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
