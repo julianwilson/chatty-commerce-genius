@@ -183,7 +183,7 @@ export function ProductsStep({ onNext, onBack }: ProductsStepProps) {
   };
 
   const renderValueInput = (rule: FilterRule) => {
-    if (rule.field === "collection" && rule.operator === "contains") {
+    if (rule.field === "collection" && (rule.operator === "contains" || rule.operator === "doesNotContain")) {
       return (
         <Select
           value={rule.value}
