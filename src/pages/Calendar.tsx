@@ -114,39 +114,14 @@ const Calendar = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Calendar</h1>
-      <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Legend</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {[
-              "Sitewide Markdown Sale",
-              "Sitewide Discount Code Sale",
-              "Collection Sale",
-              "Bogo Sale",
-              "Free Shipping Sale",
-              "Shipping Update",
-              "Influencer",
-              "Event",
-              "Loyalty Bonus",
-              "A/B Test",
-            ].map((type) => (
-              <div key={type} className="flex items-center gap-2">
-                <div className={`w-4 h-4 rounded ${getEventColor(type)}`} />
-                <span className="text-sm">{type}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
+      <div className="flex flex-col gap-8">
+        <Card className="w-full">
           <CardContent className="p-4">
             <CalendarComponent
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="rounded-md border"
+              className="rounded-md border w-full"
               modifiers={{
                 booked: (date) => {
                   const dateStr = format(date, "yyyy-MM-dd");
@@ -196,6 +171,33 @@ const Calendar = () => {
                 },
               }}
             />
+          </CardContent>
+        </Card>
+
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Legend</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[
+                "Sitewide Markdown Sale",
+                "Sitewide Discount Code Sale",
+                "Collection Sale",
+                "Bogo Sale",
+                "Free Shipping Sale",
+                "Shipping Update",
+                "Influencer",
+                "Event",
+                "Loyalty Bonus",
+                "A/B Test",
+              ].map((type) => (
+                <div key={type} className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded ${getEventColor(type)}`} />
+                  <span className="text-sm">{type}</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
