@@ -74,6 +74,8 @@ const CollectionDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [topSellersDateRange, setTopSellersDateRange] = useState("30d");
+  const [hotNewArrivalsDateRange, setHotNewArrivalsDateRange] = useState("30d");
+  const [slowSellersDateRange, setSlowSellersDateRange] = useState("30d");
   const dailySalesData = generateDailySalesData();
 
   const { data: collection, isLoading, isError } = useQuery({
@@ -466,10 +468,18 @@ const CollectionDetails = () => {
           dateRange={topSellersDateRange}
           onDateRangeChange={setTopSellersDateRange}
         />
-        <HotNewArrivalsCard products={mockProducts} />
+        <HotNewArrivalsCard 
+          products={mockProducts}
+          dateRange={hotNewArrivalsDateRange}
+          onDateRangeChange={setHotNewArrivalsDateRange}
+        />
       </div>
 
-      <SlowSellersCard products={mockProducts} />
+      <SlowSellersCard 
+        products={mockProducts}
+        dateRange={slowSellersDateRange}
+        onDateRangeChange={setSlowSellersDateRange}
+      />
     </div>
   );
 };
