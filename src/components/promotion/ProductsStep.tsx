@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -65,8 +65,6 @@ const OPERATOR_OPTIONS = [
 ];
 
 export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepProps) {
-  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-  const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [filterRules, setFilterRules] = useState<FilterRule[]>(() => 
     initialFilters || [{ id: "1", field: "", operator: "", value: "" }]
@@ -95,22 +93,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
       return data.collections as Collection[];
     },
   });
-
-  const removeProduct = (productId: number) => {
-    setSelectedProducts((current) =>
-      current.filter((id) => id !== productId)
-    );
-    const productVariants = products?.find(p => p.id === productId)?.variants.map(v => v.id) || [];
-    setSelectedVariants(current => 
-      current.filter(id => !productVariants.includes(id))
-    );
-  };
-
-  const removeVariant = (variantId: number) => {
-    setSelectedVariants(current =>
-      current.filter(id => id !== variantId)
-    );
-  };
 
   const toggleRow = (productId: number) => {
     setExpandedRows((current) =>
@@ -282,7 +264,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]"></TableHead>
-              <TableHead className="w-[50px]"></TableHead>
               <TableHead>Product Name</TableHead>
               <TableHead>Type</TableHead>
             </TableRow>
@@ -304,15 +285,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                       )}
                     </Button>
                   </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeProduct(product.id)}
-                    >
-                      <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
-                    </Button>
-                  </TableCell>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.product_type}</TableCell>
                 </TableRow>
@@ -323,7 +295,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                         <Table>
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="w-[50px]"></TableHead>
                               <TableHead>Variant</TableHead>
                               <TableHead>New Price</TableHead>
                             </TableRow>
@@ -331,15 +302,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                           <TableBody>
                             {product.variants.map((variant) => (
                               <TableRow key={variant.id}>
-                                <TableCell>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => removeVariant(variant.id)}
-                                  >
-                                    <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
-                                  </Button>
-                                </TableCell>
                                 <TableCell>{variant.title}</TableCell>
                                 <TableCell>
                                   <Button
@@ -372,10 +334,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button 
-          onClick={onNext} 
-          disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
-        >
+        <Button onClick={onNext}>
           Next
         </Button>
       </div>
