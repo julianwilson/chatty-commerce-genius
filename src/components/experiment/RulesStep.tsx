@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -43,6 +44,7 @@ const formSchema = z.object({
   testAPriceAdjustmentPercentage: z.number().min(0).max(100),
   testBPriceAdjustmentType: z.enum(priceAdjustmentTypes),
   testBPriceAdjustmentPercentage: z.number().min(0).max(100),
+  activateViaUtm: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -61,6 +63,7 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
       testAPriceAdjustmentPercentage: 20,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
+      activateViaUtm: false,
     },
   });
 
@@ -206,6 +209,27 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
                 </SelectContent>
               </Select>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="activateViaUtm"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Activate Via UTM Only</FormLabel>
+                <div className="text-sm text-muted-foreground">
+                  Only activate experiment for traffic from UTM sources
+                </div>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
             </FormItem>
           )}
         />

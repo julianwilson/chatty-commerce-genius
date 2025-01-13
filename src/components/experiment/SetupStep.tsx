@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -49,7 +48,6 @@ const formSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   timezone: z.enum(timezones),
-  activateViaUtm: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -63,7 +61,6 @@ export function SetupStep({ onNext }: SetupStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       timezone: "America/New_York",
-      activateViaUtm: false,
       startDate: new Date(),
       endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     },
@@ -221,27 +218,6 @@ export function SetupStep({ onNext }: SetupStepProps) {
                 </PopoverContent>
               </Popover>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="activateViaUtm"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Activate Via UTM Only</FormLabel>
-                <div className="text-sm text-muted-foreground">
-                  Only activate experiment for traffic from UTM sources
-                </div>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
             </FormItem>
           )}
         />
