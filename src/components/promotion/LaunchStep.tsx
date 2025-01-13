@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { isValidEmail } from "@/lib/utils";
 import { format } from "date-fns";
+import { X } from "lucide-react";
 
 interface LaunchStepProps {
   setupData: {
@@ -28,26 +29,46 @@ export function LaunchStep({
   onBack,
   onStepChange 
 }: LaunchStepProps) {
-  const [notificationEmails, setNotificationEmails] = useState<string>("");
+  const [emailInput, setEmailInput] = useState<string>("");
+  const [notificationEmails, setNotificationEmails] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
-    // Validate emails if any are provided
-    if (notificationEmails) {
-      const emails = notificationEmails.split(",").map(email => email.trim());
-      const invalidEmails = emails.filter(email => !isValidEmail(email));
+  const handleEmailInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const email = emailInput.trim();
       
-      if (invalidEmails.length > 0) {
+      if (!email) return;
+      
+      if (!isValidEmail(email)) {
         toast({
           variant: "destructive",
-          title: "Invalid email addresses",
-          description: `Please check: ${invalidEmails.join(", ")}`
+          title: "Invalid email address",
+          description: `Please check: ${email}`
         });
         return;
       }
-    }
 
+      if (notificationEmails.includes(email)) {
+        toast({
+          variant: "destructive",
+          title: "Duplicate email",
+          description: "This email has already been added"
+        });
+        return;
+      }
+
+      setNotificationEmails(prev => [...prev, email]);
+      setEmailInput("");
+    }
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setNotificationEmails(prev => prev.filter(email => email !== emailToRemove));
+  };
+
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     
     try {
@@ -145,11 +166,28 @@ export function LaunchStep({
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="notification-emails">Notification Emails</Label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {notificationEmails.map((email, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full text-sm"
+              >
+                <span>{email}</span>
+                <button
+                  onClick={() => removeEmail(email)}
+                  className="hover:bg-primary/20 rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
           <Input
             id="notification-emails"
-            placeholder="Enter email addresses separated by commas"
-            value={notificationEmails}
-            onChange={(e) => setNotificationEmails(e.target.value)}
+            placeholder="Type email and press Enter"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            onKeyDown={handleEmailInputKeyDown}
           />
           <p className="text-sm text-muted-foreground">
             These people will be notified when the promotion goes live

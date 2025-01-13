@@ -18,6 +18,7 @@ export default function CreatePromotion() {
     type: "",
     startDate: new Date(),
     endDate: new Date(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     priceAdjustmentType: "",
     priceAdjustmentPercentage: 0,
     changeSlashPriceOnly: false,
