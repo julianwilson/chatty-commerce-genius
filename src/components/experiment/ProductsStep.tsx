@@ -161,14 +161,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     );
   };
 
-  const calculateTestPrice = (originalPrice: number, testType: 'A' | 'B') => {
-    if (testType === 'A') {
-      return originalPrice * 1.2; // 20% increase for Test A
-    } else {
-      return originalPrice * 0.8; // 20% decrease for Test B
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -286,8 +278,8 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                           <TableBody>
                             {product.variants.map((variant) => {
                               const originalPrice = Number(variant.price);
-                              const testAPrice = calculateTestPrice(originalPrice, 'A');
-                              const testBPrice = calculateTestPrice(originalPrice, 'B');
+                              const testAPrice = originalPrice * 1.2; // 20% increase for Test A
+                              const testBPrice = originalPrice * 0.8; // 20% decrease for Test B
                               
                               return (
                                 <TableRow key={variant.id}>
@@ -350,7 +342,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onNext} disabled={selectedProducts.length === 0}>
+        <Button onClick={onNext}>
           Next
         </Button>
       </div>
