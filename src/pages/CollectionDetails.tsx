@@ -278,12 +278,16 @@ const CollectionDetails = () => {
     {
       id: 1,
       title: "Sample Product 1",
+      product_type: "Physical",
+      created_at: "2024-01-01T00:00:00Z",
       variants: [{ price: "29.99" }],
       images: [{ src: "https://via.placeholder.com/150" }],
     },
     {
       id: 2,
       title: "Sample Product 2",
+      product_type: "Physical",
+      created_at: "2024-01-02T00:00:00Z",
       variants: [{ price: "39.99" }],
       images: [{ src: "https://via.placeholder.com/150" }],
     },
