@@ -46,11 +46,12 @@ const getTestGroupLetter = (index: number) => {
 
 // Create a dynamic schema based on test groups
 const createFormSchema = (testGroups: string[]) => {
-  const testGroupFields = testGroups.reduce((acc, letter) => ({
-    ...acc,
-    [`test${letter}PriceAdjustmentType`]: z.enum(priceAdjustmentTypes),
-    [`test${letter}PriceAdjustmentPercentage`]: z.number().min(0).max(100),
-  }), {});
+  const testGroupFields: Record<string, any> = {};
+  
+  testGroups.forEach(letter => {
+    testGroupFields[`test${letter}PriceAdjustmentType`] = z.enum(priceAdjustmentTypes);
+    testGroupFields[`test${letter}PriceAdjustmentPercentage`] = z.number().min(0).max(100);
+  });
 
   return z.object({
     priceRounding: z.enum(priceRoundingOptions),
@@ -81,7 +82,7 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
       testAPriceAdjustmentPercentage: 20,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
-    },
+    } as FormValues, // Type assertion to match the dynamic schema
   });
 
   const selectedPriceRounding = form.watch("priceRounding");
