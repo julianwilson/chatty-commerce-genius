@@ -5,7 +5,7 @@ import { ChatInterface } from "@/components/ChatInterface";
 import { useSidebar } from "@/components/ui/sidebar";
 
 export function ChatBox() {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { state } = useSidebar();
 
   const toggleChat = () => {

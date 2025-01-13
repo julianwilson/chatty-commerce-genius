@@ -1,6 +1,5 @@
 import {
   Calendar,
-  MessageSquare,
   BarChart,
   Percent,
   ShoppingCart,
@@ -22,7 +21,6 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Chat with Jeff", url: "/chat", icon: MessageSquare },
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Sales Plan", url: "/sales-plan", icon: TrendingUp },
