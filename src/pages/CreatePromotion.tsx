@@ -5,12 +5,16 @@ import { ChevronLeft } from "lucide-react";
 import { SetupStep } from "@/components/promotion/SetupStep";
 import { ProductsStep } from "@/components/promotion/ProductsStep";
 import { LaunchStep } from "@/components/promotion/LaunchStep";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 const steps = ["Setup", "Products", "Launch"] as const;
 
 export default function CreatePromotion() {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(-1); // -1 represents the welcome screen
+  const [aiPrompt, setAiPrompt] = useState("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const goToNextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -23,6 +27,65 @@ export default function CreatePromotion() {
       setCurrentStep(currentStep - 1);
     }
   };
+
+  const handleAiContinue = () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: "Please enter a prompt",
+        description: "Tell us what kind of promotion you want to create",
+        variant: "destructive",
+      });
+      return;
+    }
+    // TODO: Process AI prompt
+    setCurrentStep(0);
+  };
+
+  if (currentStep === -1) {
+    return (
+      <div className="space-y-6 max-w-3xl mx-auto mt-12">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/promotions")}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">Create New Promotion</h1>
+        </div>
+
+        <div className="space-y-6 p-8 bg-white rounded-lg shadow-sm border">
+          <div className="space-y-2 text-center">
+            <h2 className="text-3xl font-bold tracking-tight">Let's work on your next promotion!</h2>
+            <p className="text-muted-foreground text-lg">
+              Get help from AI and be done in no time.
+            </p>
+          </div>
+
+          <Textarea
+            placeholder="E.g. Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals"
+            className="min-h-[120px] text-lg p-4"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+          />
+
+          <div className="flex flex-col gap-3 pt-4">
+            <Button size="lg" onClick={handleAiContinue}>
+              Continue with AI
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => setCurrentStep(0)}
+            >
+              Setup without AI
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
