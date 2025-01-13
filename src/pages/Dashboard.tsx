@@ -73,6 +73,34 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* AI Experiment Card - Now at the top */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="space-y-6">
+            <div className="space-y-2 text-center">
+              <h2 className="text-3xl font-bold tracking-tight">Let's get started on generating more revenue!</h2>
+              <p className="text-muted-foreground text-lg">
+                Get help from AI and start optimizing in no time.
+              </p>
+            </div>
+
+            <Textarea
+              placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
+              className="min-h-[120px] text-lg p-4"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onClick={handleInputClick}
+            />
+
+            <div className="flex flex-col gap-3 pt-4">
+              <Button size="lg" onClick={handleAiContinue}>
+                Start with AI
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Target Revenue Goal and Incremental Revenue */}
       <div className="grid grid-cols-2 gap-4">
         <Card>
@@ -121,34 +149,6 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
-
-      {/* AI Experiment Card */}
-      <Card className="max-w-[500px] mx-auto">
-        <CardContent className="pt-6">
-          <div className="space-y-6">
-            <div className="space-y-2 text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Let's get started on generating more revenue!</h2>
-              <p className="text-muted-foreground text-lg">
-                Get help from AI and start optimizing in no time.
-              </p>
-            </div>
-
-            <Textarea
-              placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
-              className="min-h-[120px] text-lg p-4"
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              onClick={handleInputClick}
-            />
-
-            <div className="flex flex-col gap-3 pt-4">
-              <Button size="lg" onClick={handleAiContinue}>
-                Start with AI
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Activity Feed */}
       <Card>
