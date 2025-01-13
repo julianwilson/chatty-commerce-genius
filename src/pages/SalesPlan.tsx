@@ -29,6 +29,9 @@ const SalesPlan = () => {
       percentToGoal: 85,
       totalUnits: 25000,
       avgUnitRetail: 350,
+      markdownPercentage: 25,
+      weeksOfSupply: 8.5,
+      revenueInPromo: 2187500,
       products: 120,
       sessions: 145000
     },
@@ -40,6 +43,9 @@ const SalesPlan = () => {
       percentToGoal: 75,
       totalUnits: 15000,
       avgUnitRetail: 416,
+      markdownPercentage: 20,
+      weeksOfSupply: 6.2,
+      revenueInPromo: 1875000,
       products: 80,
       sessions: 98000
     },
@@ -51,6 +57,9 @@ const SalesPlan = () => {
       percentToGoal: 65,
       totalUnits: 20000,
       avgUnitRetail: 250,
+      markdownPercentage: 30,
+      weeksOfSupply: 4.8,
+      revenueInPromo: 1500000,
       products: 150,
       sessions: 125000
     },
@@ -62,6 +71,9 @@ const SalesPlan = () => {
       percentToGoal: 55,
       totalUnits: 12500,
       avgUnitRetail: 300,
+      markdownPercentage: 15,
+      weeksOfSupply: 10.5,
+      revenueInPromo: 937500,
       products: 200,
       sessions: 85000
     },
@@ -73,6 +85,9 @@ const SalesPlan = () => {
       percentToGoal: 45,
       totalUnits: 2500,
       avgUnitRetail: 500,
+      markdownPercentage: 22,
+      weeksOfSupply: 7.3,
+      revenueInPromo: 312500,
       products: 50,
       sessions: 45000
     },
@@ -124,6 +139,9 @@ const SalesPlan = () => {
                 <TableHead>% to Goal</TableHead>
                 <TableHead>Total Units</TableHead>
                 <TableHead>Avg. Unit Retail</TableHead>
+                <TableHead>Markdown %</TableHead>
+                <TableHead>Weeks of Supply</TableHead>
+                <TableHead>Revenue During Promotions</TableHead>
                 <TableHead># of Products</TableHead>
                 <TableHead>Sessions</TableHead>
               </TableRow>
@@ -146,6 +164,9 @@ const SalesPlan = () => {
                   <TableCell>{collection.percentToGoal}%</TableCell>
                   <TableCell>{collection.totalUnits.toLocaleString()}</TableCell>
                   <TableCell>${collection.avgUnitRetail}</TableCell>
+                  <TableCell>{collection.markdownPercentage}%</TableCell>
+                  <TableCell>{collection.weeksOfSupply}</TableCell>
+                  <TableCell>${collection.revenueInPromo.toLocaleString()}</TableCell>
                   <TableCell>{collection.products}</TableCell>
                   <TableCell>{collection.sessions.toLocaleString()}</TableCell>
                 </TableRow>
