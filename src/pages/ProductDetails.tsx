@@ -42,31 +42,6 @@ const ProductDetails = () => {
   const promotionStartDate = location.state?.startDate;
   const promotionEndDate = location.state?.endDate;
 
-  // Mock product data
-  const mockProduct: Product = {
-    id: Number(id),
-    title: "Classic Perfume",
-    product_type: "Fragrance",
-    created_at: "2024-01-15T00:00:00Z",
-    variants: [
-      {
-        id: 1,
-        title: "30ml",
-        price: "59.99",
-        compare_at_price: "69.99",
-        inventory_quantity: 100
-      },
-      {
-        id: 2,
-        title: "50ml",
-        price: "89.99",
-        compare_at_price: "99.99",
-        inventory_quantity: 75
-      }
-    ],
-    images: [{ src: "/placeholder.svg" }]
-  };
-
   const allSalesData = generateMockSalesData(30);
   const salesData = promotionStartDate && promotionEndDate
     ? allSalesData.filter(dataPoint => {
@@ -191,7 +166,65 @@ const ProductDetails = () => {
     }]
   };
 
-  // Mock activities data
+  const { data: product, isLoading, isError } = useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/products.json");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch products (${response.status})`);
+      }
+      const data = await response.json();
+      const foundProduct = data.products.find((p: Product) => p.id === Number(id));
+      if (!foundProduct) {
+        throw new Error("Product not found");
+      }
+      return foundProduct;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 w-48 bg-muted rounded"></div>
+          <div className="h-[400px] bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="h-8 w-8"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">Product Not Found</h1>
+        </div>
+        
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            The product you're looking for could not be found. It may have been removed or the URL might be incorrect.
+          </AlertDescription>
+        </Alert>
+
+        <Button onClick={() => navigate("/products")}>
+          Return to Products
+        </Button>
+      </div>
+    );
+  }
+
+  if (!product) return null;
+
+  // Mock activity data
   const mockActivities = [
     {
       date: "Mar 15, 2024",
@@ -227,7 +260,7 @@ const ProductDetails = () => {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">{mockProduct.title}</h1>
+        <h1 className="text-2xl font-bold">{product.title}</h1>
       </div>
 
       <div className="w-full max-w-xs">
@@ -237,7 +270,7 @@ const ProductDetails = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Variants</SelectItem>
-            {mockProduct.variants.map((variant) => (
+            {product.variants.map((variant) => (
               <SelectItem key={variant.id} value={variant.id.toString()}>
                 {variant.title}
               </SelectItem>

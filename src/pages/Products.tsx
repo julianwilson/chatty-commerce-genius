@@ -1,4 +1,5 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -24,52 +25,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Mock data
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    title: "Classic Perfume",
-    product_type: "Fragrance",
-    created_at: "2024-01-15T00:00:00Z",
-    variants: [
-      {
-        id: 1,
-        title: "30ml",
-        price: "59.99",
-        compare_at_price: "69.99",
-        inventory_quantity: 100
-      }
-    ],
-    images: [{ src: "/placeholder.svg" }]
-  },
-  {
-    id: 2,
-    title: "Luxury Cologne",
-    product_type: "Fragrance",
-    created_at: "2024-02-01T00:00:00Z",
-    variants: [
-      {
-        id: 2,
-        title: "50ml",
-        price: "89.99",
-        compare_at_price: "99.99",
-        inventory_quantity: 75
-      }
-    ],
-    images: [{ src: "/placeholder.svg" }]
-  }
-];
-
-const mockCollections = [
-  { id: "1", title: "Summer Collection" },
-  { id: "2", title: "Winter Collection" }
-];
-
 const Products = () => {
   const navigate = useNavigate();
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/products.json");
+      const data = await response.json();
+      return data.products as Product[];
+    },
+  });
+
+  const { data: collections } = useQuery({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch("https://scentiment.com/collections.json");
+      const data = await response.json();
+      return data.collections;
+    },
+  });
 
   const toggleRow = (productId: number) => {
     setExpandedRows((prev) =>
@@ -87,17 +65,19 @@ const Products = () => {
     );
   };
 
-  const filteredProducts = mockProducts.filter((product) => {
+  const filteredProducts = products?.filter((product) => {
     if (activeFilters.length === 0 && !selectedCollection) return true;
     
     let matchesFilter = true;
     if (activeFilters.length > 0) {
       if (activeFilters.includes("Hot New Arrivals")) {
+        // Example logic: products created in the last 30 days
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         matchesFilter = matchesFilter && new Date(product.created_at) >= thirtyDaysAgo;
       }
       if (activeFilters.includes("Slow Sellers")) {
+        // Example logic: products with low sales
         const salesData = generateMockSalesData(7);
         const averageSales = salesData.reduce((acc, curr) => acc + curr.value, 0) / salesData.length;
         matchesFilter = matchesFilter && averageSales < 5;
@@ -110,6 +90,8 @@ const Products = () => {
 
     return matchesFilter;
   });
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto py-10">
@@ -138,8 +120,8 @@ const Products = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Collections</SelectItem>
-            {mockCollections.map((collection) => (
-              <SelectItem key={collection.id} value={collection.id}>
+            {collections?.map((collection: any) => (
+              <SelectItem key={collection.id} value={collection.id.toString()}>
                 {collection.title}
               </SelectItem>
             ))}
@@ -163,7 +145,7 @@ const Products = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProducts.map((product) => (
+              {filteredProducts?.map((product) => (
                 <React.Fragment key={product.id}>
                   <TableRow>
                     <TableCell>
