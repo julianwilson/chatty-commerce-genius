@@ -31,6 +31,7 @@ import { useState } from "react";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { parse, isWithinInterval } from 'date-fns';
+import { ProductActivityCard } from "@/components/ProductActivityCard";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -223,6 +224,31 @@ const ProductDetails = () => {
 
   if (!product) return null;
 
+  // Mock activity data
+  const mockActivities = [
+    {
+      date: "Mar 15, 2024",
+      type: "experiment_started" as const,
+      title: "Product Description Test"
+    },
+    {
+      date: "Mar 10, 2024",
+      type: "experiment_ended" as const,
+      title: "Price Point Test",
+      details: "Winner: Test A"
+    },
+    {
+      date: "Mar 05, 2024",
+      type: "promotion_started" as const,
+      title: "Spring Sale 2024"
+    },
+    {
+      date: "Mar 01, 2024",
+      type: "promotion_ended" as const,
+      title: "Winter Clearance"
+    }
+  ];
+
   return (
     <div className="container mx-auto py-6 space-y-12">
       <div className="flex items-center gap-4">
@@ -310,7 +336,7 @@ const ProductDetails = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {salesData.map((row) => (
+              {salesData.slice(0, 20).map((row) => (
                 <TableRow key={row.date}>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.units}</TableCell>
@@ -326,6 +352,8 @@ const ProductDetails = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <ProductActivityCard activities={mockActivities} />
     </div>
   );
 };
