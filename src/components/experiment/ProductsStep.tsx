@@ -161,6 +161,14 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     );
   };
 
+  const calculateTestPrice = (originalPrice: number, testType: 'A' | 'B') => {
+    if (testType === 'A') {
+      return originalPrice * 1.2; // 20% increase for Test A
+    } else {
+      return originalPrice * 0.8; // 20% decrease for Test B
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -276,50 +284,56 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {product.variants.map((variant) => (
-                              <TableRow key={variant.id}>
-                                <TableCell>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => removeVariant(variant.id)}
-                                  >
-                                    <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
-                                  </Button>
-                                </TableCell>
-                                <TableCell>{variant.title}</TableCell>
-                                <TableCell>
-                                  <div className="flex flex-col">
-                                    <span>${Number(variant.price).toFixed(2)}</span>
-                                    {variant.compare_at_price && (
-                                      <span className="text-sm text-muted-foreground line-through">
-                                        ${Number(variant.compare_at_price).toFixed(2)}
-                                      </span>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex flex-col">
-                                    <span>${Number(variant.price).toFixed(2)}</span>
-                                    {variant.compare_at_price && (
-                                      <span className="text-sm text-muted-foreground line-through">
-                                        ${Number(variant.compare_at_price).toFixed(2)}
-                                      </span>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex flex-col">
-                                    <span>${Number(variant.price).toFixed(2)}</span>
-                                    {variant.compare_at_price && (
-                                      <span className="text-sm text-muted-foreground line-through">
-                                        ${Number(variant.compare_at_price).toFixed(2)}
-                                      </span>
-                                    )}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                            {product.variants.map((variant) => {
+                              const originalPrice = Number(variant.price);
+                              const testAPrice = calculateTestPrice(originalPrice, 'A');
+                              const testBPrice = calculateTestPrice(originalPrice, 'B');
+                              
+                              return (
+                                <TableRow key={variant.id}>
+                                  <TableCell>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => removeVariant(variant.id)}
+                                    >
+                                      <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
+                                    </Button>
+                                  </TableCell>
+                                  <TableCell>{variant.title}</TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-col">
+                                      <span>${testAPrice.toFixed(2)}</span>
+                                      {variant.compare_at_price && (
+                                        <span className="text-sm text-muted-foreground line-through">
+                                          ${Number(variant.compare_at_price).toFixed(2)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-col">
+                                      <span>${originalPrice.toFixed(2)}</span>
+                                      {variant.compare_at_price && (
+                                        <span className="text-sm text-muted-foreground line-through">
+                                          ${Number(variant.compare_at_price).toFixed(2)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-col">
+                                      <span>${testBPrice.toFixed(2)}</span>
+                                      {variant.compare_at_price && (
+                                        <span className="text-sm text-muted-foreground line-through">
+                                          ${Number(variant.compare_at_price).toFixed(2)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
                           </TableBody>
                         </Table>
                       </div>
