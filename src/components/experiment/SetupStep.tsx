@@ -24,6 +24,14 @@ import { Switch } from "@/components/ui/switch";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const experimentTypes = [
   "Price Testing",
@@ -43,12 +51,21 @@ const timezones = [
   "Pacific/Honolulu",
 ] as const;
 
+const priceRoundingOptions = [
+  "No Rounding",
+  "Round up to .99",
+  "Round up to .00",
+  "Round to nearest .99",
+  "Round to nearest .00",
+] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
   startDate: z.date(),
   endDate: z.date(),
   timezone: z.enum(timezones),
+  priceRounding: z.enum(priceRoundingOptions),
   activateViaUtm: z.boolean().default(false),
 });
 
@@ -63,6 +80,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       timezone: "America/New_York",
+      priceRounding: "No Rounding",
       activateViaUtm: false,
     },
   });
@@ -130,6 +148,51 @@ export function SetupStep({ onNext }: SetupStepProps) {
                   {timezones.map((timezone) => (
                     <SelectItem key={timezone} value={timezone}>
                       {timezone}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="space-y-4">
+          <FormLabel>Traffic Allocation</FormLabel>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Control</TableHead>
+                <TableHead>Test A</TableHead>
+                <TableHead>Test B</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="text-center">33.33%</TableCell>
+                <TableCell className="text-center">33.33%</TableCell>
+                <TableCell className="text-center">33.33%</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+
+        <FormField
+          control={form.control}
+          name="priceRounding"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price Rounding</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select price rounding" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {priceRoundingOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
                     </SelectItem>
                   ))}
                 </SelectContent>
