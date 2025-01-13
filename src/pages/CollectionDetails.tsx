@@ -285,23 +285,6 @@ const CollectionDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>% of Sales by Month</CardTitle>
-          <CardDescription>
-            Last 12 months of sales performance
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] w-full">
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={chartOptions}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
           <CardTitle>Collection Sales Analysis</CardTitle>
           <CardDescription>
             Last 30 days of sales and units performance
@@ -312,6 +295,23 @@ const CollectionDetails = () => {
             <HighchartsReact
               highcharts={Highcharts}
               options={salesAnalysisOptions}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>% of Sales by Month</CardTitle>
+          <CardDescription>
+            Last 12 months of sales performance
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] w-full">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={chartOptions}
             />
           </div>
         </CardContent>
