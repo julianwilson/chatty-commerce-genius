@@ -80,11 +80,7 @@ const generateDailySalesData = () => {
 const CollectionDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [topSellersDateRange, setTopSellersDateRange] = useState("30d");
-  const [hotNewArrivalsDateRange, setHotNewArrivalsDateRange] = useState("30d");
-  const [slowSellersDateRange, setSlowSellersDateRange] = useState("30d");
-  const [salesAnalysisRange, setSalesAnalysisRange] = useState("30d");
-  const [salesPercentageRange, setSalesPercentageRange] = useState("12m");
+  const [dateRange, setDateRange] = useState("30d");
   const dailySalesData = generateDailySalesData();
   const monthlySalesData = generateSalesPercentageData();
 
@@ -190,7 +186,7 @@ const CollectionDetails = () => {
     series: [{
       type: 'line',
       name: '% of Sales',
-      data: getFilteredPercentageData(salesPercentageRange).map(data => data.salesPercentage),
+      data: getFilteredPercentageData(dateRange).map(data => data.salesPercentage),
       color: '#10B981'
     }],
   };
@@ -237,12 +233,12 @@ const CollectionDetails = () => {
     series: [{
       name: 'Gross Sales',
       type: 'line',
-      data: getFilteredSalesData(salesAnalysisRange).map(data => data.sales),
+      data: getFilteredSalesData(dateRange).map(data => data.sales),
       color: '#10B981'
     }, {
       name: 'Units',
       type: 'line',
-      data: getFilteredSalesData(salesAnalysisRange).map(data => data.units),
+      data: getFilteredSalesData(dateRange).map(data => data.units),
       yAxis: 1,
       color: '#6366F1'
     }],
@@ -339,7 +335,7 @@ const CollectionDetails = () => {
       product_type: "Diffuser",
       created_at: "2024-01-04T00:00:00Z",
       variants: [{
-        id: 42758461874391,
+        id: 42758461907159,
         title: "Default Title",
         price: "24.99",
         compare_at_price: null,
@@ -353,7 +349,7 @@ const CollectionDetails = () => {
       product_type: "Diffuser",
       created_at: "2024-01-05T00:00:00Z",
       variants: [{
-        id: 42758461907159,
+        id: 42758461939927,
         title: "Default Title",
         price: "24.99",
         compare_at_price: null,
@@ -435,36 +431,39 @@ const CollectionDetails = () => {
 
   return (
     <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          className="h-8 w-8"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-2xl font-bold">{collection.title}</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="h-8 w-8"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">{collection.title}</h1>
+        </div>
+        <Select value={dateRange} onValueChange={setDateRange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select date range" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="7d">Last 7 days</SelectItem>
+            <SelectItem value="30d">Last 30 days</SelectItem>
+            <SelectItem value="90d">Last 90 days</SelectItem>
+            <SelectItem value="12m">Last 12 months</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader>
           <div>
             <CardTitle>Collection Sales Analysis</CardTitle>
             <CardDescription>
               Sales and units performance
             </CardDescription>
           </div>
-          <Select value={salesAnalysisRange} onValueChange={setSalesAnalysisRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="14d">Last 14 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-            </SelectContent>
-          </Select>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
@@ -477,23 +476,13 @@ const CollectionDetails = () => {
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader>
           <div>
             <CardTitle>% of Sales by Month</CardTitle>
             <CardDescription>
               Sales performance over time
             </CardDescription>
           </div>
-          <Select value={salesPercentageRange} onValueChange={setSalesPercentageRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="3m">Last 3 months</SelectItem>
-              <SelectItem value="6m">Last 6 months</SelectItem>
-              <SelectItem value="12m">Last 12 months</SelectItem>
-            </SelectContent>
-          </Select>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full">
@@ -508,20 +497,20 @@ const CollectionDetails = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <TopSellersCard 
           products={mockProducts}
-          dateRange={topSellersDateRange}
-          onDateRangeChange={setTopSellersDateRange}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
         />
         <HotNewArrivalsCard 
           products={mockProducts}
-          dateRange={hotNewArrivalsDateRange}
-          onDateRangeChange={setHotNewArrivalsDateRange}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
         />
       </div>
 
       <SlowSellersCard 
         products={mockProducts}
-        dateRange={slowSellersDateRange}
-        onDateRangeChange={setSlowSellersDateRange}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
       />
     </div>
   );
