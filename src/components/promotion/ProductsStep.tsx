@@ -244,7 +244,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
               size="icon"
               onClick={() => removeFilterRule(rule.id)}
             >
-              <X className="h-4 w-4" />
+              Remove
             </Button>
           </div>
         ))}
@@ -255,7 +255,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           onClick={addFilterRule}
           className="flex items-center gap-2"
         >
-          <Plus className="h-4 w-4" /> Add Filter
+          Add Filter
         </Button>
       </div>
 
