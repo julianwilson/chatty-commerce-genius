@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Settings2 } from "lucide-react";
+import { useState } from "react"; // Added this import
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
