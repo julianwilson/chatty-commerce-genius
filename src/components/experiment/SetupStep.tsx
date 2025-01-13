@@ -59,6 +59,8 @@ const priceRoundingOptions = [
   "Round to nearest .00",
 ] as const;
 
+const priceAdjustmentTypes = ["Lower by", "Increase By"] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
@@ -67,6 +69,10 @@ const formSchema = z.object({
   timezone: z.enum(timezones),
   priceRounding: z.enum(priceRoundingOptions),
   activateViaUtm: z.boolean().default(false),
+  testAPriceAdjustmentType: z.enum(priceAdjustmentTypes),
+  testAPriceAdjustmentPercentage: z.number().min(0).max(100),
+  testBPriceAdjustmentType: z.enum(priceAdjustmentTypes),
+  testBPriceAdjustmentPercentage: z.number().min(0).max(100),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -82,6 +88,10 @@ export function SetupStep({ onNext }: SetupStepProps) {
       timezone: "America/New_York",
       priceRounding: "No Rounding",
       activateViaUtm: false,
+      testAPriceAdjustmentType: "Increase By",
+      testAPriceAdjustmentPercentage: 20,
+      testBPriceAdjustmentType: "Lower by",
+      testBPriceAdjustmentPercentage: 20,
     },
   });
 
@@ -156,6 +166,99 @@ export function SetupStep({ onNext }: SetupStepProps) {
             </FormItem>
           )}
         />
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <h3 className="font-medium">Test A Price Adjustment</h3>
+              <FormField
+                control={form.control}
+                name="testAPriceAdjustmentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select adjustment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priceAdjustmentTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="testAPriceAdjustmentPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium">Test B Price Adjustment</h3>
+              <FormField
+                control={form.control}
+                name="testBPriceAdjustmentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select adjustment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priceAdjustmentTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="testBPriceAdjustmentPercentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="space-y-4">
           <FormLabel>Traffic Allocation</FormLabel>
