@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SetupStep } from "@/components/experiment/SetupStep";
+import { RulesStep } from "@/components/experiment/RulesStep";
 import { ProductsStep } from "@/components/experiment/ProductsStep";
 import { LaunchStep } from "@/components/experiment/LaunchStep";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-const steps = ["Setup", "Products", "Launch"] as const;
+const steps = ["Setup", "Rules", "Products", "Launch"] as const;
 
 export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
@@ -119,6 +120,12 @@ export default function CreateExperiment() {
       <div className="mt-8">
         {currentStep === 0 && <SetupStep onNext={goToNextStep} />}
         {currentStep === 1 && (
+          <RulesStep 
+            onNext={goToNextStep} 
+            onBack={goToPreviousStep}
+          />
+        )}
+        {currentStep === 2 && (
           <ProductsStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
@@ -132,7 +139,7 @@ export default function CreateExperiment() {
             ] : undefined}
           />
         )}
-        {currentStep === 2 && (
+        {currentStep === 3 && (
           <LaunchStep 
             onBack={goToPreviousStep} 
             onClose={() => navigate('/experiments')} 
