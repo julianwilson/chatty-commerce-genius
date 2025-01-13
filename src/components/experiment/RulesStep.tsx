@@ -32,10 +32,9 @@ import { useState } from "react";
 
 const priceRoundingOptions = [
   "No Rounding",
-  "Round up to .99",
-  "Round up to .00",
-  "Round to nearest .99",
-  "Round to nearest .00",
+  "Round Up",
+  "Round Nearest",
+  "Round Down",
 ] as const;
 
 const priceAdjustmentTypes = ["Lower by", "Increase By"] as const;
@@ -55,6 +54,7 @@ const createFormSchema = (testGroups: string[]) => {
 
   return z.object({
     priceRounding: z.enum(priceRoundingOptions),
+    priceRoundingValue: z.number().optional(),
     activateViaUtm: z.boolean(),
     ...testGroupFields,
   });
@@ -75,6 +75,7 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       priceRounding: "No Rounding",
+      priceRoundingValue: 0.99,
       activateViaUtm: false,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
@@ -82,6 +83,8 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
       testBPriceAdjustmentPercentage: 20,
     },
   });
+
+  const selectedPriceRounding = form.watch("priceRounding");
 
   const onSubmit = (values: FormValues) => {
     console.log("Rules values:", values);
@@ -191,30 +194,52 @@ export function RulesStep({ onNext, onBack }: RulesStepProps) {
           </Table>
         </div>
 
-        <FormField
-          control={form.control}
-          name="priceRounding"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price Rounding</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select price rounding" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {priceRoundingOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="priceRounding"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price Rounding</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select price rounding" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {priceRoundingOptions.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {selectedPriceRounding !== "No Rounding" && (
+            <FormField
+              control={form.control}
+              name="priceRoundingValue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
+        </div>
 
         <FormField
           control={form.control}
