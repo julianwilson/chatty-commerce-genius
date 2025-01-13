@@ -93,7 +93,7 @@ const Dashboard = () => {
             />
 
             <div className="flex flex-col gap-3 pt-4">
-              <Button size="lg" onClick={handleAiContinue}>
+              <Button size="lg" onClick={handleAiContinue} className="max-w-[500px] mx-auto">
                 Start with AI
               </Button>
             </div>
