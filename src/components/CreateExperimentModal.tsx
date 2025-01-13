@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Calendar } from "@/components/ui/calendar";
-import { Product } from "@/types/product";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -9,62 +9,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { SetupStep } from "@/components/experiment/SetupStep";
+import { ProductsStep } from "@/components/experiment/ProductsStep";
+import { LaunchStep } from "@/components/experiment/LaunchStep";
 
-const experimentTypes = [
-  "Price Testing",
-  "Product Description",
-  "Image Testing",
-  "Collection Layout",
-  "Checkout Flow",
-] as const;
-
-const timezones = [
-  "America/New_York",
-  "America/Chicago",
-  "America/Denver",
-  "America/Los_Angeles",
-  "America/Phoenix",
-  "America/Anchorage",
-  "Pacific/Honolulu",
-] as const;
-
-const formSchema = z.object({
-  name: z.string().min(1, "Experiment name is required"),
-  type: z.enum(experimentTypes),
-  products: z.array(z.number()).min(1, "At least one product must be selected"),
-  startDate: z.date(),
-  endDate: z.date(),
-  timezone: z.enum(timezones),
-  activateViaUtm: z.boolean().default(false),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+const steps = ["Setup", "Products", "Launch"] as const;
 
 interface CreateExperimentModalProps {
   open: boolean;
@@ -72,238 +26,150 @@ interface CreateExperimentModalProps {
 }
 
 export function CreateExperimentModal({ open, onClose }: CreateExperimentModalProps) {
-  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [currentStep, setCurrentStep] = useState(-1);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const { toast } = useToast();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      products: [],
-      timezone: "America/New_York",
-      activateViaUtm: false,
-    },
-  });
-
-  const selectedType = form.watch("type");
-
-  const onSubmit = (values: FormValues) => {
-    console.log("Form submitted:", values);
-    onClose();
+  const goToNextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
   };
+
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleInputClick = () => {
+    if (!aiPrompt) {
+      setAiPrompt("Setup an A/B test for our Best Sellers collection with a 20% price increase");
+    }
+  };
+
+  const handleAiContinue = () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: "Please enter a prompt",
+        description: "Tell us what kind of experiment you want to create",
+        variant: "destructive",
+      });
+      return;
+    }
+    setCurrentStep(1);
+  };
+
+  if (currentStep === -1) {
+    return (
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Create New Experiment</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-full max-h-[calc(90vh-80px)] pr-4">
+            <div className="space-y-6">
+              <div className="space-y-2 text-center">
+                <h2 className="text-3xl font-bold tracking-tight">Let's work on your next experiment!</h2>
+                <p className="text-muted-foreground text-lg">
+                  Get help from AI and be done in no time.
+                </p>
+              </div>
+
+              <Textarea
+                placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
+                className="min-h-[120px] text-lg p-4"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                onClick={handleInputClick}
+              />
+
+              <div className="flex flex-col gap-3 pt-4">
+                <Button size="lg" onClick={handleAiContinue}>
+                  Continue with AI
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => setCurrentStep(0)}
+                >
+                  Setup without AI
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh]">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Create New Experiment</DialogTitle>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <DialogTitle>Create New Experiment</DialogTitle>
+          </div>
         </DialogHeader>
         <ScrollArea className="h-full max-h-[calc(90vh-80px)] pr-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Experiment Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter experiment name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select experiment type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {experimentTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center justify-center gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={!selectedType}
-                  onClick={() => console.log("Add Products clicked")}
+          <div className="flex justify-between items-center mb-8">
+            {steps.map((step, index) => (
+              <div
+                key={step}
+                className="flex items-center"
+              >
+                <div
+                  className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                    index <= currentStep
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
                 >
-                  Add Products
-                </Button>
-                <span className="text-sm text-muted-foreground">or</span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={!selectedType}
-                  onClick={() => console.log("Add Collection clicked")}
+                  {index + 1}
+                </div>
+                <div
+                  className={`ml-2 ${
+                    index <= currentStep ? "text-primary" : "text-gray-500"
+                  }`}
                 >
-                  Add Collection
-                </Button>
+                  {step}
+                </div>
+                {index < steps.length - 1 && (
+                  <div
+                    className={`h-0.5 w-16 mx-4 ${
+                      index < currentStep ? "bg-primary" : "bg-gray-200"
+                    }`}
+                  />
+                )}
               </div>
+            ))}
+          </div>
 
-              <FormField
-                control={form.control}
-                name="timezone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Timezone</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select timezone" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {timezones.map((timezone) => (
-                          <SelectItem key={timezone} value={timezone}>
-                            {timezone}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          <div className="mt-8">
+            {currentStep === 0 && <SetupStep onNext={goToNextStep} />}
+            {currentStep === 1 && (
+              <ProductsStep 
+                onNext={goToNextStep} 
+                onBack={goToPreviousStep}
+                initialFilters={aiPrompt ? [
+                  {
+                    id: "1",
+                    field: "collection",
+                    operator: "contains",
+                    value: "Best Sellers"
+                  }
+                ] : undefined}
               />
-
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Start Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              formatInTimeZone(
-                                field.value,
-                                form.watch("timezone"),
-                                "PPP p"
-                              )
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date()
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>End Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              formatInTimeZone(
-                                field.value,
-                                form.watch("timezone"),
-                                "PPP p"
-                              )
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date() || (form.watch("startDate") && date < form.watch("startDate"))
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="activateViaUtm"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Activate Via UTM Only</FormLabel>
-                      <div className="text-sm text-muted-foreground">
-                        Only activate experiment for traffic from UTM sources
-                      </div>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" type="button" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button type="submit">Create Experiment</Button>
-              </div>
-            </form>
-          </Form>
+            )}
+            {currentStep === 2 && <LaunchStep onBack={goToPreviousStep} onClose={onClose} />}
+          </div>
         </ScrollArea>
       </DialogContent>
     </Dialog>
