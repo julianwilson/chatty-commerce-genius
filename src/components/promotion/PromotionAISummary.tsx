@@ -1,8 +1,4 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 
 interface PromotionAISummaryProps {
   dailyData: {
@@ -30,113 +26,38 @@ interface PromotionAISummaryProps {
 }
 
 export function PromotionAISummary({ dailyData, previousPeriodData }: PromotionAISummaryProps) {
-  const [summary, setSummary] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  // Calculate metrics for the mock summary
+  const totalCurrentSales = dailyData.reduce((sum, day) => sum + day.sales, 0);
+  const totalPreviousSales = previousPeriodData.reduce((sum, day) => sum + day.sales, 0);
+  const salesGrowth = ((totalCurrentSales - totalPreviousSales) / totalPreviousSales) * 100;
 
-  const generateSummary = async () => {
-    if (!localStorage.getItem('PERPLEXITY_API_KEY')) {
-      const apiKey = prompt('Please enter your Perplexity API key:');
-      if (apiKey) {
-        localStorage.setItem('PERPLEXITY_API_KEY', apiKey);
-      } else {
-        toast({
-          title: "API Key Required",
-          description: "Please provide a Perplexity API key to use the AI summary feature.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
+  const totalCurrentUnits = dailyData.reduce((sum, day) => sum + day.unitsSold, 0);
+  const totalPreviousUnits = previousPeriodData.reduce((sum, day) => sum + day.unitsSold, 0);
+  const unitsGrowth = ((totalCurrentUnits - totalPreviousUnits) / totalPreviousUnits) * 100;
 
-    setIsLoading(true);
-    try {
-      const totalCurrentSales = dailyData.reduce((sum, day) => sum + day.sales, 0);
-      const totalPreviousSales = previousPeriodData.reduce((sum, day) => sum + day.sales, 0);
-      const salesGrowth = ((totalCurrentSales - totalPreviousSales) / totalPreviousSales) * 100;
+  const avgCurrentAOV = dailyData.reduce((sum, day) => sum + day.aov, 0) / dailyData.length;
+  const avgPreviousAOV = previousPeriodData.reduce((sum, day) => sum + day.aov, 0) / previousPeriodData.length;
+  const aovGrowth = ((avgCurrentAOV - avgPreviousAOV) / avgPreviousAOV) * 100;
 
-      const totalCurrentUnits = dailyData.reduce((sum, day) => sum + day.unitsSold, 0);
-      const totalPreviousUnits = previousPeriodData.reduce((sum, day) => sum + day.unitsSold, 0);
-      const unitsGrowth = ((totalCurrentUnits - totalPreviousUnits) / totalPreviousUnits) * 100;
+  // Mock summary based on the calculated metrics
+  const mockSummary = `The promotion has demonstrated strong performance with a ${salesGrowth.toFixed(1)}% increase in sales compared to the previous period, reaching a total of $${totalCurrentSales.toLocaleString()}. This significant growth was driven by both increased transaction volume and higher average order values, indicating effective promotional strategies and strong customer engagement.
 
-      const avgCurrentAOV = dailyData.reduce((sum, day) => sum + day.aov, 0) / dailyData.length;
-      const avgPreviousAOV = previousPeriodData.reduce((sum, day) => sum + day.aov, 0) / previousPeriodData.length;
-      const aovGrowth = ((avgCurrentAOV - avgPreviousAOV) / avgPreviousAOV) * 100;
+Unit sales showed remarkable growth of ${unitsGrowth.toFixed(1)}%, increasing from ${totalPreviousUnits} to ${totalCurrentUnits} units. This substantial increase in volume suggests that the promotion successfully attracted customer interest and effectively converted browsing activity into purchases. The average markdown of ${dailyData[0].averageMarkdown}% proved to be an optimal balance between maintaining margins and driving sales velocity.
 
-      const message = `Please analyze this promotion's performance and provide a 3-paragraph summary. Here are the key metrics:
-        - Sales growth: ${salesGrowth.toFixed(1)}% (Current: $${totalCurrentSales.toLocaleString()}, Previous: $${totalPreviousSales.toLocaleString()})
-        - Units sold growth: ${unitsGrowth.toFixed(1)}% (Current: ${totalCurrentUnits}, Previous: ${totalPreviousUnits})
-        - Average order value growth: ${aovGrowth.toFixed(1)}% (Current: $${avgCurrentAOV.toFixed(2)}, Previous: $${avgPreviousAOV.toFixed(2)})
-        - Average markdown: ${dailyData[0].averageMarkdown}%
-        
-        Focus on the performance trends, potential factors contributing to the results, and recommendations for future promotions.`;
-
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('PERPLEXITY_API_KEY')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a retail analytics expert. Be precise and data-driven in your analysis.'
-            },
-            {
-              role: 'user',
-              content: message
-            }
-          ],
-          temperature: 0.2,
-          max_tokens: 1000,
-        }),
-      });
-
-      const data = await response.json();
-      setSummary(data.choices[0].message.content);
-    } catch (error) {
-      console.error('Error generating summary:', error);
-      toast({
-        title: "Error",
-        description: "Failed to generate AI summary. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+The average order value (AOV) experienced a ${aovGrowth.toFixed(1)}% improvement, rising from $${avgPreviousAOV.toFixed(2)} to $${avgCurrentAOV.toFixed(2)}. This increase in AOV, combined with higher transaction volumes, indicates successful upselling and cross-selling strategies during the promotion. For future promotions, consider maintaining similar discount levels while focusing on bundle offers and targeted marketing to sustain this positive momentum.`;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          AI Summary
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={generateSummary}
-            disabled={isLoading}
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {isLoading ? "Generating..." : "Generate"}
-          </Button>
-        </CardTitle>
+        <CardTitle>AI Summary</CardTitle>
         <CardDescription>
-          AI-powered analysis of your promotion's performance
+          Analysis of your promotion's performance
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {summary ? (
-          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
-            {summary}
-          </div>
-        ) : (
-          <p className="text-center text-sm text-muted-foreground py-8">
-            Click generate to create an AI summary of your promotion's performance
-          </p>
-        )}
+        <div className="whitespace-pre-wrap text-sm text-muted-foreground">
+          {mockSummary}
+        </div>
       </CardContent>
     </Card>
   );
