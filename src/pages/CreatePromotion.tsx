@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 const steps = ["Setup", "Products", "Launch"] as const;
 
 export default function CreatePromotion() {
-  const [currentStep, setCurrentStep] = useState(-1); // -1 represents the welcome screen
+  const [currentStep, setCurrentStep] = useState(-1);
   const [aiPrompt, setAiPrompt] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -43,7 +43,7 @@ export default function CreatePromotion() {
       });
       return;
     }
-    setCurrentStep(1); // Go directly to Products step
+    setCurrentStep(1);
   };
 
   if (currentStep === -1) {
@@ -145,14 +145,14 @@ export default function CreatePromotion() {
           <ProductsStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
-            initialFilters={[
+            initialFilters={aiPrompt ? [
               {
                 id: "1",
                 field: "collection",
                 operator: "doesNotContain",
-                value: "New Arrivals"
+                value: "Best Sellers"
               }
-            ]}
+            ] : undefined}
           />
         )}
         {currentStep === 2 && <LaunchStep onBack={goToPreviousStep} />}
