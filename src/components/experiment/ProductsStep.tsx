@@ -53,6 +53,7 @@ const OPERATOR_OPTIONS = [
 
 export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepProps) {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [filterRules, setFilterRules] = useState<FilterRule[]>(() => 
     initialFilters || [{ id: "1", field: "", operator: "", value: "" }]
@@ -79,6 +80,16 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   const removeProduct = (productId: number) => {
     setSelectedProducts((current) =>
       current.filter((id) => id !== productId)
+    );
+    const productVariants = products?.find(p => p.id === productId)?.variants.map(v => v.id) || [];
+    setSelectedVariants(current => 
+      current.filter(id => !productVariants.includes(id))
+    );
+  };
+
+  const removeVariant = (variantId: number) => {
+    setSelectedVariants(current =>
+      current.filter(id => id !== variantId)
     );
   };
 
@@ -226,35 +237,75 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           </TableHeader>
           <TableBody>
             {products?.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toggleRow(product.id)}
-                  >
-                    {expandedRows.includes(product.id) ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeProduct(product.id)}
-                  >
-                    <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
-                  </Button>
-                </TableCell>
-                <TableCell>{product.title}</TableCell>
-                <TableCell>{product.product_type}</TableCell>
-                <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
-                <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
-                <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
-              </TableRow>
+              <>
+                <TableRow key={product.id}>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleRow(product.id)}
+                    >
+                      {expandedRows.includes(product.id) ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeProduct(product.id)}
+                    >
+                      <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
+                    </Button>
+                  </TableCell>
+                  <TableCell>{product.title}</TableCell>
+                  <TableCell>{product.product_type}</TableCell>
+                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
+                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
+                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
+                </TableRow>
+                {expandedRows.includes(product.id) && (
+                  <TableRow>
+                    <TableCell colSpan={7}>
+                      <div className="p-4 bg-muted/50">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-[50px]"></TableHead>
+                              <TableHead>Variant</TableHead>
+                              <TableHead>Test A</TableHead>
+                              <TableHead>Control</TableHead>
+                              <TableHead>Test B</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {product.variants.map((variant) => (
+                              <TableRow key={variant.id}>
+                                <TableCell>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeVariant(variant.id)}
+                                  >
+                                    <X className="h-4 w-4 text-destructive hover:text-destructive/90" />
+                                  </Button>
+                                </TableCell>
+                                <TableCell>{variant.title}</TableCell>
+                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
+                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
+                                <TableCell>${Number(variant.price).toFixed(2)}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
             ))}
           </TableBody>
         </Table>
