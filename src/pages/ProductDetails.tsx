@@ -53,13 +53,15 @@ const ProductDetails = () => {
         id: 1,
         title: "30ml",
         price: "59.99",
-        compare_at_price: "69.99"
+        compare_at_price: "69.99",
+        inventory_quantity: 100
       },
       {
         id: 2,
         title: "50ml",
         price: "89.99",
-        compare_at_price: "99.99"
+        compare_at_price: "99.99",
+        inventory_quantity: 75
       }
     ],
     images: [{ src: "/placeholder.svg" }]

@@ -36,7 +36,8 @@ const mockProducts: Product[] = [
         id: 1,
         title: "30ml",
         price: "59.99",
-        compare_at_price: "69.99"
+        compare_at_price: "69.99",
+        inventory_quantity: 100
       }
     ],
     images: [{ src: "/placeholder.svg" }]
@@ -51,7 +52,8 @@ const mockProducts: Product[] = [
         id: 2,
         title: "50ml",
         price: "89.99",
-        compare_at_price: "99.99"
+        compare_at_price: "99.99",
+        inventory_quantity: 75
       }
     ],
     images: [{ src: "/placeholder.svg" }]
@@ -135,7 +137,7 @@ const Products = () => {
             <SelectValue placeholder="Filter by Collection" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Collections</SelectItem>
+            <SelectItem value="all">All Collections</SelectItem>
             {mockCollections.map((collection) => (
               <SelectItem key={collection.id} value={collection.id}>
                 {collection.title}
