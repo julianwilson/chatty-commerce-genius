@@ -64,6 +64,8 @@ export function SetupStep({ onNext }: SetupStepProps) {
     defaultValues: {
       timezone: "America/New_York",
       activateViaUtm: false,
+      startDate: new Date(),
+      endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     },
   });
 
