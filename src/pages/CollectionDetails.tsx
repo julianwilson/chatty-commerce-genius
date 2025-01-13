@@ -14,6 +14,34 @@ import { generateMockSalesData } from "@/lib/mockData";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
+// Generate last 12 months of dates including 2024 and 2025
+const generateSalesPercentageData = () => {
+  const data = [];
+  const currentDate = new Date();
+  
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date();
+    date.setMonth(currentDate.getMonth() - i);
+    
+    const monthYear = date.toLocaleDateString('en-US', { 
+      month: 'short',
+      year: 'numeric'
+    });
+    
+    // Generate a random percentage between 7 and 12
+    const salesPercentage = (Math.random() * (12 - 7) + 7).toFixed(1);
+    
+    data.push({
+      month: monthYear,
+      salesPercentage: parseFloat(salesPercentage)
+    });
+  }
+  
+  return data;
+};
+
+const monthlySalesData = generateSalesPercentageData();
+
 const CollectionDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -22,7 +50,6 @@ const CollectionDetails = () => {
   const { data: collection, isLoading, isError } = useQuery({
     queryKey: ["collection", id],
     queryFn: async () => {
-      // For now, we'll use the mock data from Collections page
       const collectionsData = [
         {
           id: 288699203767,
@@ -55,104 +82,51 @@ const CollectionDetails = () => {
     },
   });
 
-  const getPromotionColor = (type: string): string => {
-    const colors: { [key: string]: string } = {
-      "Sitewide Markdown Sale": "#F97316",
-      "Sitewide Discount Code Sale": "#8B5CF6",
-      "Collection Sale": "#0EA5E9",
-      "Bogo Sale": "#D946EF",
-      "Free Shipping Sale": "#33C3F0",
-      "Shipping Update": "#8E9196",
-      "Influencer": "#9b87f5",
-      "Event": "#6E59A5",
-      "Loyalty Bonus": "#F2FCE2"
-    };
-    return colors[type] || '#CBD5E1';
-  };
-
   const chartOptions: Highcharts.Options = {
     title: {
       text: ''
     },
     xAxis: {
-      categories: salesData.map(d => d.date),
-      plotBands: salesData
-        .map((dataPoint, index) => {
-          if (dataPoint.promotion) {
-            return {
-              from: index - 0.5,
-              to: index + 0.5,
-              color: `${getPromotionColor(dataPoint.promotion.type)}20`,
-              label: {
-                text: dataPoint.promotion.type,
-                style: {
-                  color: getPromotionColor(dataPoint.promotion.type)
-                }
-              }
-            };
-          }
-          return null;
-        })
-        .filter(Boolean) as Highcharts.XAxisPlotBandsOptions[]
-    },
-    yAxis: [{
-      title: {
-        text: 'Sales ($)'
-      }
-    }, {
-      title: {
-        text: 'Price ($)'
-      },
-      opposite: true
-    }],
-    tooltip: {
-      shared: true,
-      useHTML: true,
-      formatter: function(this: any): string {
-        if (!this.points) return '';
-        
-        const date = this.x;
-        const dataPoint = salesData.find(d => d.date === date);
-        
-        let html = `<div style="padding: 8px;">
-          <p style="font-weight: bold; margin-bottom: 4px;">${date}</p>`;
-        
-        if (dataPoint?.promotion) {
-          html += `<p style="color: ${getPromotionColor(dataPoint.promotion.type)}; font-size: 12px; margin-bottom: 4px;">
-            ${dataPoint.promotion.type}
-          </p>`;
+      categories: monthlySalesData.map(data => data.month),
+      labels: {
+        style: {
+          color: 'var(--foreground)'
         }
-        
-        html += `<div style="margin-top: 8px;">`;
-        this.points.forEach((point: any) => {
-          html += `<p style="margin: 2px 0;">
-            ${point.series.name}: $${point.y.toFixed(2)}
-          </p>`;
-        });
-        html += `</div></div>`;
-        
-        return html;
+      }
+    },
+    yAxis: {
+      title: {
+        text: '% of Sales',
+        style: {
+          color: 'var(--foreground)'
+        }
+      },
+      labels: {
+        format: '{value}%',
+        style: {
+          color: 'var(--foreground)'
+        }
       }
     },
     series: [{
-      name: 'Sales',
       type: 'line',
-      data: salesData.map(d => d.sales),
-      yAxis: 0,
-      color: '#1E3A8A'
-    }, {
-      name: 'Price',
-      type: 'line',
-      data: salesData.map(d => d.price),
-      yAxis: 1,
+      name: '% of Sales',
+      data: monthlySalesData.map(data => data.salesPercentage),
       color: '#10B981'
-    }, {
-      name: 'Avg Unit Retail',
-      type: 'line',
-      data: salesData.map(d => d.aur),
-      yAxis: 1,
-      color: '#8B5CF6'
-    }]
+    }],
+    credits: {
+      enabled: false
+    },
+    tooltip: {
+      formatter: function(this: any): string {
+        return `<b>${this.x}</b><br/>${this.y}%`;
+      }
+    },
+    legend: {
+      itemStyle: {
+        color: 'var(--foreground)'
+      }
+    }
   };
 
   if (isLoading) {
@@ -210,6 +184,23 @@ const CollectionDetails = () => {
         </Button>
         <h1 className="text-2xl font-bold">{collection.title}</h1>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>% of Sales by Month</CardTitle>
+          <CardDescription>
+            Last 12 months of sales performance
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] w-full">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={chartOptions}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
