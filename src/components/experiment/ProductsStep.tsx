@@ -230,9 +230,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>Product Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Test A</TableHead>
-              <TableHead>Control</TableHead>
-              <TableHead>Test B</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -263,13 +260,10 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                   </TableCell>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.product_type}</TableCell>
-                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
-                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
-                  <TableCell>${Number(product.variants[0].price).toFixed(2)}</TableCell>
                 </TableRow>
                 {expandedRows.includes(product.id) && (
                   <TableRow>
-                    <TableCell colSpan={7}>
+                    <TableCell colSpan={4}>
                       <div className="p-4 bg-muted/50">
                         <Table>
                           <TableHeader>
