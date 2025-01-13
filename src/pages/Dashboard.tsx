@@ -10,14 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 
@@ -90,50 +82,50 @@ const chartOptions: Highcharts.Options = {
   }
 };
 
+// Mock recommendations data
+const recommendations = [
+  {
+    type: 'seasonality' as const,
+    title: 'Summer Collection Opportunity',
+    description: 'Historical data shows increased demand for summer dresses starting next month. Consider launching a summer collection promotion.',
+    action: {
+      label: 'Create Promotion',
+      path: '/promotions/create'
+    }
+  },
+  {
+    type: 'sales' as const,
+    title: 'Dresses Performance',
+    description: 'Dress sales have increased by 25% in the last week. Consider expanding inventory.',
+    action: {
+      label: 'View Collection',
+      path: '/collections/dresses'
+    }
+  },
+  {
+    type: 'alert' as const,
+    title: 'Seasonal Inventory Alert',
+    description: 'Winter collection items are showing high stock levels. Consider a clearance promotion.',
+    action: {
+      label: 'View Products',
+      path: '/products'
+    }
+  }
+];
+
+// Mock activities data
+const activities = [
+  { type: "collection", text: "Created New Collections (Summer Dresses, Going out dresses)" },
+  { type: "experiment", text: "Started Experiment (Dresses +- 5%)" },
+  { type: "experiment", text: "Ended Experiment (Dresses +- 5%)" },
+  { type: "experiment", text: "Started Experiment (George Foreman Grill +- 10%)" },
+  { type: "experiment", text: "Started Experiment (Lower Ground Shipping to $5)" },
+  { type: "promotion", text: "Started Promotion (20% off site wide)" },
+];
+
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [targetRevenue, setTargetRevenue] = useState("25M");
-  const itemsPerPage = 25;
-
-  // Mock recommendations data - in a real app, this would come from an API
-  const recommendations = [
-    {
-      type: 'seasonality' as const,
-      title: 'Summer Collection Opportunity',
-      description: 'Historical data shows increased demand for summer dresses starting next month. Consider launching a summer collection promotion.',
-      action: {
-        label: 'Create Promotion',
-        path: '/promotions/create'
-      }
-    },
-    {
-      type: 'sales' as const,
-      title: 'Dresses Performance',
-      description: 'Dress sales have increased by 25% in the last week. Consider expanding inventory.',
-      action: {
-        label: 'View Collection',
-        path: '/collections/dresses'
-      }
-    },
-    {
-      type: 'alert' as const,
-      title: 'Seasonal Inventory Alert',
-      description: 'Winter collection items are showing high stock levels. Consider a clearance promotion.',
-      action: {
-        label: 'View Products',
-        path: '/products'
-      }
-    }
-  ];
-
-  const activities = [
-    { type: "collection", text: "Created New Collections (Summer Dresses, Going out dresses)" },
-    { type: "experiment", text: "Started Experiment (Dresses +- 5%)" },
-    { type: "experiment", text: "Ended Experiment (Dresses +- 5%)" },
-    { type: "experiment", text: "Started Experiment (George Foreman Grill +- 10%)" },
-    { type: "experiment", text: "Started Experiment (Lower Ground Shipping to $5)" },
-    { type: "promotion", text: "Started Promotion (20% off site wide)" },
-  ];
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -226,7 +218,6 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          {/* Pagination logic can be added here if needed */}
         </CardContent>
       </Card>
     </div>
