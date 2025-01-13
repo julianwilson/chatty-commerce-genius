@@ -156,7 +156,7 @@ const Dashboard = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="text-sm text-muted-foreground mt-2">85% to goal</div>
+            <div className="text-sm text-muted-foreground mt-2">$5,235,982 of $25,000,000</div>
           </CardContent>
         </Card>
         <Card>
