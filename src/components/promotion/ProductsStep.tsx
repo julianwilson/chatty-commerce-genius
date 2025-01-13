@@ -47,7 +47,7 @@ interface Collection {
 
 interface PriceEditorState {
   variantId: number | null;
-  column: "testA" | "control" | "testB" | null;
+  column: "control" | null;
   price: string;
   compareAtPrice: string;
 }
@@ -122,13 +122,12 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
 
   const openPriceEditor = (
     variantId: number,
-    column: "testA" | "control" | "testB",
     currentPrice: string,
     currentCompareAtPrice: string = ""
   ) => {
     setPriceEditor({
       variantId,
-      column,
+      column: "control",
       price: currentPrice,
       compareAtPrice: currentCompareAtPrice,
     });
@@ -326,9 +325,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                             <TableRow>
                               <TableHead className="w-[50px]"></TableHead>
                               <TableHead>Variant</TableHead>
-                              <TableHead>Test A</TableHead>
-                              <TableHead>Control</TableHead>
-                              <TableHead>Test B</TableHead>
+                              <TableHead>New Price</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -347,33 +344,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                                 <TableCell>
                                   <Button
                                     variant="ghost"
-                                    onClick={() => openPriceEditor(variant.id, "testA", variant.price, variant.compare_at_price || "")}
-                                  >
-                                    ${Number(variant.price).toFixed(2)}
-                                    {variant.compare_at_price && (
-                                      <span className="ml-2 text-sm text-muted-foreground line-through">
-                                        ${Number(variant.compare_at_price).toFixed(2)}
-                                      </span>
-                                    )}
-                                  </Button>
-                                </TableCell>
-                                <TableCell>
-                                  <Button
-                                    variant="ghost"
-                                    onClick={() => openPriceEditor(variant.id, "control", variant.price, variant.compare_at_price || "")}
-                                  >
-                                    ${Number(variant.price).toFixed(2)}
-                                    {variant.compare_at_price && (
-                                      <span className="ml-2 text-sm text-muted-foreground line-through">
-                                        ${Number(variant.compare_at_price).toFixed(2)}
-                                      </span>
-                                    )}
-                                  </Button>
-                                </TableCell>
-                                <TableCell>
-                                  <Button
-                                    variant="ghost"
-                                    onClick={() => openPriceEditor(variant.id, "testB", variant.price, variant.compare_at_price || "")}
+                                    onClick={() => openPriceEditor(variant.id, variant.price, variant.compare_at_price || "")}
                                   >
                                     ${Number(variant.price).toFixed(2)}
                                     {variant.compare_at_price && (
