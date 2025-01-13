@@ -38,7 +38,6 @@ export function TopSellersCard({ products, dateRange, onDateRangeChange }: TopSe
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
             <CardTitle>Top Sellers</CardTitle>
-            <CardDescription>Best performing products by sales</CardDescription>
           </div>
           <Select value={dateRange} onValueChange={onDateRangeChange}>
             <SelectTrigger className="w-[180px]">

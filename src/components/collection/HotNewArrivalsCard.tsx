@@ -42,7 +42,6 @@ export function HotNewArrivalsCard({ products, dateRange, onDateRangeChange }: H
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
             <CardTitle>Hot New Arrivals</CardTitle>
-            <CardDescription>Recently added products with high sales velocity</CardDescription>
           </div>
           <Select value={dateRange} onValueChange={onDateRangeChange}>
             <SelectTrigger className="w-[180px]">

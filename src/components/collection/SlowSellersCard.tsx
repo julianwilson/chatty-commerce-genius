@@ -42,7 +42,6 @@ export function SlowSellersCard({ products, dateRange, onDateRangeChange }: Slow
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
             <CardTitle>Slow Sellers</CardTitle>
-            <CardDescription>Products with low sales performance</CardDescription>
           </div>
           <Select value={dateRange} onValueChange={onDateRangeChange}>
             <SelectTrigger className="w-[180px]">
