@@ -24,6 +24,7 @@ const promotionsData = [
     endDate: "Jan 08 2025",
     totalSales: "$53,478",
     lyComp: 15.2,
+    avgMarkdown: 25
   },
   {
     id: 2,
@@ -34,6 +35,7 @@ const promotionsData = [
     endDate: "Feb 01 2025",
     totalSales: "$42,890",
     lyComp: -8.5,
+    avgMarkdown: 30
   },
   {
     id: 3,
@@ -44,6 +46,7 @@ const promotionsData = [
     endDate: "Feb 14 2025",
     totalSales: "$38,654",
     lyComp: 22.3,
+    avgMarkdown: 15
   },
   {
     id: 4,
@@ -54,6 +57,7 @@ const promotionsData = [
     endDate: "Mar 15 2025",
     totalSales: "$67,234",
     lyComp: -4.7,
+    avgMarkdown: 20
   },
   {
     id: 5,
@@ -64,6 +68,7 @@ const promotionsData = [
     endDate: "Apr 01 2025",
     totalSales: "$28,976",
     lyComp: 18.9,
+    avgMarkdown: 10
   },
   {
     id: 6,
@@ -74,6 +79,7 @@ const promotionsData = [
     endDate: "May 12 2025",
     totalSales: "$45,321",
     lyComp: -12.4,
+    avgMarkdown: 35
   },
   {
     id: 7,
@@ -84,6 +90,7 @@ const promotionsData = [
     endDate: "Jun 30 2025",
     totalSales: "$58,432",
     lyComp: 25.6,
+    avgMarkdown: 40
   },
   {
     id: 8,
@@ -94,6 +101,7 @@ const promotionsData = [
     endDate: "Sep 05 2025",
     totalSales: "$72,154",
     lyComp: 9.8,
+    avgMarkdown: 15
   },
   {
     id: 9,
@@ -104,6 +112,7 @@ const promotionsData = [
     endDate: "Oct 05 2025",
     totalSales: "$49,876",
     lyComp: -6.3,
+    avgMarkdown: 25
   },
   {
     id: 10,
@@ -114,6 +123,7 @@ const promotionsData = [
     endDate: "Dec 02 2025",
     totalSales: "$98,765",
     lyComp: 32.1,
+    avgMarkdown: 50
   },
   {
     id: 11,
@@ -124,6 +134,7 @@ const promotionsData = [
     endDate: "Dec 03 2025",
     totalSales: "$87,654",
     lyComp: 28.4,
+    avgMarkdown: 45
   }
 ];
 
@@ -150,6 +161,7 @@ export default function Promotions() {
                 <TableHead>End Date</TableHead>
                 <TableHead>Total Sales $</TableHead>
                 <TableHead>LY % Comp</TableHead>
+                <TableHead>Avg Markdown %</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -184,6 +196,7 @@ export default function Promotions() {
                   >
                     {promotion.lyComp > 0 ? '+' : ''}{promotion.lyComp}%
                   </TableCell>
+                  <TableCell>{promotion.avgMarkdown}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>
