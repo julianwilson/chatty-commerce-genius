@@ -52,6 +52,7 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
   const [activateViaUtm, setActivateViaUtm] = useState(false);
   const [imageRange, setImageRange] = useState([1, 4]);
   const [selectedProduct, setSelectedProduct] = useState("1");
+  const [successMetric, setSuccessMetric] = useState("conversion-rate");
 
   const hasAltTagValue = bulkAltTag.trim() !== "";
 
@@ -89,6 +90,20 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
                 {product.name}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="success-metric">Success Metric</Label>
+        <Select defaultValue={successMetric} onValueChange={setSuccessMetric}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a success metric" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
+            <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
+            <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
           </SelectContent>
         </Select>
       </div>
