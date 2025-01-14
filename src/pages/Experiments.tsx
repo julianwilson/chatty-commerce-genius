@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Settings2 } from "lucide-react";
-import { useState } from "react"; // Added this import
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,12 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const experimentStatuses = ["Draft", "Running", "Paused", "Completed"] as const;
+const experimentTypes = ["Price Testing", "Image Testing"] as const;
 
 const experimentsData = [
   {
     id: 1,
     name: "Dresses price test",
     status: "Running",
+    type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
     uplift: 15.2,
@@ -33,6 +35,7 @@ const experimentsData = [
     id: 2,
     name: "Free shipping threshold",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
+    type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
     uplift: -8.5,
@@ -42,6 +45,7 @@ const experimentsData = [
     id: 3,
     name: "Product description length",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
+    type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
     uplift: 22.3,
@@ -51,6 +55,7 @@ const experimentsData = [
     id: 4,
     name: "Collection page layout",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
+    type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
     uplift: -4.7,
@@ -60,6 +65,7 @@ const experimentsData = [
     id: 5,
     name: "Cart abandonment email",
     status: experimentStatuses[Math.floor(Math.random() * experimentStatuses.length)],
+    type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
     uplift: 18.9,
@@ -75,6 +81,7 @@ type Column = {
 const columns: Column[] = [
   { id: "status", label: "Status" },
   { id: "name", label: "Experiment Name" },
+  { id: "type", label: "Type" },
   { id: "startDate", label: "Start Date" },
   { id: "endDate", label: "End Date" },
   { id: "sessions", label: "Sessions" },
@@ -161,6 +168,15 @@ export default function Experiments() {
                   {visibleColumns.includes('name') && (
                     <TableCell className="font-medium">
                       {experiment.name}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes('type') && (
+                    <TableCell>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        experiment.type === 'Price Testing' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800'
+                      }`}>
+                        {experiment.type}
+                      </span>
                     </TableCell>
                   )}
                   {visibleColumns.includes('startDate') && (
