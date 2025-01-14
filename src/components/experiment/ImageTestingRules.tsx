@@ -39,6 +39,9 @@ export function ImageTestingRules() {
 
   const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
 
+  // Check if any alt tag fields have values
+  const hasAltTagValue = bulkAltTag.trim() !== "" || controlAltTag.trim() !== "";
+
   // Generate test group labels based on range and control settings
   const getTestGroups = () => {
     const start = imageRange[0] - 1; // Convert to 0-based index
@@ -61,7 +64,7 @@ export function ImageTestingRules() {
   return (
     <div className="space-y-8">
       <div className="relative">
-        <Carousel className="w-full max-w-xl">
+        <Carousel className={`w-full max-w-xl ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}>
           <CarouselContent>
             {productImages.map((image, index) => (
               <CarouselItem key={index}>
@@ -70,6 +73,7 @@ export function ImageTestingRules() {
                     src={image}
                     alt={`Product ${index + 1}`}
                     className="w-full h-auto rounded-lg"
+                    style={{ display: hasAltTagValue ? 'none' : 'block' }}
                   />
                   <div className="absolute top-4 right-4">
                     <Checkbox
@@ -109,6 +113,7 @@ export function ImageTestingRules() {
                       src={productImages[index + imageRange[0] - 1]}
                       alt={`Product ${index + 1}`}
                       className="w-24 h-24 mx-auto object-contain"
+                      style={{ display: hasAltTagValue ? 'none' : 'block' }}
                     />
                   </TableCell>
                 ))}
@@ -126,7 +131,7 @@ export function ImageTestingRules() {
               max={4}
               min={1}
               step={1}
-              className="w-full"
+              className={`w-full ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}
             />
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>Image {imageRange[0]}</span>
