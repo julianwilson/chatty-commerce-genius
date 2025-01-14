@@ -426,9 +426,15 @@ export default function ExperimentDetails() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[200px]">Metric</TableHead>
-                <TableHead className={selectedProduct && selectedProduct.testWinner === "Control" ? "bg-green-100" : ""}>Control</TableHead>
-                <TableHead className={selectedProduct && selectedProduct.testWinner === "Test A" ? "bg-green-100" : ""}>Test A</TableHead>
-                <TableHead className={selectedProduct && selectedProduct.testWinner === "Test B" ? "bg-green-100" : ""}>Test B</TableHead>
+                <TableHead className={cn(
+                  selectedProduct?.testWinner === "Control" && "bg-green-100"
+                )}>Control</TableHead>
+                <TableHead className={cn(
+                  selectedProduct?.testWinner === "Test A" && "bg-green-100"
+                )}>Test A</TableHead>
+                <TableHead className={cn(
+                  selectedProduct?.testWinner === "Test B" && "bg-green-100"
+                )}>Test B</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -436,17 +442,26 @@ export default function ExperimentDetails() {
                 <TableRow key={index}>
                   <TableCell className="font-medium">{row.metric}</TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.control, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Control" ? "bg-green-100" : ""}`}
+                    className={cn(
+                      getValueColor(row.control, row.metric),
+                      selectedProduct?.testWinner === "Control" && "bg-green-100"
+                    )}
                   >
                     {row.control}
                   </TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.testA, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Test A" ? "bg-green-100" : ""}`}
+                    className={cn(
+                      getValueColor(row.testA, row.metric),
+                      selectedProduct?.testWinner === "Test A" && "bg-green-100"
+                    )}
                   >
                     {row.testA}
                   </TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.testB, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Test B" ? "bg-green-100" : ""}`}
+                    className={cn(
+                      getValueColor(row.testB, row.metric),
+                      selectedProduct?.testWinner === "Test B" && "bg-green-100"
+                    )}
                   >
                     {row.testB}
                   </TableCell>
