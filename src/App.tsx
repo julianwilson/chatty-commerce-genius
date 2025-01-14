@@ -3,8 +3,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
 import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
@@ -32,38 +30,33 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SidebarProvider defaultOpen={false}>
-          <div className="min-h-screen flex w-full">
-            <AppSidebar />
-            <main className="flex-1 pr-[400px]">
-              <div className="p-4 border-b">
-                <SearchBar />
-              </div>
-              <div className="p-4">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/chat" element={<Chat />} />
-                  <Route path="/promotions" element={<Promotions />} />
-                  <Route path="/promotions/create" element={<CreatePromotion />} />
-                  <Route path="/promotions/:id" element={<PromotionDetails />} />
-                  <Route path="/collections" element={<Collections />} />
-                  <Route path="/collections/:id" element={<CollectionDetails />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:id" element={<ProductDetails />} />
-                  <Route path="/experiments" element={<Experiments />} />
-                  <Route path="/experiments/create" element={<CreateExperiment />} />
-                  <Route path="/experiments/:id" element={<ExperimentDetails />} />
-                  <Route path="/recipes" element={<Recipes />} />
-                  <Route path="/calendar" element={<Calendar />} />
-                  <Route path="/sales-plan" element={<SalesPlan />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </div>
-            </main>
-            <ChatBox />
+        <div className="min-h-screen">
+          <div className="p-4 border-b">
+            <SearchBar />
           </div>
-        </SidebarProvider>
+          <div className="p-4">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/promotions" element={<Promotions />} />
+              <Route path="/promotions/create" element={<CreatePromotion />} />
+              <Route path="/promotions/:id" element={<PromotionDetails />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/collections/:id" element={<CollectionDetails />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+              <Route path="/experiments" element={<Experiments />} />
+              <Route path="/experiments/create" element={<CreateExperiment />} />
+              <Route path="/experiments/:id" element={<ExperimentDetails />} />
+              <Route path="/recipes" element={<Recipes />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/sales-plan" element={<SalesPlan />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </div>
+          <ChatBox />
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
