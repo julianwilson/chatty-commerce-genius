@@ -19,7 +19,7 @@ export default function ExperimentsEmpty() {
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
               <p className="text-lg text-muted-foreground">
-                Ready to optimize your store? Start by testing different product images to see which ones convert better.
+                Let's try increasing prices by 10% and 20% of a few top selling products and see if we can increase gross profits
               </p>
               <Button 
                 onClick={() => navigate("/experiments/create")}
