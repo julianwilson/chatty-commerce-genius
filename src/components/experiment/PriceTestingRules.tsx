@@ -57,6 +57,7 @@ const createFormSchema = (testGroups: string[]) => {
     priceRounding: z.enum(priceRoundingOptions),
     priceRoundingValue: z.number().optional(),
     activateViaUtm: z.boolean(),
+    successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate"]),
     ...testGroupFields,
   });
 };
@@ -78,11 +79,12 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
       priceRounding: "No Rounding",
       priceRoundingValue: 0.99,
       activateViaUtm: false,
+      successMetric: "conversion-rate",
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
-    } as FormValues, // Type assertion to match the dynamic schema
+    } as FormValues,
   });
 
   const selectedPriceRounding = form.watch("priceRounding");
@@ -107,6 +109,29 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="successMetric"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Success Metric</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a success metric" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
+                    <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
+                    <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Price Adjustments</h3>
             <Button
