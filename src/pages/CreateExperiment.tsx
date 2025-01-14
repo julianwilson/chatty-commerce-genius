@@ -13,6 +13,7 @@ const steps = ["Setup", "Rules", "Products", "Launch"] as const;
 export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
   const [aiPrompt, setAiPrompt] = useState("");
+  const [experimentType, setExperimentType] = useState<string>("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -111,11 +112,17 @@ export default function CreateExperiment() {
       </div>
 
       <div className="mt-8">
-        {currentStep === 0 && <SetupStep onNext={goToNextStep} />}
+        {currentStep === 0 && (
+          <SetupStep 
+            onNext={goToNextStep} 
+            onTypeChange={setExperimentType}
+          />
+        )}
         {currentStep === 1 && (
           <RulesStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
+            experimentType={experimentType}
           />
         )}
         {currentStep === 2 && (

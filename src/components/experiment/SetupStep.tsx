@@ -54,9 +54,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface SetupStepProps {
   onNext: () => void;
+  onTypeChange?: (type: string) => void;
 }
 
-export function SetupStep({ onNext }: SetupStepProps) {
+export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,7 +95,13 @@ export function SetupStep({ onNext }: SetupStepProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  onTypeChange?.(value);
+                }} 
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select experiment type" />
