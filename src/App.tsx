@@ -19,6 +19,7 @@ import Chat from "./pages/Chat";
 import Experiments from "./pages/Experiments";
 import CreateExperiment from "./pages/CreateExperiment";
 import ExperimentDetails from "./pages/ExperimentDetails";
+import Recipes from "./pages/Recipes";
 import SalesPlan from "./pages/SalesPlan";
 import Settings from "./pages/Settings";
 import Calendar from "./pages/Calendar";
@@ -53,6 +54,7 @@ const App = () => (
                   <Route path="/experiments" element={<Experiments />} />
                   <Route path="/experiments/create" element={<CreateExperiment />} />
                   <Route path="/experiments/:id" element={<ExperimentDetails />} />
+                  <Route path="/recipes" element={<Recipes />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/sales-plan" element={<SalesPlan />} />
                   <Route path="/settings" element={<Settings />} />
