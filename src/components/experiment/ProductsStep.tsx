@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 
 interface ProductsStepProps {
   onNext: () => void;
@@ -59,7 +58,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   const [filterRules, setFilterRules] = useState<FilterRule[]>(() => 
     initialFilters || [{ id: "1", field: "", operator: "", value: "" }]
   );
-  const [aiPrompt, setAiPrompt] = useState("");
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -129,11 +127,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     );
   };
 
-  const handleAnalyze = () => {
-    console.log("Analyzing:", aiPrompt);
-    // Add your AI analysis logic here
-  };
-
   const renderValueInput = (rule: FilterRule) => {
     if (rule.field === "collection" && (rule.operator === "contains" || rule.operator === "doesNotContain")) {
       return (
@@ -171,21 +164,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <div className="flex gap-4">
-          <Textarea
-            placeholder="E.g. Show me all winter products that aren't shoes"
-            value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
-            className="min-h-[80px]"
-          />
-          <Button 
-            onClick={handleAnalyze}
-            className="h-10"
-          >
-            Analyze
-          </Button>
-        </div>
-
         {filterRules.map((rule) => (
           <div key={rule.id} className="flex gap-4 items-center">
             <Select
