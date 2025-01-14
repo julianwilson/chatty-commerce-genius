@@ -50,7 +50,8 @@ export function ImageTestingRules() {
   const hasAltTagValue = bulkAltTag.trim() !== "";
 
   const getTestGroups = () => {
-    const groups = [];
+    // Always include Control column, then add test groups based on range
+    const groups = ["Control"];
     const start = imageRange[0] - 1;
     const end = imageRange[1] - 1;
 
@@ -61,9 +62,12 @@ export function ImageTestingRules() {
     return groups;
   };
 
-  const getImageForGroup = (index: number) => {
+  const getImageForGroup = (index: number, isControl: boolean) => {
+    if (isControl) {
+      return productImages[0]; // Always use first image for Control
+    }
     const start = imageRange[0] - 1;
-    return productImages[index + start];
+    return productImages[index + start - 1]; // Subtract 1 to account for Control column
   };
 
   return (
@@ -118,7 +122,7 @@ export function ImageTestingRules() {
                 {getTestGroups().map((group, index) => (
                   <TableCell key={index} className="text-center">
                     <img
-                      src={getImageForGroup(index)}
+                      src={getImageForGroup(index, group === "Control")}
                       alt={`Product ${index + 1}`}
                       className="w-24 h-24 mx-auto object-contain"
                       style={{ display: hasAltTagValue ? 'none' : 'block' }}
