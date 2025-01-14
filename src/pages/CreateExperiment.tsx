@@ -91,17 +91,10 @@ export default function CreateExperiment() {
             className="flex items-center"
           >
             <div
-              className={`h-8 w-8 rounded-full flex items-center justify-center ${
+              className={`px-4 py-2 rounded-full ${
                 index <= currentStep
                   ? "bg-primary text-primary-foreground"
                   : "bg-gray-200 text-gray-500"
-              }`}
-            >
-              {index + 1}
-            </div>
-            <div
-              className={`ml-2 ${
-                index <= currentStep ? "text-primary" : "text-gray-500"
               }`}
             >
               {step}
