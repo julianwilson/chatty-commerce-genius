@@ -35,7 +35,7 @@ export function ImageTestingRules() {
   const [activateViaUtm, setActivateViaUtm] = useState(false);
   const [imageRange, setImageRange] = useState([1, 4]);
   const [firstImageAsControl, setFirstImageAsControl] = useState(false);
-  const [controlAltTag, setControlAltTag] = useState("test-image-control");
+  const [controlAltTag, setControlAltTag] = useState("");
 
   const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
 
