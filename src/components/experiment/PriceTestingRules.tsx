@@ -1,4 +1,3 @@
-// Move all the original RulesStep.tsx content here
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -69,7 +68,7 @@ interface RulesStepProps {
   onBack: () => void;
 }
 
-export function RulesStep({ onNext, onBack }: RulesStepProps) {
+export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
   const formSchema = createFormSchema(testGroups);
 
