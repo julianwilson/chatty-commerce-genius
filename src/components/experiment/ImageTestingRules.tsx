@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -40,7 +41,12 @@ const products = [
   { id: 4, name: "Hotel Diffuser Silver Top 5" },
 ];
 
-export function ImageTestingRules() {
+interface ImageTestingRulesProps {
+  onNext: () => void;
+  onBack: () => void;
+}
+
+export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
   const [hideOtherImages, setHideOtherImages] = useState(false);
   const [bulkAltTag, setBulkAltTag] = useState("");
   const [activateViaUtm, setActivateViaUtm] = useState(false);
@@ -182,6 +188,13 @@ export function ImageTestingRules() {
           checked={activateViaUtm}
           onCheckedChange={setActivateViaUtm}
         />
+      </div>
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onBack}>
+          Back
+        </Button>
+        <Button onClick={onNext}>Next</Button>
       </div>
     </div>
   );

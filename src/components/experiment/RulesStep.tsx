@@ -12,7 +12,7 @@ interface RulesStepProps {
 
 export function RulesStep({ onNext, onBack, experimentType }: RulesStepProps) {
   if (experimentType === "Image Testing") {
-    return <ImageTestingRules />;
+    return <ImageTestingRules onNext={onNext} onBack={onBack} />;
   }
 
   // For all other types, show the original price testing form
