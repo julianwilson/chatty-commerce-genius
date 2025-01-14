@@ -13,6 +13,13 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -26,6 +33,13 @@ const productImages = [
   "https://www.scentiment.com/cdn/shop/files/Scentiment_Kit_Standard_Diffuser_2_Hotel_Top_3_Silver.png?v=1728055351",
   "https://www.scentiment.com/cdn/shop/files/Scentiment_Kit_Standard_Diffuser_2_Hotel_Top5_Black_1.png?v=1727990513",
   "https://www.scentiment.com/cdn/shop/files/Scentiment_Kit_Standard_Diffuser_2_Hotel_Top5_Silver_1.png?v=1727990493",
+];
+
+const products = [
+  { id: 1, name: "Hotel Diffuser Black" },
+  { id: 2, name: "Hotel Diffuser Silver" },
+  { id: 3, name: "Hotel Diffuser Black Top 5" },
+  { id: 4, name: "Hotel Diffuser Silver Top 5" },
 ];
 
 export function ImageTestingRules() {
@@ -223,6 +237,22 @@ export function ImageTestingRules() {
           checked={activateViaUtm}
           onCheckedChange={setActivateViaUtm}
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="preview-product">Preview Product</Label>
+        <Select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a product to preview" />
+          </SelectTrigger>
+          <SelectContent>
+            {products.map((product) => (
+              <SelectItem key={product.id} value={product.id.toString()}>
+                {product.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
