@@ -104,6 +104,7 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
             <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
             <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
             <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+            <SelectItem value="gross-margin">Gross Margin</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -57,7 +57,7 @@ const createFormSchema = (testGroups: string[]) => {
     priceRounding: z.enum(priceRoundingOptions),
     priceRoundingValue: z.number().optional(),
     activateViaUtm: z.boolean(),
-    successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate"]),
+    successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
     ...testGroupFields,
   });
 };
@@ -125,6 +125,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                     <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
                     <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
                     <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                    <SelectItem value="gross-margin">Gross Margin</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
