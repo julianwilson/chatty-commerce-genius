@@ -7,16 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-const defaultSteps = ["Setup", "Rules", "Products", "Launch"] as const;
-const imageTestingSteps = ["Setup", "Products", "Rules", "Launch"] as const;
+const steps = ["1. Setup", "2. Rules", "3. Products", "4. Launch"] as const;
 
 export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
   const [aiPrompt, setAiPrompt] = useState("");
   const [experimentType, setExperimentType] = useState<string>("");
   const { toast } = useToast();
-  
-  const steps = experimentType === "Image Testing" ? imageTestingSteps : defaultSteps;
 
   const goToNextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -45,7 +42,7 @@ export default function CreateExperiment() {
       });
       return;
     }
-    setCurrentStep(1);
+    setCurrentStep(0);
   };
 
   if (currentStep === -1) {
@@ -119,35 +116,14 @@ export default function CreateExperiment() {
             onTypeChange={setExperimentType}
           />
         )}
-        {currentStep === 1 && experimentType === "Image Testing" && (
-          <ProductsStep 
-            onNext={goToNextStep} 
-            onBack={goToPreviousStep}
-            initialFilters={aiPrompt ? [
-              {
-                id: "1",
-                field: "collection",
-                operator: "contains",
-                value: "Best Sellers"
-              }
-            ] : undefined}
-          />
-        )}
-        {currentStep === 1 && experimentType !== "Image Testing" && (
+        {currentStep === 1 && (
           <RulesStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
             experimentType={experimentType}
           />
         )}
-        {currentStep === 2 && experimentType === "Image Testing" && (
-          <RulesStep 
-            onNext={goToNextStep} 
-            onBack={goToPreviousStep}
-            experimentType={experimentType}
-          />
-        )}
-        {currentStep === 2 && experimentType !== "Image Testing" && (
+        {currentStep === 2 && (
           <ProductsStep 
             onNext={goToNextStep} 
             onBack={goToPreviousStep}
@@ -164,7 +140,7 @@ export default function CreateExperiment() {
         {currentStep === 3 && (
           <LaunchStep 
             onBack={goToPreviousStep}
-            onClose={() => {}} // Added missing onClose prop
+            onClose={() => {}}
           />
         )}
       </div>
