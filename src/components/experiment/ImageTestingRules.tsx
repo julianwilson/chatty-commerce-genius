@@ -6,11 +6,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -43,54 +41,29 @@ const products = [
 ];
 
 export function ImageTestingRules() {
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [hideOtherImages, setHideOtherImages] = useState(false);
   const [bulkAltTag, setBulkAltTag] = useState("");
   const [activateViaUtm, setActivateViaUtm] = useState(false);
   const [imageRange, setImageRange] = useState([1, 4]);
-  const [firstImageAsControl, setFirstImageAsControl] = useState(false);
-  const [controlAltTag, setControlAltTag] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState("1"); // Default to first product
+  const [selectedProduct, setSelectedProduct] = useState("1");
 
-  const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
-  const hasAltTagValue = bulkAltTag.trim() !== "" || controlAltTag.trim() !== "";
+  const hasAltTagValue = bulkAltTag.trim() !== "";
 
   const getTestGroups = () => {
     const groups = [];
-    const start = imageRange[0] - 1; // Convert to 0-based index
+    const start = imageRange[0] - 1;
     const end = imageRange[1] - 1;
 
-    // If first image as control is enabled and first image is not in range
-    if (firstImageAsControl && (start > 0 || end < 0)) {
-      groups.push("Control");
-    }
-
-    // Add groups for the selected range
     for (let i = start; i <= end; i++) {
-      if (firstImageAsControl && i === 0) {
-        groups.push("Control");
-      } else {
-        const offset = firstImageAsControl ? 
-          (start === 0 ? i : i - start) : // If range starts at 0, use i directly
-          i - start; // Otherwise use relative position
-        groups.push(`Test ${String.fromCharCode(65 + offset)}`);
-      }
+      groups.push(`Test ${String.fromCharCode(65 + (i - start))}`);
     }
 
     return groups;
   };
 
   const getImageForGroup = (index: number) => {
-    if (firstImageAsControl && index === 0) {
-      return productImages[0]; // Always show first image for Control
-    }
-    
     const start = imageRange[0] - 1;
-    const adjustedIndex = firstImageAsControl && start === 0 ? 
-      index : // If range starts at 0, use index directly
-      index + start; // Otherwise adjust by range start
-    
-    return productImages[adjustedIndex];
+    return productImages[index + start];
   };
 
   return (
@@ -123,18 +96,6 @@ export function ImageTestingRules() {
                     className="w-full h-auto rounded-lg"
                     style={{ display: hasAltTagValue ? 'none' : 'block' }}
                   />
-                  <div className="absolute top-4 right-4">
-                    <Checkbox
-                      checked={selectedImages.includes(image)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedImages([...selectedImages, image]);
-                        } else {
-                          setSelectedImages(selectedImages.filter(img => img !== image));
-                        }
-                      }}
-                    />
-                  </div>
                 </div>
               </CarouselItem>
             ))}
@@ -143,7 +104,6 @@ export function ImageTestingRules() {
           <CarouselNext />
         </Carousel>
 
-        {/* Test Groups Table */}
         <div className="mt-6">
           <Table>
             <TableHeader>
@@ -188,32 +148,6 @@ export function ImageTestingRules() {
           </div>
 
           <div className="flex items-center justify-between">
-            <Label htmlFor="first-image-control">Set first image as control?</Label>
-            <Switch
-              id="first-image-control"
-              checked={firstImageAsControl}
-              onCheckedChange={setFirstImageAsControl}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="control-alt">Set control via alt tag</Label>
-            <Input
-              id="control-alt"
-              value={controlAltTag}
-              onChange={(e) => setControlAltTag(e.target.value)}
-              placeholder="Enter control alt tag"
-            />
-          </div>
-
-          <Button
-            onClick={() => console.log("Add selected to test groups")}
-            disabled={selectedImages.length === 0}
-          >
-            Add Selected to Test Groups
-          </Button>
-
-          <div className="flex items-center justify-between">
             <Label htmlFor="hide-images">Hide other image(s) in test?</Label>
             <Switch
               id="hide-images"
@@ -223,7 +157,7 @@ export function ImageTestingRules() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bulk-alt">Bulk Test via Alt Tag</Label>
+            <Label htmlFor="bulk-alt">Test Via Alt Tag</Label>
             <Input
               id="bulk-alt"
               value={bulkAltTag}
@@ -233,32 +167,6 @@ export function ImageTestingRules() {
           </div>
         </div>
       </div>
-
-      {selectedImages.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="font-medium">Traffic Allocation</h3>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Control</TableHead>
-                {selectedImages.map((_, index) => (
-                  <TableHead key={index}>Test {String.fromCharCode(65 + index)}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="text-center">{equalShare}%</TableCell>
-                {selectedImages.map((_, index) => (
-                  <TableCell key={index} className="text-center">
-                    {equalShare}%
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-      )}
 
       <div className="flex flex-row items-center justify-between rounded-lg border p-4">
         <div className="space-y-0.5">
