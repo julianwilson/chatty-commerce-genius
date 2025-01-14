@@ -5,6 +5,7 @@ import {
   ShoppingCart,
   Settings,
   FlaskConical,
+  UtensilsCrossed,
 } from "lucide-react";
 import {
   Sidebar,
@@ -24,6 +25,7 @@ const items = [
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
   { title: "Products", url: "/products", icon: ShoppingCart },
+  { title: "Recipes", url: "/recipes", icon: UtensilsCrossed },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
