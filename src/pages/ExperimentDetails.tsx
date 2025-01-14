@@ -91,13 +91,19 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
     testB: "$24.99",
   },
   {
-    metric: "Profit GM$",
+    metric: "Gross Sales $",
     control: "$30,000",
     testA: "$29,000",
     testB: "$29,400",
   },
   {
-    metric: "Profit GM%",
+    metric: "Gross Profit $",
+    control: "$15,000",
+    testA: "$14,500",
+    testB: "$14,700",
+  },
+  {
+    metric: "Gross Profit %",
     control: "50%",
     testA: "44%",
     testB: "54%",
@@ -125,6 +131,12 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
     control: 50000,
     testA: 50000,
     testB: 50000,
+  },
+  {
+    metric: "Revenue Per Visitor",
+    control: "$1.25",
+    testA: "$1.45",
+    testB: "$1.15",
   },
   {
     metric: "% of Traffic",
