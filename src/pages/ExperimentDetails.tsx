@@ -121,7 +121,7 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
     testB: 900,
   },
   {
-    metric: "CTR",
+    metric: "Conversion Rate",
     control: "2.5%",
     testA: "2.8%",
     testB: "2.2%",
