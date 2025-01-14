@@ -49,7 +49,7 @@ export function ImageTestingRules() {
     const groups = [];
 
     for (let i = start; i <= end; i++) {
-      if (i === start && firstImageAsControl) {
+      if (firstImageAsControl && i === start) {
         groups.push("Control");
       } else {
         // If first image is control, start from A, otherwise start from A
@@ -107,10 +107,10 @@ export function ImageTestingRules() {
             </TableHeader>
             <TableBody>
               <TableRow>
-                {getTestGroups().map((_, index) => (
+                {getTestGroups().map((group, index) => (
                   <TableCell key={index} className="text-center">
                     <img
-                      src={productImages[index + imageRange[0] - 1]}
+                      src={firstImageAsControl && index === 0 ? productImages[0] : productImages[index + imageRange[0] - 1]}
                       alt={`Product ${index + 1}`}
                       className="w-24 h-24 mx-auto object-contain"
                       style={{ display: hasAltTagValue ? 'none' : 'block' }}

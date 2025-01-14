@@ -164,6 +164,7 @@ export default function CreateExperiment() {
         {currentStep === 3 && (
           <LaunchStep 
             onBack={goToPreviousStep}
+            onClose={() => {}} // Added missing onClose prop
           />
         )}
       </div>
