@@ -5,6 +5,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { ChatBox } from "@/components/ChatBox";
+import { UtensilsCrossed } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { Link, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import CreatePromotion from "./pages/CreatePromotion";
@@ -24,6 +35,28 @@ import Calendar from "./pages/Calendar";
 
 const queryClient = new QueryClient();
 
+const NavigationMenuComponent = () => {
+  const location = useLocation();
+  
+  return (
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <Link 
+            to="/recipes" 
+            className={`${navigationMenuTriggerStyle()} flex items-center gap-2 ${
+              location.pathname === '/recipes' ? 'bg-accent' : ''
+            }`}
+          >
+            <UtensilsCrossed className="h-4 w-4" />
+            Recipes
+          </Link>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -32,7 +65,10 @@ const App = () => (
       <BrowserRouter>
         <div className="min-h-screen">
           <div className="p-4 border-b">
-            <SearchBar />
+            <div className="flex items-center gap-4">
+              <SearchBar />
+              <NavigationMenuComponent />
+            </div>
           </div>
           <div className="p-4">
             <Routes>
