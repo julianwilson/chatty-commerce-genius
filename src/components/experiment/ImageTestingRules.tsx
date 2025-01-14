@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import {
   Table,
   TableBody,
@@ -32,6 +33,9 @@ export function ImageTestingRules() {
   const [hideOtherImages, setHideOtherImages] = useState(false);
   const [bulkAltTag, setBulkAltTag] = useState("");
   const [activateViaUtm, setActivateViaUtm] = useState(false);
+  const [imageRange, setImageRange] = useState([1, 4]);
+  const [firstImageAsControl, setFirstImageAsControl] = useState(false);
+  const [controlAltTag, setControlAltTag] = useState("test-image-control");
 
   const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
 
@@ -69,6 +73,41 @@ export function ImageTestingRules() {
         </Carousel>
 
         <div className="mt-8 space-y-6">
+          <div className="space-y-4">
+            <Label>Image Range</Label>
+            <Slider
+              value={imageRange}
+              onValueChange={setImageRange}
+              max={4}
+              min={1}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>Image {imageRange[0]}</span>
+              <span>Image {imageRange[1]}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Label htmlFor="first-image-control">Set first image as control?</Label>
+            <Switch
+              id="first-image-control"
+              checked={firstImageAsControl}
+              onCheckedChange={setFirstImageAsControl}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="control-alt">Set control via alt tag</Label>
+            <Input
+              id="control-alt"
+              value={controlAltTag}
+              onChange={(e) => setControlAltTag(e.target.value)}
+              placeholder="Enter control alt tag"
+            />
+          </div>
+
           <Button
             onClick={() => console.log("Add selected to test groups")}
             disabled={selectedImages.length === 0}
