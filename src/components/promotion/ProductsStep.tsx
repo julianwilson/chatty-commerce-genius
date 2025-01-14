@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductsStepProps {
   onNext: () => void;
@@ -76,6 +77,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     price: "",
     compareAtPrice: "",
   });
+  const [aiPrompt, setAiPrompt] = useState("");
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -165,43 +167,29 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     );
   };
 
-  const renderValueInput = (rule: FilterRule) => {
-    if (rule.field === "collection" && (rule.operator === "contains" || rule.operator === "doesNotContain")) {
-      return (
-        <Select
-          value={rule.value}
-          onValueChange={(value) => updateFilterRule(rule.id, "value", value)}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Select collection" />
-          </SelectTrigger>
-          <SelectContent>
-            {collections?.map((collection) => (
-              <SelectItem 
-                key={collection.id} 
-                value={collection.id.toString()}
-              >
-                {collection.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      );
-    }
-
-    return (
-      <Input
-        placeholder="Value"
-        value={rule.value}
-        onChange={(e) => updateFilterRule(rule.id, "value", e.target.value)}
-        className="w-[200px]"
-      />
-    );
+  const handleAnalyze = () => {
+    console.log("Analyzing:", aiPrompt);
+    // Add your AI analysis logic here
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
+        <div className="flex gap-4">
+          <Textarea
+            placeholder="E.g. Show me all winter products that aren't shoes"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            className="min-h-[80px]"
+          />
+          <Button 
+            onClick={handleAnalyze}
+            className="h-10"
+          >
+            Analyze
+          </Button>
+        </div>
+
         {filterRules.map((rule) => (
           <div key={rule.id} className="flex gap-4 items-center">
             <Select
@@ -238,7 +226,12 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
               </SelectContent>
             </Select>
 
-            {renderValueInput(rule)}
+            <Input
+              placeholder="Value"
+              value={rule.value}
+              onChange={(e) => updateFilterRule(rule.id, "value", e.target.value)}
+              className="w-[200px]"
+            />
 
             <Button
               variant="ghost"

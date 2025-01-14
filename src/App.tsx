@@ -3,20 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
 import { ChatBox } from "@/components/ChatBox";
-import { UtensilsCrossed } from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { Link, useLocation } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import CreatePromotion from "./pages/CreatePromotion";
@@ -36,71 +26,45 @@ import Calendar from "./pages/Calendar";
 
 const queryClient = new QueryClient();
 
-const NavigationMenuComponent = () => {
-  const location = useLocation();
-  
-  return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link 
-            to="/recipes" 
-            className={`${navigationMenuTriggerStyle()} flex items-center gap-2 ${
-              location.pathname === '/recipes' ? 'bg-accent' : ''
-            }`}
-          >
-            <UtensilsCrossed className="h-4 w-4" />
-            Recipes
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
-};
-
-const AppContent = () => (
-  <BrowserRouter>
-    <SidebarProvider>
-      <div className="min-h-screen">
-        <div className="p-4 border-b">
-          <div className="flex items-center gap-4">
-            <SearchBar />
-            <NavigationMenuComponent />
-          </div>
-        </div>
-        <div className="p-4">
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/promotions" element={<Promotions />} />
-            <Route path="/promotions/create" element={<CreatePromotion />} />
-            <Route path="/promotions/:id" element={<PromotionDetails />} />
-            <Route path="/collections" element={<Collections />} />
-            <Route path="/collections/:id" element={<CollectionDetails />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-            <Route path="/experiments" element={<Experiments />} />
-            <Route path="/experiments/create" element={<CreateExperiment />} />
-            <Route path="/experiments/:id" element={<ExperimentDetails />} />
-            <Route path="/recipes" element={<Recipes />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/sales-plan" element={<SalesPlan />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </div>
-        <ChatBox />
-      </div>
-    </SidebarProvider>
-  </BrowserRouter>
-);
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AppContent />
+      <BrowserRouter>
+        <SidebarProvider defaultOpen={false}>
+          <div className="min-h-screen flex w-full">
+            <AppSidebar />
+            <main className="flex-1 pr-[400px]">
+              <div className="p-4 border-b">
+                <SearchBar />
+              </div>
+              <div className="p-4">
+                <Routes>
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/promotions" element={<Promotions />} />
+                  <Route path="/promotions/create" element={<CreatePromotion />} />
+                  <Route path="/promotions/:id" element={<PromotionDetails />} />
+                  <Route path="/collections" element={<Collections />} />
+                  <Route path="/collections/:id" element={<CollectionDetails />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetails />} />
+                  <Route path="/experiments" element={<Experiments />} />
+                  <Route path="/experiments/create" element={<CreateExperiment />} />
+                  <Route path="/experiments/:id" element={<ExperimentDetails />} />
+                  <Route path="/recipes" element={<Recipes />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/sales-plan" element={<SalesPlan />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Routes>
+              </div>
+            </main>
+            <ChatBox />
+          </div>
+        </SidebarProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/MetricCard";
 import {
@@ -215,273 +217,280 @@ const PromotionDetails = () => {
   ] : [];
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate('/promotions')}
-        >
-          ← Back
-        </Button>
-        <h1 className="text-2xl font-bold">Promotion Details</h1>
-      </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <main className="flex-1 bg-white p-8">
+          <div className="container mx-auto">
+            <div className="flex items-center gap-4 mb-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/promotions')}
+              >
+                ← Back
+              </Button>
+              <h1 className="text-2xl font-bold">Promotion Details</h1>
+            </div>
 
-      <div className="flex items-center gap-4 mb-8">
-        {(['Site Wide', 'By Product', 'By Collection'] as PromotionType[]).map((type) => (
-          <Button
-            key={type}
-            variant={selectedType === type ? "default" : "outline"}
-            onClick={() => {
-              setSelectedType(type);
-              if (type === 'Site Wide') {
-                setSelectedItemId('');
-              }
-            }}
-          >
-            {type}
-          </Button>
-        ))}
-
-        {selectedType !== 'Site Wide' && (
-          <Select
-            value={selectedItemId}
-            onValueChange={setSelectedItemId}
-          >
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder={`Select ${selectedType === 'By Product' ? 'product' : 'collection'}`} />
-            </SelectTrigger>
-            <SelectContent>
-              {selectedType === 'By Product' ? (
-                products?.map((product) => (
-                  <SelectItem key={product.id} value={product.id.toString()}>
-                    {product.title}
-                  </SelectItem>
-                ))
-              ) : (
-                collections?.map((collection) => (
-                  <SelectItem key={collection.id} value={collection.id.toString()}>
-                    {collection.title}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 mb-8">
-        <MetricCard
-          title="% of Total Sales"
-          percentage={metrics.percentage}
-          currentValue={metrics.currentValue}
-          previousValue={metrics.previousValue}
-          format="currency"
-          disabled={selectedType === 'Site Wide'}
-        />
-      </div>
-
-      <div className="mb-8">
-        <PromotionAISummary
-          dailyData={dailyData}
-          previousPeriodData={previousPeriodData}
-        />
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={{
-            chart: {
-              type: 'line',
-              style: {
-                fontFamily: 'inherit'
-              }
-            },
-            title: {
-              text: 'Daily Sales',
-              style: {
-                fontSize: '16px',
-                fontWeight: 'bold'
-              }
-            },
-            xAxis: {
-              categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
-              labels: {
-                style: {
-                  fontSize: '12px'
-                }
-              }
-            },
-            yAxis: {
-              title: {
-                text: 'Sales ($)',
-                style: {
-                  fontSize: '12px'
-                }
-              }
-            },
-            series: [
-              {
-                name: 'Current Period',
-                data: dailyData.map(day => day.sales),
-                color: '#1E3A8A'
-              },
-              {
-                name: 'Same Period LY',
-                data: previousPeriodData.map(day => day.sales),
-                color: '#9CA3AF',
-                dashStyle: 'ShortDash'
-              }
-            ],
-            tooltip: {
-              headerFormat: '<b>{point.x}</b><br/>',
-              pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
-                'Units Sold: <b>{point.units}</b><br/>' +
-                'Average Unit Retail: <b>${point.aur}</b><br/>' +
-                'Average Markdown: <b>{point.markdown}%</b>',
-              shared: true,
-              useHTML: true
-            },
-            plotOptions: {
-              series: {
-                point: {
-                  events: {
-                    mouseOver: function() {
-                      const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
-                      this.units = data[this.index].unitsSold;
-                      this.aur = data[this.index].averageUnitRetail;
-                      this.markdown = data[this.index].averageMarkdown;
+            <div className="flex items-center gap-4 mb-8">
+              {(['Site Wide', 'By Product', 'By Collection'] as PromotionType[]).map((type) => (
+                <Button
+                  key={type}
+                  variant={selectedType === type ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedType(type);
+                    if (type === 'Site Wide') {
+                      setSelectedItemId('');
                     }
+                  }}
+                >
+                  {type}
+                </Button>
+              ))}
+
+              {selectedType !== 'Site Wide' && (
+                <Select
+                  value={selectedItemId}
+                  onValueChange={setSelectedItemId}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder={`Select ${selectedType === 'By Product' ? 'product' : 'collection'}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedType === 'By Product' ? (
+                      products?.map((product) => (
+                        <SelectItem key={product.id} value={product.id.toString()}>
+                          {product.title}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      collections?.map((collection) => (
+                        <SelectItem key={collection.id} value={collection.id.toString()}>
+                          {collection.title}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 mb-8">
+              <MetricCard
+                title="% of Total Sales"
+                percentage={metrics.percentage}
+                currentValue={metrics.currentValue}
+                previousValue={metrics.previousValue}
+                format="currency"
+                disabled={selectedType === 'Site Wide'}
+              />
+            </div>
+
+            <div className="mb-8">
+              <PromotionAISummary
+                dailyData={dailyData}
+                previousPeriodData={previousPeriodData}
+              />
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={{
+                  chart: {
+                    type: 'line',
+                    style: {
+                      fontFamily: 'inherit'
+                    }
+                  },
+                  title: {
+                    text: 'Daily Sales',
+                    style: {
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }
+                  },
+                  xAxis: {
+                    categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+                    labels: {
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  yAxis: {
+                    title: {
+                      text: 'Sales ($)',
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  series: [
+                    {
+                      name: 'Current Period',
+                      data: dailyData.map(day => day.sales),
+                      color: '#1E3A8A'
+                    },
+                    {
+                      name: 'Same Period LY',
+                      data: previousPeriodData.map(day => day.sales),
+                      color: '#9CA3AF',
+                      dashStyle: 'ShortDash'
+                    }
+                  ],
+                  tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
+                      'Units Sold: <b>{point.units}</b><br/>' +
+                      'Average Unit Retail: <b>${point.aur}</b><br/>' +
+                      'Average Markdown: <b>{point.markdown}%</b>',
+                    shared: true,
+                    useHTML: true
+                  },
+                  plotOptions: {
+                    series: {
+                      point: {
+                        events: {
+                          mouseOver: function() {
+                            const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
+                            this.units = data[this.index].unitsSold;
+                            this.aur = data[this.index].averageUnitRetail;
+                            this.markdown = data[this.index].averageMarkdown;
+                          }
+                        }
+                      }
+                    }
+                  },
+                  credits: {
+                    enabled: false
                   }
-                }
-              }
-            },
-            credits: {
-              enabled: false
-            }
-          }}
-        />
-      </div>
+                }}
+              />
+            </div>
 
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={{
-            chart: {
-              type: 'line',
-              style: {
-                fontFamily: 'inherit'
-              }
-            },
-            title: {
-              text: 'Average Unit Retail & Units Sold',
-              style: {
-                fontSize: '16px',
-                fontWeight: 'bold'
-              }
-            },
-            xAxis: {
-              categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
-              labels: {
-                style: {
-                  fontSize: '12px'
-                }
-              }
-            },
-            yAxis: [{
-              title: {
-                text: 'Price ($)',
-                style: {
-                  color: '#047857',
-                  fontSize: '12px'
-                }
-              },
-              labels: {
-                style: {
-                  color: '#047857'
-                }
-              }
-            }, {
-              title: {
-                text: 'Units Sold',
-                style: {
-                  color: '#7C3AED',
-                  fontSize: '12px'
-                }
-              },
-              opposite: true,
-              labels: {
-                style: {
-                  color: '#7C3AED'
-                }
-              }
-            }],
-            series: [
-              {
-                name: 'Average Unit Retail',
-                data: dailyData.map(day => day.averageUnitRetail),
-                color: '#047857',
-                yAxis: 0
-              },
-              {
-                name: 'Units Sold',
-                data: dailyData.map(day => day.unitsSold),
-                color: '#7C3AED',
-                yAxis: 1
-              }
-            ],
-            tooltip: {
-              shared: true,
-              useHTML: true
-            },
-            credits: {
-              enabled: false
-            }
-          }}
-        />
-      </div>
+            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={{
+                  chart: {
+                    type: 'line',
+                    style: {
+                      fontFamily: 'inherit'
+                    }
+                  },
+                  title: {
+                    text: 'Average Unit Retail & Units Sold',
+                    style: {
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }
+                  },
+                  xAxis: {
+                    categories: dailyData.map(day => new Date(day.date).toLocaleDateString()),
+                    labels: {
+                      style: {
+                        fontSize: '12px'
+                      }
+                    }
+                  },
+                  yAxis: [{
+                    title: {
+                      text: 'Price ($)',
+                      style: {
+                        color: '#047857',
+                        fontSize: '12px'
+                      }
+                    },
+                    labels: {
+                      style: {
+                        color: '#047857'
+                      }
+                    }
+                  }, {
+                    title: {
+                      text: 'Units Sold',
+                      style: {
+                        color: '#7C3AED',
+                        fontSize: '12px'
+                      }
+                    },
+                    opposite: true,
+                    labels: {
+                      style: {
+                        color: '#7C3AED'
+                      }
+                    }
+                  }],
+                  series: [
+                    {
+                      name: 'Average Unit Retail',
+                      data: dailyData.map(day => day.averageUnitRetail),
+                      color: '#047857',
+                      yAxis: 0
+                    },
+                    {
+                      name: 'Units Sold',
+                      data: dailyData.map(day => day.unitsSold),
+                      color: '#7C3AED',
+                      yAxis: 1
+                    }
+                  ],
+                  tooltip: {
+                    shared: true,
+                    useHTML: true
+                  },
+                  credits: {
+                    enabled: false
+                  }
+                }}
+              />
+            </div>
 
-      <div className="bg-white rounded-lg shadow-sm border mb-8">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Units Sold</TableHead>
-              <TableHead>Sales ($)</TableHead>
-              <TableHead>Avg Unit Retail</TableHead>
-              <TableHead>Avg Markdown %</TableHead>
-              <TableHead>Sessions</TableHead>
-              <TableHead>Impressions</TableHead>
-              <TableHead>AOV</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dailyData.map((day) => (
-              <TableRow key={day.date}>
-                <TableCell>{new Date(day.date).toLocaleDateString()}</TableCell>
-                <TableCell>{day.unitsSold}</TableCell>
-                <TableCell>${day.sales.toLocaleString()}</TableCell>
-                <TableCell>${day.averageUnitRetail}</TableCell>
-                <TableCell>{day.averageMarkdown}%</TableCell>
-                <TableCell>{day.sessions.toLocaleString()}</TableCell>
-                <TableCell>{day.impressions.toLocaleString()}</TableCell>
-                <TableCell>${day.aov}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            <div className="bg-white rounded-lg shadow-sm border mb-8">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Units Sold</TableHead>
+                    <TableHead>Sales ($)</TableHead>
+                    <TableHead>Avg Unit Retail</TableHead>
+                    <TableHead>Avg Markdown %</TableHead>
+                    <TableHead>Sessions</TableHead>
+                    <TableHead>Impressions</TableHead>
+                    <TableHead>AOV</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {dailyData.map((day) => (
+                    <TableRow key={day.date}>
+                      <TableCell>{new Date(day.date).toLocaleDateString()}</TableCell>
+                      <TableCell>{day.unitsSold}</TableCell>
+                      <TableCell>${day.sales.toLocaleString()}</TableCell>
+                      <TableCell>${day.averageUnitRetail}</TableCell>
+                      <TableCell>{day.averageMarkdown}%</TableCell>
+                      <TableCell>{day.sessions.toLocaleString()}</TableCell>
+                      <TableCell>{day.impressions.toLocaleString()}</TableCell>
+                      <TableCell>${day.aov}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <TopProductsCard products={products || []} />
-        <TopDiscountCodesCard discountCodes={mockDiscountCodes} />
-      </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <TopProductsCard products={products || []} />
+              <TopDiscountCodesCard discountCodes={mockDiscountCodes} />
+            </div>
 
-      <div className="max-w-2xl mx-auto">
-        <FrequentlyPurchasedCard productPairs={mockProductPairs} />
+            <div className="max-w-2xl mx-auto">
+              <FrequentlyPurchasedCard productPairs={mockProductPairs} />
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

@@ -1,3 +1,5 @@
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import {
   Table,
   TableBody,
@@ -37,53 +39,60 @@ export default function Collections() {
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6">Collections</h1>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Products</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {collectionsData.map((collection) => (
-              <TableRow 
-                key={collection.id}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => navigate(`/collections/${collection.id}`)}
-              >
-                <TableCell>
-                  <div className="relative w-16 h-16 overflow-hidden rounded-md">
-                    <img
-                      src={collection.src}
-                      alt={collection.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  {collection.title}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={collection.active ? "default" : "secondary"}
-                    className={collection.active ? "bg-green-500" : "bg-gray-500"}
-                  >
-                    {collection.active ? "Active" : "Inactive"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  {collection.products_count}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <main className="flex-1 bg-white">
+          <div className="container mx-auto py-8">
+            <h1 className="text-2xl font-bold mb-6">Collections</h1>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Products</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {collectionsData.map((collection) => (
+                    <TableRow 
+                      key={collection.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => navigate(`/collections/${collection.id}`)}
+                    >
+                      <TableCell>
+                        <div className="relative w-16 h-16 overflow-hidden rounded-md">
+                          <img
+                            src={collection.src}
+                            alt={collection.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {collection.title}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={collection.active ? "default" : "secondary"}
+                          className={collection.active ? "bg-green-500" : "bg-gray-500"}
+                        >
+                          {collection.active ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        {collection.products_count}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
