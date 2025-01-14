@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PromotionAISummary } from "@/components/promotion/PromotionAISummary";
+import { CollectionPerformanceTable } from "@/components/collection/CollectionPerformanceTable";
 
 type PromotionType = 'Site Wide' | 'By Product' | 'By Collection';
 
@@ -195,26 +196,6 @@ const PromotionDetails = () => {
   };
 
   const metrics = calculateMetrics(selectedType, selectedItemId);
-
-  // Mock data for the new cards
-  const mockDiscountCodes = [
-    { code: "SUMMER25", usageCount: 156, discountAmount: 25 },
-    { code: "FLASH15", usageCount: 89, discountAmount: 15 },
-    { code: "SPECIAL20", usageCount: 67, discountAmount: 20 },
-  ];
-
-  const mockProductPairs = products ? [
-    {
-      product1: products[0],
-      product2: products[1],
-      purchaseCount: 45
-    },
-    {
-      product1: products[2],
-      product2: products[3],
-      purchaseCount: 32
-    },
-  ] : [];
 
   return (
     <SidebarProvider>
@@ -477,6 +458,10 @@ const PromotionDetails = () => {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+
+            <div className="mt-8">
+              <CollectionPerformanceTable />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
