@@ -50,7 +50,7 @@ const activities = [
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [targetRevenue] = useState("25M");
+  const [totalTests] = useState("25");
   const [aiPrompt, setAiPrompt] = useState("");
   const navigate = useNavigate();
 
@@ -102,10 +102,9 @@ const Dashboard = () => {
         <CardContent>
           <div className="space-y-4">
             {[
-              { text: "Set target revenue goal", path: "#target-revenue" },
-              { text: "Identify collections that are key to sales", path: "/collections" },
-              { text: "Agree on a sales plan", path: "/sales-plan" },
-              { text: "Start running promotions & experiments!", path: "/experiments/create" }
+              { text: "Connect Shopify", path: "/settings" },
+              { text: "Start running your first promotion", path: "/promotions/create" },
+              { text: "Start running your first experiment", path: "/experiments/create" }
             ].map((item, index) => (
               <div key={index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                 <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
@@ -123,15 +122,15 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Target Revenue Goal and Incremental Revenue */}
+      {/* Total Tests Run and Incremental Revenue */}
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Target Revenue Goal</CardTitle>
+            <CardTitle>Total Tests Run</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">${targetRevenue}</div>
-            <div className="text-sm text-muted-foreground mt-2">$5,235,982 of $25,000,000</div>
+            <div className="text-3xl font-bold">{totalTests}</div>
+            <div className="text-sm text-muted-foreground mt-2">5 of 25 tests completed</div>
           </CardContent>
         </Card>
         <Card>
