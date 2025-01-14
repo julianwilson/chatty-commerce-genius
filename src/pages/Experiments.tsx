@@ -29,7 +29,6 @@ const experimentsData = [
     type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
-    uplift: 15.2,
     sessions: 2451,
     successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
     incrementalChange: (Math.random() * 30 - 5).toFixed(1), // Random between -5 and +25
@@ -41,7 +40,6 @@ const experimentsData = [
     type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
-    uplift: -8.5,
     sessions: 1832,
     successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
     incrementalChange: (Math.random() * 30 - 5).toFixed(1),
@@ -53,7 +51,6 @@ const experimentsData = [
     type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
-    uplift: 22.3,
     sessions: 3102,
     successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
     incrementalChange: (Math.random() * 30 - 5).toFixed(1),
@@ -65,7 +62,6 @@ const experimentsData = [
     type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
-    uplift: -4.7,
     sessions: 2789,
     successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
     incrementalChange: (Math.random() * 30 - 5).toFixed(1),
@@ -77,7 +73,6 @@ const experimentsData = [
     type: experimentTypes[Math.floor(Math.random() * experimentTypes.length)],
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
-    uplift: 18.9,
     sessions: 1945,
     successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
     incrementalChange: (Math.random() * 30 - 5).toFixed(1),
@@ -96,7 +91,6 @@ const columns: Column[] = [
   { id: "startDate", label: "Start Date" },
   { id: "endDate", label: "End Date" },
   { id: "sessions", label: "Sessions" },
-  { id: "uplift", label: "Uplift %" },
   { id: "successMetric", label: "Success Metric" },
   { id: "incrementalChange", label: "Incremental Change" },
 ];
@@ -206,17 +200,6 @@ export default function Experiments() {
                   )}
                   {visibleColumns.includes('sessions') && (
                     <TableCell>{experiment.sessions.toLocaleString()}</TableCell>
-                  )}
-                  {visibleColumns.includes('uplift') && (
-                    <TableCell 
-                      className={`font-medium ${
-                        experiment.uplift >= 0 
-                          ? 'text-green-600' 
-                          : 'text-red-600'
-                      }`}
-                    >
-                      {experiment.uplift > 0 ? '+' : ''}{experiment.uplift}%
-                    </TableCell>
                   )}
                   {visibleColumns.includes('successMetric') && (
                     <TableCell>
