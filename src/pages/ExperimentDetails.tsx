@@ -207,26 +207,16 @@ export default function ExperimentDetails() {
     return "";
   };
 
-  const getHighestProfitColumn = () => {
-    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
-    if (!profitRow) return { control: false, testA: false, testB: false };
-
-    const values = {
-      control: parseFloat(profitRow.control.toString().replace("$", "").replace(",", "")),
-      testA: parseFloat(profitRow.testA.toString().replace("$", "").replace(",", "")),
-      testB: parseFloat(profitRow.testB.toString().replace("$", "").replace(",", ""))
-    };
-
-    const maxValue = Math.max(values.control, values.testA, values.testB);
-    
+  const getHighestProfitColumn = (product: Product) => {
+    const winner = product?.testWinner;
     return {
-      control: values.control === maxValue,
-      testA: values.testA === maxValue,
-      testB: values.testB === maxValue
+      control: winner === "Control",
+      testA: winner === "Test A",
+      testB: winner === "Test B"
     };
   };
 
-  const highestProfitColumns = getHighestProfitColumn();
+  const highestProfitColumns = selectedProduct ? getHighestProfitColumn(selectedProduct) : { control: false, testA: false, testB: false };
 
   const handlePublishChanges = () => {
     console.log("Publishing changes:", {
@@ -436,9 +426,9 @@ export default function ExperimentDetails() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[200px]">Metric</TableHead>
-                <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
-                <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
-                <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
+                <TableHead className={selectedProduct && selectedProduct.testWinner === "Control" ? "bg-green-100" : ""}>Control</TableHead>
+                <TableHead className={selectedProduct && selectedProduct.testWinner === "Test A" ? "bg-green-100" : ""}>Test A</TableHead>
+                <TableHead className={selectedProduct && selectedProduct.testWinner === "Test B" ? "bg-green-100" : ""}>Test B</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -446,17 +436,17 @@ export default function ExperimentDetails() {
                 <TableRow key={index}>
                   <TableCell className="font-medium">{row.metric}</TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
+                    className={`${getValueColor(row.control, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Control" ? "bg-green-100" : ""}`}
                   >
                     {row.control}
                   </TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
+                    className={`${getValueColor(row.testA, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Test A" ? "bg-green-100" : ""}`}
                   >
                     {row.testA}
                   </TableCell>
                   <TableCell 
-                    className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
+                    className={`${getValueColor(row.testB, row.metric)} ${selectedProduct && selectedProduct.testWinner === "Test B" ? "bg-green-100" : ""}`}
                   >
                     {row.testB}
                   </TableCell>
