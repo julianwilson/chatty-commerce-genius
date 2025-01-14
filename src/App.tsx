@@ -18,6 +18,7 @@ import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import Chat from "./pages/Chat";
 import Experiments from "./pages/Experiments";
+import ExperimentsEmpty from "./pages/ExperimentsEmpty";
 import CreateExperiment from "./pages/CreateExperiment";
 import ExperimentDetails from "./pages/ExperimentDetails";
 import Recipes from "./pages/Recipes";
@@ -54,6 +55,7 @@ const App = () => (
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<ProductDetails />} />
                   <Route path="/experiments" element={<Experiments />} />
+                  <Route path="/experiments/empty" element={<ExperimentsEmpty />} />
                   <Route path="/experiments/create" element={<CreateExperiment />} />
                   <Route path="/experiments/:id" element={<ExperimentDetails />} />
                   <Route path="/recipes" element={<Recipes />} />
