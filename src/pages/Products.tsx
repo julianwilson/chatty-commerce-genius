@@ -139,7 +139,7 @@ const Products = () => {
                 <TableHead>Product Name</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Slash Price</TableHead>
+                <TableHead>Compare At Price</TableHead>
                 <TableHead>Date Created</TableHead>
                 <TableHead>Last 7 Days Sales</TableHead>
               </TableRow>
