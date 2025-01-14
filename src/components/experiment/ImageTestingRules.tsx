@@ -50,13 +50,11 @@ export function ImageTestingRules() {
   const [imageRange, setImageRange] = useState([1, 4]);
   const [firstImageAsControl, setFirstImageAsControl] = useState(false);
   const [controlAltTag, setControlAltTag] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("1"); // Default to first product
 
   const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
-
-  // Check if any alt tag fields have values
   const hasAltTagValue = bulkAltTag.trim() !== "" || controlAltTag.trim() !== "";
 
-  // Generate test group labels based on range and control settings
   const getTestGroups = () => {
     const start = imageRange[0] - 1; // Convert to 0-based index
     const end = imageRange[1] - 1;
@@ -66,7 +64,6 @@ export function ImageTestingRules() {
       if (firstImageAsControl && i === start) {
         groups.push("Control");
       } else {
-        // If first image is control, start from A, otherwise start from A
         const offset = firstImageAsControl ? i - start - 1 : i - start;
         groups.push(`Test ${String.fromCharCode(65 + offset)}`);
       }
@@ -77,6 +74,22 @@ export function ImageTestingRules() {
 
   return (
     <div className="space-y-8">
+      <div className="space-y-2">
+        <Label htmlFor="preview-product">Preview Product</Label>
+        <Select defaultValue={selectedProduct} onValueChange={setSelectedProduct}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a product to preview" />
+          </SelectTrigger>
+          <SelectContent>
+            {products.map((product) => (
+              <SelectItem key={product.id} value={product.id.toString()}>
+                {product.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="relative">
         <Carousel className={`w-full max-w-xl ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}>
           <CarouselContent>
@@ -237,22 +250,6 @@ export function ImageTestingRules() {
           checked={activateViaUtm}
           onCheckedChange={setActivateViaUtm}
         />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="preview-product">Preview Product</Label>
-        <Select>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a product to preview" />
-          </SelectTrigger>
-          <SelectContent>
-            {products.map((product) => (
-              <SelectItem key={product.id} value={product.id.toString()}>
-                {product.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );
