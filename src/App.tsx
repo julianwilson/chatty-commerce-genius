@@ -58,45 +58,49 @@ const NavigationMenuComponent = () => {
   );
 };
 
+const AppContent = () => (
+  <BrowserRouter>
+    <SidebarProvider>
+      <div className="min-h-screen">
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-4">
+            <SearchBar />
+            <NavigationMenuComponent />
+          </div>
+        </div>
+        <div className="p-4">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/promotions" element={<Promotions />} />
+            <Route path="/promotions/create" element={<CreatePromotion />} />
+            <Route path="/promotions/:id" element={<PromotionDetails />} />
+            <Route path="/collections" element={<Collections />} />
+            <Route path="/collections/:id" element={<CollectionDetails />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/experiments" element={<Experiments />} />
+            <Route path="/experiments/create" element={<CreateExperiment />} />
+            <Route path="/experiments/:id" element={<ExperimentDetails />} />
+            <Route path="/recipes" element={<Recipes />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/sales-plan" element={<SalesPlan />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </div>
+        <ChatBox />
+      </div>
+    </SidebarProvider>
+  </BrowserRouter>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <SidebarProvider>
-          <div className="min-h-screen">
-            <div className="p-4 border-b">
-              <div className="flex items-center gap-4">
-                <SearchBar />
-                <NavigationMenuComponent />
-              </div>
-            </div>
-            <div className="p-4">
-              <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/promotions" element={<Promotions />} />
-                <Route path="/promotions/create" element={<CreatePromotion />} />
-                <Route path="/promotions/:id" element={<PromotionDetails />} />
-                <Route path="/collections" element={<Collections />} />
-                <Route path="/collections/:id" element={<CollectionDetails />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/:id" element={<ProductDetails />} />
-                <Route path="/experiments" element={<Experiments />} />
-                <Route path="/experiments/create" element={<CreateExperiment />} />
-                <Route path="/experiments/:id" element={<ExperimentDetails />} />
-                <Route path="/recipes" element={<Recipes />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/sales-plan" element={<SalesPlan />} />
-                <Route path="/settings" element={<Settings />} />
-              </Routes>
-            </div>
-            <ChatBox />
-          </div>
-        </SidebarProvider>
-      </BrowserRouter>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
