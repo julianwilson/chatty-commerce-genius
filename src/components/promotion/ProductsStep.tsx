@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Product } from "@/types/product";
+import { Textarea } from "@/components/ui/textarea";
 import { X, Plus } from "lucide-react";
 import {
   Table,
@@ -46,13 +47,6 @@ interface Collection {
   title: string;
 }
 
-interface PriceEditorState {
-  variantId: number | null;
-  column: "control" | null;
-  price: string;
-  compareAtPrice: string;
-}
-
 const FIELD_OPTIONS = [
   { value: "collection", label: "Collection" },
   { value: "productTitle", label: "Product Title" },
@@ -70,12 +64,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   const [filterRules, setFilterRules] = useState<FilterRule[]>(() => 
     initialFilters || [{ id: "1", field: "", operator: "", value: "" }]
   );
-  const [priceEditor, setPriceEditor] = useState<PriceEditorState>({
-    variantId: null,
-    column: null,
-    price: "",
-    compareAtPrice: "",
-  });
+  const [aiPrompt, setAiPrompt] = useState("E.g. Show me all winter products that aren't shoes");
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -101,42 +90,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
         ? current.filter((id) => id !== productId)
         : [...current, productId]
     );
-  };
-
-  const openPriceEditor = (
-    variantId: number,
-    currentPrice: string,
-    currentCompareAtPrice: string = ""
-  ) => {
-    setPriceEditor({
-      variantId,
-      column: "control",
-      price: currentPrice,
-      compareAtPrice: currentCompareAtPrice,
-    });
-  };
-
-  const closePriceEditor = () => {
-    setPriceEditor({
-      variantId: null,
-      column: null,
-      price: "",
-      compareAtPrice: "",
-    });
-  };
-
-  const handlePriceChange = (value: string) => {
-    setPriceEditor((prev) => ({
-      ...prev,
-      price: value,
-    }));
-  };
-
-  const handleCompareAtPriceChange = (value: string) => {
-    setPriceEditor((prev) => ({
-      ...prev,
-      compareAtPrice: value,
-    }));
   };
 
   const addFilterRule = () => {
@@ -199,9 +152,29 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
     );
   };
 
+  const handleAnalyze = () => {
+    console.log("Analyzing:", aiPrompt);
+    // TODO: Implement AI analysis
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
+        <div className="flex gap-4">
+          <Textarea
+            placeholder="E.g. Show me all winter products that aren't shoes"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            className="min-h-[80px]"
+          />
+          <Button 
+            className="h-20"
+            onClick={handleAnalyze}
+          >
+            Analyze
+          </Button>
+        </div>
+
         {filterRules.map((rule) => (
           <div key={rule.id} className="flex gap-4 items-center">
             <Select
@@ -321,7 +294,10 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                                 <TableCell>
                                   <Button
                                     variant="ghost"
-                                    onClick={() => openPriceEditor(variant.id, variant.price, variant.compare_at_price || "")}
+                                    onClick={() => {
+                                      // Add your open price editor logic here
+                                      console.log('Edit price for variant:', variant.id);
+                                    }}
                                   >
                                     ${Number(variant.price).toFixed(2)}
                                     {variant.compare_at_price && (
@@ -365,45 +341,6 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           Next
         </Button>
       </div>
-
-      <Dialog
-        open={priceEditor.variantId !== null}
-        onOpenChange={() => closePriceEditor()}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Price</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label htmlFor="price" className="text-sm font-medium">
-                Price
-              </label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                value={priceEditor.price}
-                onChange={(e) => handlePriceChange(e.target.value)}
-                placeholder="Enter price"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="compareAtPrice" className="text-sm font-medium">
-                Compare at Price
-              </label>
-              <Input
-                id="compareAtPrice"
-                type="number"
-                step="0.01"
-                value={priceEditor.compareAtPrice}
-                onChange={(e) => handleCompareAtPriceChange(e.target.value)}
-                placeholder="Enter compare at price"
-              />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
