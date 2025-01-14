@@ -50,7 +50,6 @@ export function ImageTestingRules() {
   const hasAltTagValue = bulkAltTag.trim() !== "";
 
   const getTestGroups = () => {
-    // Always include Control column, then add test groups based on range
     const groups = ["Control"];
     const start = imageRange[0] - 1;
     const end = imageRange[1] - 1;
@@ -64,10 +63,10 @@ export function ImageTestingRules() {
 
   const getImageForGroup = (index: number, isControl: boolean) => {
     if (isControl) {
-      return productImages[0]; // Always use first image for Control
+      return productImages[0];
     }
     const start = imageRange[0] - 1;
-    return productImages[index + start - 1]; // Subtract 1 to account for Control column
+    return productImages[index + start - 1];
   };
 
   return (
@@ -93,11 +92,11 @@ export function ImageTestingRules() {
           <CarouselContent>
             {productImages.map((image, index) => (
               <CarouselItem key={index}>
-                <div className="relative">
+                <div className="relative h-[300px]">
                   <img
                     src={image}
                     alt={`Product ${index + 1}`}
-                    className="w-full h-auto rounded-lg"
+                    className="w-full h-full object-contain rounded-lg"
                     style={{ display: hasAltTagValue ? 'none' : 'block' }}
                   />
                 </div>
