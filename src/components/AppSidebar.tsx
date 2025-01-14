@@ -3,7 +3,7 @@ import {
   BarChart,
   Percent,
   ShoppingCart,
-  ReceiptText
+  ReceiptText,
   Settings,
   FlaskConical,
 } from "lucide-react";
