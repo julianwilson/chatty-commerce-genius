@@ -3,6 +3,7 @@ import {
   BarChart,
   Percent,
   ShoppingCart,
+  ReceiptText
   Settings,
   FlaskConical,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const items = [
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
+  { title: "Recipes", url: "/recipes", icon: ReceiptText },
   { title: "Products", url: "/products", icon: ShoppingCart },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
