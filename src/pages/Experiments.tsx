@@ -19,6 +19,7 @@ import {
 
 const experimentStatuses = ["Draft", "Running", "Paused", "Completed"] as const;
 const experimentTypes = ["Price Testing", "Image Testing"] as const;
+const successMetrics = ["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"] as const;
 
 const experimentsData = [
   {
@@ -30,6 +31,8 @@ const experimentsData = [
     endDate: "Jan 08 2025",
     uplift: 15.2,
     sessions: 2451,
+    successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
+    incrementalChange: (Math.random() * 30 - 5).toFixed(1), // Random between -5 and +25
   },
   {
     id: 2,
@@ -40,6 +43,8 @@ const experimentsData = [
     endDate: "Feb 01 2025",
     uplift: -8.5,
     sessions: 1832,
+    successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
+    incrementalChange: (Math.random() * 30 - 5).toFixed(1),
   },
   {
     id: 3,
@@ -50,6 +55,8 @@ const experimentsData = [
     endDate: "Feb 14 2025",
     uplift: 22.3,
     sessions: 3102,
+    successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
+    incrementalChange: (Math.random() * 30 - 5).toFixed(1),
   },
   {
     id: 4,
@@ -60,6 +67,8 @@ const experimentsData = [
     endDate: "Mar 15 2025",
     uplift: -4.7,
     sessions: 2789,
+    successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
+    incrementalChange: (Math.random() * 30 - 5).toFixed(1),
   },
   {
     id: 5,
@@ -70,6 +79,8 @@ const experimentsData = [
     endDate: "Apr 01 2025",
     uplift: 18.9,
     sessions: 1945,
+    successMetric: successMetrics[Math.floor(Math.random() * successMetrics.length)],
+    incrementalChange: (Math.random() * 30 - 5).toFixed(1),
   }
 ];
 
@@ -86,6 +97,8 @@ const columns: Column[] = [
   { id: "endDate", label: "End Date" },
   { id: "sessions", label: "Sessions" },
   { id: "uplift", label: "Uplift %" },
+  { id: "successMetric", label: "Success Metric" },
+  { id: "incrementalChange", label: "Incremental Change" },
 ];
 
 export default function Experiments() {
@@ -104,6 +117,12 @@ export default function Experiments() {
         ? current.filter(id => id !== columnId)
         : [...current, columnId]
     );
+  };
+
+  const formatSuccessMetric = (metric: string) => {
+    return metric.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
   };
 
   return (
@@ -197,6 +216,23 @@ export default function Experiments() {
                       }`}
                     >
                       {experiment.uplift > 0 ? '+' : ''}{experiment.uplift}%
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes('successMetric') && (
+                    <TableCell>
+                      {formatSuccessMetric(experiment.successMetric)}
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes('incrementalChange') && (
+                    <TableCell 
+                      className={`font-medium ${
+                        Number(experiment.incrementalChange) >= 0 
+                          ? 'text-green-600' 
+                          : 'text-red-600'
+                      }`}
+                    >
+                      {Number(experiment.incrementalChange) > 0 ? '+' : ''}
+                      {experiment.incrementalChange}%
                     </TableCell>
                   )}
                 </TableRow>
