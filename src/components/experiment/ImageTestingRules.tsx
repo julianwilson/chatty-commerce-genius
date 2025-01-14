@@ -56,20 +56,41 @@ export function ImageTestingRules() {
   const hasAltTagValue = bulkAltTag.trim() !== "" || controlAltTag.trim() !== "";
 
   const getTestGroups = () => {
+    const groups = [];
     const start = imageRange[0] - 1; // Convert to 0-based index
     const end = imageRange[1] - 1;
-    const groups = [];
 
+    // If first image as control is enabled and first image is not in range
+    if (firstImageAsControl && (start > 0 || end < 0)) {
+      groups.push("Control");
+    }
+
+    // Add groups for the selected range
     for (let i = start; i <= end; i++) {
-      if (firstImageAsControl && i === start) {
+      if (firstImageAsControl && i === 0) {
         groups.push("Control");
       } else {
-        const offset = firstImageAsControl ? i - start - 1 : i - start;
+        const offset = firstImageAsControl ? 
+          (start === 0 ? i : i - start) : // If range starts at 0, use i directly
+          i - start; // Otherwise use relative position
         groups.push(`Test ${String.fromCharCode(65 + offset)}`);
       }
     }
 
     return groups;
+  };
+
+  const getImageForGroup = (index: number) => {
+    if (firstImageAsControl && index === 0) {
+      return productImages[0]; // Always show first image for Control
+    }
+    
+    const start = imageRange[0] - 1;
+    const adjustedIndex = firstImageAsControl && start === 0 ? 
+      index : // If range starts at 0, use index directly
+      index + start; // Otherwise adjust by range start
+    
+    return productImages[adjustedIndex];
   };
 
   return (
@@ -137,7 +158,7 @@ export function ImageTestingRules() {
                 {getTestGroups().map((group, index) => (
                   <TableCell key={index} className="text-center">
                     <img
-                      src={firstImageAsControl && index === 0 ? productImages[0] : productImages[index + imageRange[0] - 1]}
+                      src={getImageForGroup(index)}
                       alt={`Product ${index + 1}`}
                       className="w-24 h-24 mx-auto object-contain"
                       style={{ display: hasAltTagValue ? 'none' : 'block' }}
