@@ -39,6 +39,25 @@ export function ImageTestingRules() {
 
   const equalShare = (100 / (selectedImages.length + 1)).toFixed(2);
 
+  // Generate test group labels based on range and control settings
+  const getTestGroups = () => {
+    const start = imageRange[0] - 1; // Convert to 0-based index
+    const end = imageRange[1] - 1;
+    const groups = [];
+
+    for (let i = start; i <= end; i++) {
+      if (i === start && firstImageAsControl) {
+        groups.push("Control");
+      } else {
+        // If first image is control, start from A, otherwise start from A
+        const offset = firstImageAsControl ? i - start - 1 : i - start;
+        groups.push(`Test ${String.fromCharCode(65 + offset)}`);
+      }
+    }
+
+    return groups;
+  };
+
   return (
     <div className="space-y-8">
       <div className="relative">
@@ -71,6 +90,32 @@ export function ImageTestingRules() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
+
+        {/* Test Groups Table */}
+        <div className="mt-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {getTestGroups().map((group, index) => (
+                  <TableHead key={index} className="text-center">{group}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                {getTestGroups().map((_, index) => (
+                  <TableCell key={index} className="text-center">
+                    <img
+                      src={productImages[index + imageRange[0] - 1]}
+                      alt={`Product ${index + 1}`}
+                      className="w-24 h-24 mx-auto object-contain"
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
 
         <div className="mt-8 space-y-6">
           <div className="space-y-4">
