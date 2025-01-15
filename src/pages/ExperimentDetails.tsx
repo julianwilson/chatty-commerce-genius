@@ -157,6 +157,7 @@ export default function ExperimentDetails() {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalTests] = useState("25");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -338,6 +339,26 @@ export default function ExperimentDetails() {
             Publish All Winning Changes
           </Button>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>New Revenue Generated</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-secondary">$1.25M</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Tests Run</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{totalTests}</div>
+            <div className="text-sm text-muted-foreground mt-2">5 of 25 tests completed</div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
