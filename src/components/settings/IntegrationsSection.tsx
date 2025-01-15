@@ -1,21 +1,30 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 const integrations = [
   {
-    name: "Supabase",
-    description: "Database and authentication provider",
-    connected: true,
-  },
-  {
-    name: "Stripe",
-    description: "Payment processing platform",
+    name: "Meta Ads",
+    description: "Facebook and Instagram advertising platform",
     connected: false,
   },
   {
-    name: "SendGrid",
-    description: "Email delivery service",
+    name: "Google Ads",
+    description: "Google advertising platform",
+    connected: false,
+  },
+  {
+    name: "TikTok Ads",
+    description: "TikTok advertising platform",
+    connected: false,
+  },
+  {
+    name: "SnapChat Ads",
+    description: "Snapchat advertising platform",
+    connected: false,
+  },
+  {
+    name: "Google Analytics 4",
+    description: "Web analytics service by Google",
     connected: false,
   },
 ];
