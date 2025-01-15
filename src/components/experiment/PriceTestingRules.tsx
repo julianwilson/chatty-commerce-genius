@@ -39,23 +39,21 @@ const priceRoundingOptions = [
 
 const priceAdjustmentTypes = ["Lower by", "Increase By"] as const;
 
-// Helper function to get test group letter
 const getTestGroupLetter = (index: number) => {
-  return String.fromCharCode(65 + index); // A = 65 in ASCII
+  return String.fromCharCode(65 + index);
 };
 
-// Create a dynamic schema based on test groups
 const createFormSchema = (testGroups: string[]) => {
   const testGroupFields: Record<string, any> = {};
   
   testGroups.forEach(letter => {
     testGroupFields[`test${letter}PriceAdjustmentType`] = z.enum(priceAdjustmentTypes);
     testGroupFields[`test${letter}PriceAdjustmentPercentage`] = z.number().min(0).max(100);
+    testGroupFields[`test${letter}PriceRounding`] = z.enum(priceRoundingOptions);
+    testGroupFields[`test${letter}PriceRoundingValue`] = z.number().optional();
   });
 
   return z.object({
-    priceRounding: z.enum(priceRoundingOptions),
-    priceRoundingValue: z.number().optional(),
     activateViaUtm: z.boolean(),
     successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
     ...testGroupFields,
@@ -76,18 +74,18 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      priceRounding: "No Rounding",
-      priceRoundingValue: 0.99,
       activateViaUtm: false,
       successMetric: "conversion-rate",
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
+      testAPriceRounding: "No Rounding",
+      testAPriceRoundingValue: 0.99,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
+      testBPriceRounding: "No Rounding",
+      testBPriceRoundingValue: 0.99,
     } as FormValues,
   });
-
-  const selectedPriceRounding = form.watch("priceRounding");
 
   const onSubmit = (values: FormValues) => {
     console.log("Rules values:", values);
@@ -98,9 +96,10 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     const nextLetter = getTestGroupLetter(testGroups.length);
     setTestGroups([...testGroups, nextLetter]);
     
-    // Set default values for the new test group
     form.setValue(`test${nextLetter}PriceAdjustmentType` as any, "Increase By");
     form.setValue(`test${nextLetter}PriceAdjustmentPercentage` as any, 20);
+    form.setValue(`test${nextLetter}PriceRounding` as any, "No Rounding");
+    form.setValue(`test${nextLetter}PriceRoundingValue` as any, 0.99);
   };
 
   const equalShare = (100 / (testGroups.length + 1)).toFixed(2);
@@ -149,13 +148,14 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
 
           <div className="grid grid-cols-2 gap-4">
             {testGroups.map((letter) => (
-              <div key={letter} className="space-y-4">
+              <div key={letter} className="space-y-4 p-4 border rounded-lg">
                 <h3 className="font-medium">Test {letter} Price Adjustment</h3>
                 <FormField
                   control={form.control}
                   name={`test${letter}PriceAdjustmentType` as any}
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Adjustment Type</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -179,6 +179,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                   name={`test${letter}PriceAdjustmentPercentage` as any}
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Adjustment Percentage</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -192,6 +193,50 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name={`test${letter}PriceRounding` as any}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price Rounding</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select price rounding" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {priceRoundingOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch(`test${letter}PriceRounding` as any) !== "No Rounding" && (
+                  <FormField
+                    control={form.control}
+                    name={`test${letter}PriceRoundingValue` as any}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Rounding Value</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -219,53 +264,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
               </TableRow>
             </TableBody>
           </Table>
-        </div>
-
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="priceRounding"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price Rounding</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select price rounding" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {priceRoundingOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {selectedPriceRounding !== "No Rounding" && (
-            <FormField
-              control={form.control}
-              name="priceRoundingValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
         </div>
 
         <FormField
