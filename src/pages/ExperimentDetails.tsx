@@ -103,7 +103,7 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
     testB: "$14,700",
   },
   {
-    metric: "Gross Profit %",
+    metric: "Gross Margin %",
     control: "50%",
     testA: "44%",
     testB: "54%",
