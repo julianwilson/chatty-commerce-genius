@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const priceRoundingOptions = [
   "No Rounding",
@@ -51,11 +52,13 @@ const createFormSchema = (testGroups: string[]) => {
     testGroupFields[`test${letter}PriceAdjustmentPercentage`] = z.number().min(0).max(100);
     testGroupFields[`test${letter}PriceRounding`] = z.enum(priceRoundingOptions);
     testGroupFields[`test${letter}PriceRoundingValue`] = z.number().optional();
+    testGroupFields[`test${letter}TrafficAllocation`] = z.number().min(0).max(100);
   });
 
   return z.object({
     activateViaUtm: z.boolean(),
     successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
+    controlTrafficAllocation: z.number().min(0).max(100),
     ...testGroupFields,
   });
 };
@@ -70,24 +73,41 @@ interface RulesStepProps {
 export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
   const formSchema = createFormSchema(testGroups);
+  const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       activateViaUtm: false,
       successMetric: "conversion-rate",
+      controlTrafficAllocation: 33.33,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testAPriceRounding: "No Rounding",
       testAPriceRoundingValue: 0.99,
+      testATrafficAllocation: 33.33,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
       testBPriceRounding: "No Rounding",
       testBPriceRoundingValue: 0.99,
+      testBTrafficAllocation: 33.34,
     } as FormValues,
   });
 
   const onSubmit = (values: FormValues) => {
+    const totalAllocation = [values.controlTrafficAllocation]
+      .concat(testGroups.map(letter => values[`test${letter}TrafficAllocation` as keyof FormValues] as number))
+      .reduce((sum, value) => sum + value, 0);
+
+    if (Math.abs(totalAllocation - 100) > 0.01) {
+      toast({
+        title: "Invalid Traffic Allocation",
+        description: "Traffic allocation must sum to 100%",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log("Rules values:", values);
     onNext();
   };
@@ -96,13 +116,27 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     const nextLetter = getTestGroupLetter(testGroups.length);
     setTestGroups([...testGroups, nextLetter]);
     
+    const currentTotal = form.getValues('controlTrafficAllocation') +
+      testGroups.reduce((sum, letter) => 
+        sum + (form.getValues(`test${letter}TrafficAllocation` as any) || 0), 0
+      );
+    
+    const remainingShare = (100 - currentTotal) / 2;
+    
+    // Adjust existing allocations
+    form.setValue('controlTrafficAllocation', form.getValues('controlTrafficAllocation') - remainingShare);
+    testGroups.forEach(letter => {
+      const currentValue = form.getValues(`test${letter}TrafficAllocation` as any);
+      form.setValue(`test${letter}TrafficAllocation` as any, currentValue - (remainingShare / testGroups.length));
+    });
+    
+    // Set default values for new test group
     form.setValue(`test${nextLetter}PriceAdjustmentType` as any, "Increase By");
     form.setValue(`test${nextLetter}PriceAdjustmentPercentage` as any, 20);
     form.setValue(`test${nextLetter}PriceRounding` as any, "No Rounding");
     form.setValue(`test${nextLetter}PriceRoundingValue` as any, 0.99);
+    form.setValue(`test${nextLetter}TrafficAllocation` as any, remainingShare * 2);
   };
-
-  const equalShare = (100 / (testGroups.length + 1)).toFixed(2);
 
   return (
     <Form {...form}>
@@ -255,10 +289,44 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell className="text-center">{equalShare}%</TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="controlTrafficAllocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className="w-24"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
                 {testGroups.map((letter) => (
-                  <TableCell key={letter} className="text-center">
-                    {equalShare}%
+                  <TableCell key={letter}>
+                    <FormField
+                      control={form.control}
+                      name={`test${letter}TrafficAllocation` as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                              className="w-24"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </TableCell>
                 ))}
               </TableRow>
