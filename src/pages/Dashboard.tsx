@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 import { CheckCircle2 } from "lucide-react";
+import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 
 // Mock recommendations data
 const recommendations = [
@@ -94,34 +95,6 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      {/* To-Do Checklist */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Getting Started Checklist</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[
-              { text: "Connect Shopify", path: "/settings" },
-              { text: "Start running your first promotion", path: "/promotions/create" },
-              { text: "Start running your first experiment", path: "/experiments/create" }
-            ].map((item, index) => (
-              <div key={index} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
-                <span className="flex-1">{item.text}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate(item.path)}
-                >
-                  Get Started
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Total Tests Run and Incremental Revenue */}
       <div className="grid grid-cols-2 gap-4">
         <Card>
@@ -142,6 +115,9 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Metrics Graph */}
+      <MetricsGraph />
 
       {/* Recommendations Section */}
       <div className="mb-8">
