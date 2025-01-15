@@ -157,7 +157,6 @@ export default function ExperimentDetails() {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [totalTests] = useState("25");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -342,26 +341,6 @@ export default function ExperimentDetails() {
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>New Revenue Generated</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-secondary">$1.25M</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Tests Run</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalTests}</div>
-            <div className="text-sm text-muted-foreground mt-2">5 of 25 tests completed</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6 mb-6">
         <MetricCard
           title="Overall Change"
           percentage={15.8}
@@ -381,7 +360,7 @@ export default function ExperimentDetails() {
       <div className="bg-muted/50 rounded-lg p-4 mb-6">
         <h2 className="font-semibold mb-2">AI Summary</h2>
         <p className="text-sm text-muted-foreground">
-          The experiment has demonstrated significant positive impact with a 15.8% overall improvement in performance metrics. This has translated to an impressive 23.4% increase in incremental revenue, generating an additional $45,000 compared to the control period. The successful variations across multiple products suggest a strong market response to the optimized pricing strategy. Recommended action: Roll out the winning variations across the product catalog to maximize revenue potential while maintaining competitive market positioning.
+          The experiment revealed several standout winners, with Test A's 10% price reduction showing exceptional performance on the Lavender Dreams collection, achieving a 28% increase in conversion rate. The Rose Petals fragrance test variation also demonstrated strong results with a 15% uplift in average order value. However, Test B's 10% price increase notably underperformed, particularly on seasonal items, showing a 20% decrease in units sold. Overall, the winning variations contributed to a 15.8% improvement in performance metrics and generated an additional $45,000 in incremental revenue. Recommended action: Roll out the successful price optimizations across similar product categories while avoiding aggressive price increases on seasonal items.
         </p>
       </div>
       
