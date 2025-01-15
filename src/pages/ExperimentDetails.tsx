@@ -73,7 +73,7 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => [
     testB: "+10%",
   },
   {
-    metric: "Slash Price",
+    metric: "Compare At Price",
     control: `$${(parseFloat(product.price.replace("$", "")) * 1.2).toFixed(2)}`,
     testA: product.price,
     testB: `$${(parseFloat(product.price.replace("$", "")) * 1.3).toFixed(2)}`,
