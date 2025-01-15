@@ -65,6 +65,24 @@ export const InstallationSection = () => {
             <div className="flex gap-4">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-muted">5</div>
               <div className="space-y-1.5">
+                <p className="font-medium">Modify theme.liquid</p>
+                <p className="text-sm text-muted-foreground">
+                  Add the following code snippet just before the closing &lt;/head&gt; tag in your theme.liquid file:
+                </p>
+                <pre className="mt-2 rounded-md bg-slate-950 p-4">
+                  <code className="text-sm text-white">
+                    {`{% if content_for_header contains 'shopify-app-pixel' %}
+  {{ content_for_header }}
+{% endif %}
+<script src="{{ 'app-pixel.js' | asset_url }}" defer></script>`}
+                  </code>
+                </pre>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-muted">6</div>
+              <div className="space-y-1.5">
                 <p className="font-medium">Configure Settings</p>
                 <p className="text-sm text-muted-foreground">
                   Once installed, configure your app settings and preferences
