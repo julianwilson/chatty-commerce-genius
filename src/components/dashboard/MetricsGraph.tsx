@@ -10,18 +10,17 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Mock data - in a real app this would come from an API
+// Generate mock data for the last 12 weeks
 const generateMockData = () => {
   const data = [];
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - 30);
-
-  for (let i = 0; i < 30; i++) {
-    const currentDate = new Date(startDate);
-    currentDate.setDate(currentDate.getDate() + i);
+  const currentDate = new Date();
+  
+  // Start from 12 weeks ago
+  for (let i = 11; i >= 0; i--) {
+    const weekNumber = 52 - i; // This is simplified - in a real app you'd use proper retail calendar logic
     
     data.push({
-      date: currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      week: `Wk${weekNumber}`,
       promotionalAmount: Math.random() * 10000 + 5000,
       newRevenue: Math.random() * 15000 + 8000,
       aur: Math.random() * 20 + 40,
@@ -93,7 +92,7 @@ export const MetricsGraph = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
+              <XAxis dataKey="week" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Line type="monotone" dataKey="promotionalAmount" stroke="#8884d8" name="Promotional $" />
