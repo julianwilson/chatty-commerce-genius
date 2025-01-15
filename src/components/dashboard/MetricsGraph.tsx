@@ -40,21 +40,41 @@ const metrics = [
   { id: 'unitsPerTransaction', name: 'Units Per Transaction', value: '2.5', change: '+25%' }
 ];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-4 border rounded shadow">
+        <p className="text-sm font-bold mb-2">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm" style={{ color: entry.color }}>
+            {entry.name}: {
+              entry.dataKey === 'unitsPerTransaction' 
+                ? entry.value.toFixed(2)
+                : `$${entry.value.toFixed(2)}`
+            }
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 export const MetricsGraph = () => {
   const data = generateMockData();
 
   return (
     <Card className="col-span-4">
       <CardHeader>
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap items-center gap-4">
           {metrics.map((metric) => (
             <div key={metric.id} className="flex flex-col">
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 {metric.name}
               </p>
-              <div className="flex items-center gap-2">
-                <p className="text-2xl font-bold">{metric.value}</p>
-                <span className="text-sm text-green-500">{metric.change}</span>
+              <div className="flex items-center gap-1">
+                <p className="text-lg font-bold">{metric.value}</p>
+                <span className="text-xs text-green-500">{metric.change}</span>
               </div>
             </div>
           ))}
@@ -75,7 +95,7 @@ export const MetricsGraph = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
               <Line type="monotone" dataKey="promotionalAmount" stroke="#8884d8" name="Promotional $" />
               <Line type="monotone" dataKey="newRevenue" stroke="#82ca9d" name="New $ Generated" />
               <Line type="monotone" dataKey="aur" stroke="#ffc658" name="AUR" />
