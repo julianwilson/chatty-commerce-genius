@@ -15,12 +15,17 @@ const generateMockData = () => {
   const data = [];
   const currentDate = new Date();
   
+  // Adjust to the last Saturday (week ending)
+  const daysUntilSaturday = (6 - currentDate.getDay() + 7) % 7;
+  currentDate.setDate(currentDate.getDate() + daysUntilSaturday);
+  
   // Start from 12 weeks ago
   for (let i = 11; i >= 0; i--) {
-    const weekNumber = 52 - i; // This is simplified - in a real app you'd use proper retail calendar logic
+    const weekEndingDate = new Date(currentDate);
+    weekEndingDate.setDate(weekEndingDate.getDate() - (i * 7));
     
     data.push({
-      week: `Wk${weekNumber}`,
+      week: weekEndingDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }),
       promotionalAmount: Math.random() * 10000 + 5000,
       newRevenue: Math.random() * 15000 + 8000,
       aur: Math.random() * 20 + 40,
