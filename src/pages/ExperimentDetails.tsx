@@ -356,6 +356,13 @@ export default function ExperimentDetails() {
           format="currency"
         />
       </div>
+
+      <div className="bg-muted/50 rounded-lg p-4 mb-6">
+        <h2 className="font-semibold mb-2">AI Summary</h2>
+        <p className="text-sm text-muted-foreground">
+          Based on the experiment data, Test A shows the most promising results with a 10% price reduction leading to a 20.8% increase in units sold and a 44% gross margin. While Test B's 10% price increase resulted in decreased sales volume, Test A's strategy demonstrates better market response and maintains healthy profitability. Recommended action: Implement Test A pricing across selected products to optimize revenue and maintain competitive positioning.
+        </p>
+      </div>
       
       <div className="grid grid-cols-[400px,1fr] gap-6">
         <div className="rounded-md border">
