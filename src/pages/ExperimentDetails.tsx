@@ -53,92 +53,113 @@ type Product = {
   }[];
 };
 
-const generateExperimentData = (product: Product): ExperimentMetric[] => [
-  {
-    metric: "Price",
-    control: product.price,
-    testA: `$${(parseFloat(product.price.replace("$", "")) * 0.9).toFixed(2)}`,
-    testB: `$${(parseFloat(product.price.replace("$", "")) * 1.1).toFixed(2)}`,
-  },
-  {
-    metric: "Price Change %",
-    control: "0%",
-    testA: "-10%",
-    testB: "+10%",
-  },
-  {
-    metric: "Compare At Price",
-    control: `$${(parseFloat(product.price.replace("$", "")) * 1.2).toFixed(2)}`,
-    testA: product.price,
-    testB: `$${(parseFloat(product.price.replace("$", "")) * 1.3).toFixed(2)}`,
-  },
-  {
-    metric: "Units Sold",
-    control: 1200,
-    testA: 1450,
-    testB: 980,
-  },
-  {
-    metric: "COGS",
-    control: "$24.99",
-    testA: "$24.99",
-    testB: "$24.99",
-  },
-  {
-    metric: "Gross Sales $",
-    control: "$30,000",
-    testA: "$29,000",
-    testB: "$29,400",
-  },
-  {
-    metric: "Net Sales $",
-    control: "$15,000",
-    testA: "$14,500",
-    testB: "$14,700",
-  },
-  {
-    metric: "Gross Margin %",
-    control: "50%",
-    testA: "44%",
-    testB: "54%",
-  },
-  {
-    metric: "AOV",
-    control: "$55",
-    testA: "$52",
-    testB: "$58",
-  },
-  {
-    metric: "Total Orders",
-    control: 1100,
-    testA: 1300,
-    testB: 900,
-  },
-  {
-    metric: "Conversion Rate",
-    control: "2.5%",
-    testA: "2.8%",
-    testB: "2.2%",
-  },
-  {
-    metric: "Impressions",
-    control: 50000,
-    testA: 50000,
-    testB: 50000,
-  },
-  {
-    metric: "Revenue Per Visitor",
-    control: "$1.25",
-    testA: "$1.45",
-    testB: "$1.15",
-  },
-  {
-    metric: "% of Traffic",
-    control: "33.33%",
-    testA: "33.33%",
-    testB: "33.33%",
-  },
-];
+const generateExperimentData = (product: Product): ExperimentMetric[] => {
+  const price = parseFloat(product.price.replace("$", ""));
+  const controlCOGS = price * 0.5;
+  const testAPrice = price * 0.9;
+  const testACOGS = testAPrice * 0.5;
+  const testBPrice = price * 1.1;
+  const testBCOGS = testBPrice * 0.5;
+
+  return [
+    {
+      metric: "Price",
+      control: product.price,
+      testA: `$${(parseFloat(product.price.replace("$", "")) * 0.9).toFixed(2)}`,
+      testB: `$${(parseFloat(product.price.replace("$", "")) * 1.1).toFixed(2)}`,
+    },
+    {
+      metric: "Price Change %",
+      control: "0%",
+      testA: "-10%",
+      testB: "+10%",
+    },
+    {
+      metric: "Compare At Price",
+      control: `$${(parseFloat(product.price.replace("$", "")) * 1.2).toFixed(2)}`,
+      testA: product.price,
+      testB: `$${(parseFloat(product.price.replace("$", "")) * 1.3).toFixed(2)}`,
+    },
+    {
+      metric: "Units Sold",
+      control: 1200,
+      testA: 1450,
+      testB: 980,
+    },
+    {
+      metric: "COGS",
+      control: `$${controlCOGS.toFixed(2)}`,
+      testA: `$${testACOGS.toFixed(2)}`,
+      testB: `$${testBCOGS.toFixed(2)}`,
+    },
+    {
+      metric: "Contribution Margin",
+      control: `$${(price - controlCOGS).toFixed(2)}`,
+      testA: `$${(testAPrice - testACOGS).toFixed(2)}`,
+      testB: `$${(testBPrice - testBCOGS).toFixed(2)}`,
+    },
+    {
+      metric: "COGS",
+      control: "$24.99",
+      testA: "$24.99",
+      testB: "$24.99",
+    },
+    {
+      metric: "Gross Sales $",
+      control: "$30,000",
+      testA: "$29,000",
+      testB: "$29,400",
+    },
+    {
+      metric: "Net Sales $",
+      control: "$15,000",
+      testA: "$14,500",
+      testB: "$14,700",
+    },
+    {
+      metric: "Gross Margin %",
+      control: "50%",
+      testA: "44%",
+      testB: "54%",
+    },
+    {
+      metric: "AOV",
+      control: "$55",
+      testA: "$52",
+      testB: "$58",
+    },
+    {
+      metric: "Total Orders",
+      control: 1100,
+      testA: 1300,
+      testB: 900,
+    },
+    {
+      metric: "Conversion Rate",
+      control: "2.5%",
+      testA: "2.8%",
+      testB: "2.2%",
+    },
+    {
+      metric: "Impressions",
+      control: 50000,
+      testA: 50000,
+      testB: 50000,
+    },
+    {
+      metric: "Revenue Per Visitor",
+      control: "$1.25",
+      testA: "$1.45",
+      testB: "$1.15",
+    },
+    {
+      metric: "% of Traffic",
+      control: "33.33%",
+      testA: "33.33%",
+      testB: "33.33%",
+    },
+  ];
+};
 
 export default function ExperimentDetails() {
   const { id } = useParams();
