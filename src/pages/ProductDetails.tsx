@@ -330,7 +330,7 @@ const ProductDetails = () => {
                 <TableHead>Units Sold</TableHead>
                 <TableHead>Sales ($)</TableHead>
                 <TableHead><MetricTooltip metric="AUR">AUR</MetricTooltip></TableHead>
-                <TableHead>Avg Markdown %</TableHead>
+                <TableHead><MetricTooltip metric="Avg Markdown %">Avg Markdown %</MetricTooltip></TableHead>
                 <TableHead>Impressions</TableHead>
                 <TableHead>AOV</TableHead>
               </TableRow>
