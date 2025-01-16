@@ -57,9 +57,10 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const price = parseFloat(product.price.replace("$", ""));
   const controlCOGS = price * 0.5;
   const testAPrice = price * 0.9;
-  const testACOGS = testAPrice * 0.5;
   const testBPrice = price * 1.1;
-  const testBCOGS = testBPrice * 0.5;
+
+  // Use the same COGS for all variants
+  const COGS = controlCOGS;
 
   // Define units sold for each variant
   const controlUnits = 1200;
@@ -72,9 +73,9 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testBGrossSales = testBUnits * testBPrice;
 
   // Calculate net sales (gross sales - (COGS * units))
-  const controlNetSales = controlGrossSales - (controlCOGS * controlUnits);
-  const testANetSales = testAGrossSales - (testACOGS * testAUnits);
-  const testBNetSales = testBGrossSales - (testBCOGS * testBUnits);
+  const controlNetSales = controlGrossSales - (COGS * controlUnits);
+  const testANetSales = testAGrossSales - (COGS * testAUnits);
+  const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
   // Calculate gross margin percentage (net sales / gross sales * 100)
   const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
@@ -108,15 +109,15 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "COGS",
-      control: `$${Math.round(controlCOGS)}`,
-      testA: `$${Math.round(testACOGS)}`,
-      testB: `$${Math.round(testBCOGS)}`,
+      control: `$${Math.round(COGS)}`,
+      testA: `$${Math.round(COGS)}`,
+      testB: `$${Math.round(COGS)}`,
     },
     {
       metric: "Contribution Margin",
-      control: `$${(price - controlCOGS).toFixed(2)}`,
-      testA: `$${Math.round(testAPrice - testACOGS)}`,
-      testB: `$${Math.round(testBPrice - testBCOGS)}`,
+      control: `$${Math.round(price - COGS)}`,
+      testA: `$${Math.round(testAPrice - COGS)}`,
+      testB: `$${Math.round(testBPrice - COGS)}`,
     },
     {
       metric: "Gross Sales $",
