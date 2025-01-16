@@ -13,6 +13,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -59,45 +65,37 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testAPrice = price * 0.9;
   const testBPrice = price * 1.1;
 
-  // Use the same COGS for all variants
   const COGS = controlCOGS;
 
-  // Define units sold for each variant
   const controlUnits = 1200;
   const testAUnits = 1450;
   const testBUnits = 980;
 
-  // Calculate gross sales
   const controlGrossSales = controlUnits * price;
   const testAGrossSales = testAUnits * testAPrice;
   const testBGrossSales = testBUnits * testBPrice;
 
-  // Calculate net sales (gross sales - (COGS * units))
   const controlNetSales = controlGrossSales - (COGS * controlUnits);
   const testANetSales = testAGrossSales - (COGS * testAUnits);
   const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
-  // Generate random impressions between 25000-26500
   const controlImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
   const testAImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
   const testBImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
 
-  // Calculate revenue per view (Gross Sales / Impressions)
   const controlRPV = controlGrossSales / controlImpressions;
   const testARPV = testAGrossSales / testAImpressions;
   const testBRPV = testBGrossSales / testBImpressions;
 
-  // Calculate conversion rate (Total Orders / Impressions * 100)
   const controlConvRate = (controlUnits / controlImpressions) * 100;
   const testAConvRate = (testAUnits / testAImpressions) * 100;
   const testBConvRate = (testBUnits / testBImpressions) * 100;
 
-  // Calculate gross margin percentage (net sales / gross sales * 100)
   const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
   const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
   const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
 
-  const compareAtPrice = (price * 1.2).toFixed(2); // Single compare at price for all variants
+  const compareAtPrice = (price * 1.2).toFixed(2);
 
   return [
     {
@@ -205,6 +203,28 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   ];
 };
 
+const MetricTooltip = ({ metric, children }: { metric: string, children: React.ReactNode }) => {
+  const tooltips: Record<string, string> = {
+    "Units Per Transaction": "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
+    "UPT": "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
+  };
+
+  const tooltipContent = tooltips[metric];
+
+  if (!tooltipContent) return <>{children}</>;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {children}
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="max-w-xs text-sm">{tooltipContent}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
+
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -302,11 +322,9 @@ export default function ExperimentDetails() {
     
     setSelectedProducts(prev => {
       if (prev.includes(productId)) {
-        // Unselect product and its variants
         setSelectedVariants(prev => prev.filter(id => !variantIds.includes(id)));
         return prev.filter(id => id !== productId);
       } else {
-        // Select product and its variants
         setSelectedVariants(prev => [...new Set([...prev, ...variantIds])]);
         return [...prev, productId];
       }
@@ -317,7 +335,6 @@ export default function ExperimentDetails() {
     setSelectedVariants(prev => {
       if (prev.includes(variantId)) {
         const newVariants = prev.filter(id => id !== variantId);
-        // If all variants of a product are unselected, unselect the product too
         const product = mockProducts.find(p => p.id === productId);
         if (product && !product.variants.some(v => newVariants.includes(v.id))) {
           setSelectedProducts(prev => prev.filter(id => id !== productId));
@@ -331,11 +348,9 @@ export default function ExperimentDetails() {
 
   const handleSelectAll = () => {
     if (selectedProducts.length === mockProducts.length) {
-      // Unselect all
       setSelectedProducts([]);
       setSelectedVariants([]);
     } else {
-      // Select all products and their variants
       const allProductIds = mockProducts.map(p => p.id);
       const allVariantIds = mockProducts.flatMap(p => p.variants.map(v => v.id));
       setSelectedProducts(allProductIds);
@@ -510,7 +525,11 @@ export default function ExperimentDetails() {
             <TableBody>
               {experimentData.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{row.metric}</TableCell>
+                  <TableCell className="font-medium">
+                    <MetricTooltip metric={row.metric}>
+                      {row.metric}
+                    </MetricTooltip>
+                  </TableCell>
                   <TableCell 
                     className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
                   >
