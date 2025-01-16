@@ -45,6 +45,10 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     title: "Gross Margin",
     description: "The dollar amount remaining after subtracting COGS from total revenue, representing the gross profit.",
   },
+  "Average Unit Retail": {
+    title: "AUR",
+    description: "The average selling price per unit of a product or all products, calculated by dividing total gross margin $ (after discounts) by the number of units sold.",
+  },
   "Compare At Price": {
     title: "Compare At Price",
     description: "The original or higher price of a product displayed alongside the current sale price to highlight savings and encourage purchases.",
