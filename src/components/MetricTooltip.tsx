@@ -17,7 +17,17 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     abbreviation: "UPT",
     description: "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
   },
+  "UPT": {
+    title: "Units Per Transaction",
+    abbreviation: "UPT",
+    description: "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
+  },
   "Cost of Goods Sold": {
+    title: "Cost of Goods Sold",
+    abbreviation: "COGS",
+    description: "The direct costs attributable to the production of the goods sold.",
+  },
+  "COGS": {
     title: "Cost of Goods Sold",
     abbreviation: "COGS",
     description: "The direct costs attributable to the production of the goods sold.",
