@@ -161,6 +161,18 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
     },
     {
+      metric: "Total Cart Sales $",
+      control: `$${(controlGrossSales * 1.15).toFixed(2)}`,
+      testA: `$${(testAGrossSales * 1.15).toFixed(2)}`,
+      testB: `$${(testBGrossSales * 1.15).toFixed(2)}`,
+    },
+    {
+      metric: "Units Per Transaction",
+      control: (controlUnits / (controlUnits * 0.85)).toFixed(2),
+      testA: (testAUnits / (testAUnits * 0.85)).toFixed(2),
+      testB: (testBUnits / (testBUnits * 0.85)).toFixed(2),
+    },
+    {
       metric: "Total Orders",
       control: controlUnits,
       testA: testAUnits,
