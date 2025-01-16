@@ -77,6 +77,21 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testANetSales = testAGrossSales - (COGS * testAUnits);
   const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
+  // Generate random impressions between 2500-6500
+  const controlImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
+  const testAImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
+  const testBImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
+
+  // Calculate revenue per view (Gross Sales / Impressions)
+  const controlRPV = controlGrossSales / controlImpressions;
+  const testARPV = testAGrossSales / testAImpressions;
+  const testBRPV = testBGrossSales / testBImpressions;
+
+  // Calculate conversion rate (Total Orders / Impressions * 100)
+  const controlConvRate = (controlUnits / controlImpressions) * 100;
+  const testAConvRate = (testAUnits / testAImpressions) * 100;
+  const testBConvRate = (testBUnits / testBImpressions) * 100;
+
   // Calculate gross margin percentage (net sales / gross sales * 100)
   const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
   const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
@@ -151,21 +166,21 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "Conversion Rate",
-      control: "2.5%",
-      testA: "2.8%",
-      testB: "2.2%",
+      control: `${controlConvRate.toFixed(1)}%`,
+      testA: `${testAConvRate.toFixed(1)}%`,
+      testB: `${testBConvRate.toFixed(1)}%`,
     },
     {
       metric: "Impressions",
-      control: 50000,
-      testA: 50000,
-      testB: 50000,
+      control: controlImpressions,
+      testA: testAImpressions,
+      testB: testBImpressions,
     },
     {
-      metric: "Revenue Per Visitor",
-      control: "$1.25",
-      testA: "$1.45",
-      testB: "$1.15",
+      metric: "Revenue Per View",
+      control: `$${controlRPV.toFixed(2)}`,
+      testA: `$${testARPV.toFixed(2)}`,
+      testB: `$${testBRPV.toFixed(2)}`,
     },
     {
       metric: "% of Traffic",
