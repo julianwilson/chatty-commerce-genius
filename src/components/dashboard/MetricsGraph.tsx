@@ -52,7 +52,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="text-sm font-bold mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
-            <MetricTooltip metric={entry.name}>{entry.name}</MetricTooltip>: {
+            {entry.name}: {
               entry.dataKey === 'unitsPerTransaction' 
                 ? entry.value.toFixed(2)
                 : `$${entry.value.toFixed(2)}`
