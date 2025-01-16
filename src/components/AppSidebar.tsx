@@ -31,7 +31,11 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon" variant="floating" className="group hover:w-[var(--sidebar-width)] bg-sidebar">
+    <Sidebar 
+      collapsible="icon" 
+      variant="floating" 
+      className="transition-all duration-300 ease-in-out w-[var(--sidebar-width-icon)] hover:w-[var(--sidebar-width)] bg-sidebar"
+    >
       <SidebarContent>
         <SidebarGroup>
           <div className="flex items-center justify-between px-4 py-2">
