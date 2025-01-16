@@ -401,11 +401,11 @@ export default function ExperimentDetails() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <MetricCard
-          title="Overall Change"
-          percentage={15.8}
-          currentValue={158000}
-          previousValue={136000}
-          format="number"
+          title="Revenue Per Visitor"
+          percentage={21}
+          currentValue={1.03}
+          previousValue={0.83}
+          format="currency"
         />
         <MetricCard
           title="Incremental Revenue"
