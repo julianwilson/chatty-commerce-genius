@@ -9,6 +9,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
+import PromotionsEmpty from "./pages/PromotionsEmpty";
 import CreatePromotion from "./pages/CreatePromotion";
 import PromotionDetails from "./pages/PromotionDetails";
 import Collections from "./pages/Collections";
@@ -17,6 +18,7 @@ import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import Chat from "./pages/Chat";
 import Experiments from "./pages/Experiments";
+import ExperimentsEmpty from "./pages/ExperimentsEmpty";
 import CreateExperiment from "./pages/CreateExperiment";
 import ExperimentDetails from "./pages/ExperimentDetails";
 import Recipes from "./pages/Recipes";
@@ -45,6 +47,7 @@ const App = () => (
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/promotions" element={<Promotions />} />
+                  <Route path="/promotions/empty" element={<PromotionsEmpty />} />
                   <Route path="/promotions/create" element={<CreatePromotion />} />
                   <Route path="/promotions/:id" element={<PromotionDetails />} />
                   <Route path="/collections" element={<Collections />} />
@@ -52,6 +55,7 @@ const App = () => (
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<ProductDetails />} />
                   <Route path="/experiments" element={<Experiments />} />
+                  <Route path="/experiments/empty" element={<ExperimentsEmpty />} />
                   <Route path="/experiments/create" element={<CreateExperiment />} />
                   <Route path="/experiments/:id" element={<ExperimentDetails />} />
                   <Route path="/recipes" element={<Recipes />} />

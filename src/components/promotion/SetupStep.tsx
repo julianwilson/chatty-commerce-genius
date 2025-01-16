@@ -50,8 +50,8 @@ const timezones = [
 
 const priceUpdateOptions = [
   "Update Prices Only",
-  "Update Prices + Slash Prices",
-  "Update Slash Prices Only",
+  "Update Prices + Compare At Prices",
+  "Update Compare At Prices Only",
 ] as const;
 
 const formSchema = z.object({

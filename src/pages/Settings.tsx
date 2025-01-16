@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { UsersSection } from "@/components/settings/UsersSection";
 import { IntegrationsSection } from "@/components/settings/IntegrationsSection";
 import { InstallationSection } from "@/components/settings/InstallationSection";
+import { AppSection } from "@/components/settings/AppSection";
 
 const Settings = () => {
   return (
@@ -15,12 +16,17 @@ const Settings = () => {
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="app">App</TabsTrigger>
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
           <TabsTrigger value="installation">Installation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
           <UsersSection />
+        </TabsContent>
+
+        <TabsContent value="app">
+          <AppSection />
         </TabsContent>
 
         <TabsContent value="integrations">

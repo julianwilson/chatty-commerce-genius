@@ -29,6 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { addDays, differenceInDays, format } from "date-fns";
 
 const priceRoundingOptions = [
   "No Rounding",
@@ -39,25 +41,27 @@ const priceRoundingOptions = [
 
 const priceAdjustmentTypes = ["Lower by", "Increase By"] as const;
 
-// Helper function to get test group letter
 const getTestGroupLetter = (index: number) => {
-  return String.fromCharCode(65 + index); // A = 65 in ASCII
+  return String.fromCharCode(65 + index);
 };
 
-// Create a dynamic schema based on test groups
 const createFormSchema = (testGroups: string[]) => {
   const testGroupFields: Record<string, any> = {};
   
   testGroups.forEach(letter => {
     testGroupFields[`test${letter}PriceAdjustmentType`] = z.enum(priceAdjustmentTypes);
     testGroupFields[`test${letter}PriceAdjustmentPercentage`] = z.number().min(0).max(100);
+    testGroupFields[`test${letter}PriceRounding`] = z.enum(priceRoundingOptions);
+    testGroupFields[`test${letter}PriceRoundingValue`] = z.number().optional();
+    testGroupFields[`test${letter}TrafficAllocation`] = z.number().min(0).max(100);
   });
 
   return z.object({
-    priceRounding: z.enum(priceRoundingOptions),
-    priceRoundingValue: z.number().optional(),
     activateViaUtm: z.boolean(),
     successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
+    controlTrafficAllocation: z.number().min(0).max(100),
+    startDateTime: z.string(),
+    endDateTime: z.string(),
     ...testGroupFields,
   });
 };
@@ -72,24 +76,46 @@ interface RulesStepProps {
 export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
   const formSchema = createFormSchema(testGroups);
+  const { toast } = useToast();
+  
+  const tomorrow = addDays(new Date(), 1);
+  const twoWeeksFromTomorrow = addDays(tomorrow, 14);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      priceRounding: "No Rounding",
-      priceRoundingValue: 0.99,
       activateViaUtm: false,
       successMetric: "conversion-rate",
+      controlTrafficAllocation: 33.33,
+      startDateTime: format(tomorrow, "yyyy-MM-dd'T'HH:mm"),
+      endDateTime: format(twoWeeksFromTomorrow, "yyyy-MM-dd'T'HH:mm"),
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
+      testAPriceRounding: "No Rounding",
+      testAPriceRoundingValue: 0.99,
+      testATrafficAllocation: 33.33,
       testBPriceAdjustmentType: "Lower by",
       testBPriceAdjustmentPercentage: 20,
+      testBPriceRounding: "No Rounding",
+      testBPriceRoundingValue: 0.99,
+      testBTrafficAllocation: 33.34,
     } as FormValues,
   });
 
-  const selectedPriceRounding = form.watch("priceRounding");
-
   const onSubmit = (values: FormValues) => {
+    const totalAllocation = [values.controlTrafficAllocation]
+      .concat(testGroups.map(letter => values[`test${letter}TrafficAllocation` as keyof FormValues] as number))
+      .reduce((sum, value) => sum + value, 0);
+
+    if (Math.abs(totalAllocation - 100) > 0.01) {
+      toast({
+        title: "Invalid Traffic Allocation",
+        description: "Traffic allocation must sum to 100%",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log("Rules values:", values);
     onNext();
   };
@@ -98,92 +124,155 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     const nextLetter = getTestGroupLetter(testGroups.length);
     setTestGroups([...testGroups, nextLetter]);
     
-    // Set default values for the new test group
+    const currentTotal = form.getValues('controlTrafficAllocation') +
+      testGroups.reduce((sum, letter) => 
+        sum + (form.getValues(`test${letter}TrafficAllocation` as any) || 0), 0
+      );
+    
+    const remainingShare = (100 - currentTotal) / 2;
+    
+    form.setValue('controlTrafficAllocation', form.getValues('controlTrafficAllocation') - remainingShare);
+    testGroups.forEach(letter => {
+      const currentValue = form.getValues(`test${letter}TrafficAllocation` as any);
+      form.setValue(`test${letter}TrafficAllocation` as any, currentValue - (remainingShare / testGroups.length));
+    });
+    
     form.setValue(`test${nextLetter}PriceAdjustmentType` as any, "Increase By");
     form.setValue(`test${nextLetter}PriceAdjustmentPercentage` as any, 20);
+    form.setValue(`test${nextLetter}PriceRounding` as any, "No Rounding");
+    form.setValue(`test${nextLetter}PriceRoundingValue` as any, 0.99);
+    form.setValue(`test${nextLetter}TrafficAllocation` as any, remainingShare * 2);
   };
 
-  const equalShare = (100 / (testGroups.length + 1)).toFixed(2);
+  const calculateDurationInDays = () => {
+    const startDate = new Date(form.watch('startDateTime'));
+    const endDate = new Date(form.watch('endDateTime'));
+    return differenceInDays(endDate, startDate);
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="successMetric"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Success Metric</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a success metric" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-                    <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                    <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                    <SelectItem value="gross-margin">Gross Margin</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="successMetric"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Success Metric</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a success metric" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
+                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
+                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <div className="flex justify-between items-center">
-            <h3 className="font-medium">Price Adjustments</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addTestGroup}
-              className="gap-2"
-            >
-              <PlusCircle className="h-4 w-4" />
-              New Test Group
-            </Button>
-          </div>
+        <div className="flex justify-between items-center">
+          <h3 className="font-medium">Price Adjustments</h3>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addTestGroup}
+            className="gap-2"
+          >
+            <PlusCircle className="h-4 w-4" />
+            New Test Group
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {testGroups.map((letter) => (
-              <div key={letter} className="space-y-4">
-                <h3 className="font-medium">Test {letter} Price Adjustment</h3>
+        <div className="grid grid-cols-2 gap-4">
+          {testGroups.map((letter) => (
+            <div key={letter} className="space-y-4 p-4 border rounded-lg">
+              <h3 className="font-medium">Test {letter} Price Adjustment</h3>
+              <FormField
+                control={form.control}
+                name={`test${letter}PriceAdjustmentType` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adjustment Type</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select adjustment type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priceAdjustmentTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`test${letter}PriceAdjustmentPercentage` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adjustment Percentage</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`test${letter}PriceRounding` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price Rounding</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select price rounding" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priceRoundingOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {form.watch(`test${letter}PriceRounding` as any) !== "No Rounding" && (
                 <FormField
                   control={form.control}
-                  name={`test${letter}PriceAdjustmentType` as any}
+                  name={`test${letter}PriceRoundingValue` as any}
                   render={({ field }) => (
                     <FormItem>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select adjustment type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {priceAdjustmentTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`test${letter}PriceAdjustmentPercentage` as any}
-                  render={({ field }) => (
-                    <FormItem>
+                      <FormLabel>Rounding Value</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          min="0"
-                          max="100"
+                          step="0.01"
                           {...field}
                           onChange={(e) => field.onChange(Number(e.target.value))}
                         />
@@ -192,9 +281,9 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                     </FormItem>
                   )}
                 />
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="space-y-4">
@@ -210,10 +299,44 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell className="text-center">{equalShare}%</TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="controlTrafficAllocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            className="w-24"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
                 {testGroups.map((letter) => (
-                  <TableCell key={letter} className="text-center">
-                    {equalShare}%
+                  <TableCell key={letter}>
+                    <FormField
+                      control={form.control}
+                      name={`test${letter}TrafficAllocation` as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                              className="w-24"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </TableCell>
                 ))}
               </TableRow>
@@ -222,50 +345,44 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
         </div>
 
         <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="priceRounding"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price Rounding</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select price rounding" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {priceRoundingOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {selectedPriceRounding !== "No Rounding" && (
+          <h3 className="font-medium">Scheduling</h3>
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="priceRoundingValue"
+              name="startDateTime"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Start Date/Time</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      step="0.01"
+                      type="datetime-local"
                       {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          )}
+            <FormField
+              control={form.control}
+              name="endDateTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End Date/Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="datetime-local"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="text-sm text-muted-foreground">
+            Duration: {calculateDurationInDays()} days
+          </div>
         </div>
 
         <FormField
