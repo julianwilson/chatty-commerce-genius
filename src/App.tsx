@@ -37,7 +37,7 @@ const App = () => (
         <SidebarProvider defaultOpen={false}>
           <div className="min-h-screen">
             <AppSidebar />
-            <main className="pl-12 flex-1 pr-[400px]">
+            <main className="ml-[var(--sidebar-width-icon)] flex-1 pr-[400px]">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
