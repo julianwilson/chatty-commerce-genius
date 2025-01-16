@@ -124,9 +124,9 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "COGS",
-      control: `$${Math.round(COGS)}`,
-      testA: `$${Math.round(COGS)}`,
-      testB: `$${Math.round(COGS)}`,
+      control: `$${COGS.toFixed(2)}`,
+      testA: `$${COGS.toFixed(2)}`,
+      testB: `$${COGS.toFixed(2)}`,
     },
     {
       metric: "Contribution Margin",
