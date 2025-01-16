@@ -32,6 +32,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { parse, isWithinInterval } from 'date-fns';
 import { ProductActivityCard } from "@/components/ProductActivityCard";
+import { MetricTooltip } from "@/components/MetricTooltip";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -281,7 +282,7 @@ const ProductDetails = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Units & Average Unit Retail (AUR)</CardTitle>
+          <CardTitle>Units & <MetricTooltip metric="AUR">AUR</MetricTooltip></CardTitle>
           <CardDescription>
             {promotionStartDate && promotionEndDate 
               ? `Performance data from ${promotionStartDate} to ${promotionEndDate}`
@@ -328,9 +329,8 @@ const ProductDetails = () => {
                 <TableHead>Date</TableHead>
                 <TableHead>Units Sold</TableHead>
                 <TableHead>Sales ($)</TableHead>
-                <TableHead>Avg Unit Retail</TableHead>
+                <TableHead><MetricTooltip metric="AUR">AUR</MetricTooltip></TableHead>
                 <TableHead>Avg Markdown %</TableHead>
-                <TableHead>Sessions</TableHead>
                 <TableHead>Impressions</TableHead>
                 <TableHead>AOV</TableHead>
               </TableRow>
@@ -343,7 +343,6 @@ const ProductDetails = () => {
                   <TableCell>${row.sales.toFixed(2)}</TableCell>
                   <TableCell>${row.aur.toFixed(2)}</TableCell>
                   <TableCell>{row.markdown}%</TableCell>
-                  <TableCell>{row.sessions}</TableCell>
                   <TableCell>{row.impressions}</TableCell>
                   <TableCell>${(row.sales / row.units).toFixed(2)}</TableCell>
                 </TableRow>
