@@ -39,7 +39,7 @@ export function AppSidebar() {
     <Sidebar 
       collapsible="icon" 
       variant="floating" 
-      className="transition-all duration-300 ease-in-out bg-sidebar"
+      className="transition-all duration-300 ease-in-out bg-sidebar fixed left-0 top-0 h-full z-50"
       onMouseEnter={() => {
         setIsHovered(true);
         setOpen(true);

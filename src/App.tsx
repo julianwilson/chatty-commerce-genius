@@ -35,9 +35,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SidebarProvider defaultOpen={false}>
-          <div className="min-h-screen flex w-full">
+          <div className="min-h-screen">
             <AppSidebar />
-            <main className="flex-1 pr-[400px]">
+            <main className="pl-12 flex-1 pr-[400px]">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
