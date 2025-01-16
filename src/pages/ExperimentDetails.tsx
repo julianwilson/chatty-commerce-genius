@@ -267,7 +267,7 @@ export default function ExperimentDetails() {
   };
 
   const getHighestProfitColumn = () => {
-    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
+    const profitRow = experimentData.find(row => row.metric === "Gross Sales $");
     if (!profitRow) return { control: false, testA: false, testB: false };
 
     const values = {

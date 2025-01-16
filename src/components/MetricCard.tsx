@@ -38,13 +38,7 @@ export const MetricCard = ({
             <div className="flex justify-between items-center">
               <span>Current:</span>
               <span className="font-medium">
-                {disabled ? "-" : formatter.format(currentValue)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>Previous:</span>
-              <span className="font-medium">
-                {disabled ? "-" : formatter.format(previousValue)}
+                {disabled ? "-" : formatter.format(currentValue)} vs {disabled ? "-" : formatter.format(previousValue)}
               </span>
             </div>
           </div>
