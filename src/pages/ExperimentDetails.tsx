@@ -149,6 +149,17 @@ const generateCartEconomicsData = (product: Product): ExperimentMetric[] => {
   ];
 };
 
+const getTestSalesPercentages = (product: Product) => {
+  const basePercentage = 65;
+  const winningPercentage = 100;
+  
+  return {
+    control: product.testWinner === "Control" ? winningPercentage : basePercentage,
+    testA: product.testWinner === "Test A" ? winningPercentage : basePercentage,
+    testB: product.testWinner === "Test B" ? winningPercentage : basePercentage,
+  };
+};
+
 export default function ExperimentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -245,6 +256,29 @@ export default function ExperimentDetails() {
       setSelectedProducts(allProductIds);
       setSelectedVariants(allVariantIds);
     }
+  };
+
+  const handleVariantSelect = (variantId: number, productId: number) => {
+    const product = mockProducts.find(p => p.id === productId);
+    
+    setSelectedVariants(prev => {
+      if (prev.includes(variantId)) {
+        const remainingVariants = prev.filter(id => id !== variantId);
+        const productVariants = product?.variants.map(v => v.id) || [];
+        const hasRemainingProductVariants = productVariants.some(id => remainingVariants.includes(id));
+        
+        if (!hasRemainingProductVariants) {
+          setSelectedProducts(prev => prev.filter(id => id !== productId));
+        }
+        
+        return remainingVariants;
+      } else {
+        if (!selectedProducts.includes(productId)) {
+          setSelectedProducts(prev => [...prev, productId]);
+        }
+        return [...prev, variantId];
+      }
+    });
   };
 
   if (loading) {
