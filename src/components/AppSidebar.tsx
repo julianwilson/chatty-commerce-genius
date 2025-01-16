@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
+import React from "react";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
@@ -30,11 +32,22 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const { setOpen } = useSidebar();
+
   return (
     <Sidebar 
       collapsible="icon" 
       variant="floating" 
-      className="transition-all duration-300 ease-in-out w-[var(--sidebar-width-icon)] hover:w-[var(--sidebar-width)] bg-sidebar"
+      className="transition-all duration-300 ease-in-out bg-sidebar"
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setOpen(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setOpen(false);
+      }}
     >
       <SidebarContent>
         <SidebarGroup>
