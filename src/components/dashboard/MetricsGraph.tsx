@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MetricTooltip } from '../MetricTooltip';
 
 // Generate mock data for the last 12 weeks
 const generateMockData = () => {
@@ -74,7 +75,7 @@ export const MetricsGraph = () => {
           {metrics.map((metric) => (
             <div key={metric.id} className="flex flex-col">
               <p className="text-xs font-medium text-muted-foreground">
-                {metric.name}
+                <MetricTooltip metric="{metric.name}">{metric.name}</MetricTooltip>
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-lg font-bold">{metric.value}</p>

@@ -31,6 +31,7 @@ import {
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { addDays, differenceInDays, format } from "date-fns";
+import { MetricTooltip } from "../MetricTooltip";
 
 const priceRoundingOptions = [
   "No Rounding",
@@ -158,7 +159,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
           name="successMetric"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Success Metric</FormLabel>
+              <FormLabel><MetricTooltip metric="Success Metric">Success Metric</MetricTooltip></FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -167,9 +168,9 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
+                  <SelectItem value="revenue-per-visitor"><MetricTooltip metric="Revenue Per Visitor">Revenue Per Visitor</MetricTooltip></SelectItem>
+                  <SelectItem value="click-through-rate"><MetricTooltip metric="Click-Through Rate">Click-Through Rate</MetricTooltip></SelectItem>
+                  <SelectItem value="gross-margin"><MetricTooltip metric="Gross Margin">Gross Margin</MetricTooltip></SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -187,7 +188,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             className="gap-2"
           >
             <PlusCircle className="h-4 w-4" />
-            New Test Group
+            <MetricTooltip metric="New Test Group">New Test Group</MetricTooltip>
           </Button>
         </div>
 

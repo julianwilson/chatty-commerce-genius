@@ -41,6 +41,10 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     abbreviation: "GM $",
     description: "The dollar amount remaining after subtracting COGS from total revenue, representing the gross profit.",
   },
+  "Gross Margin": {
+    title: "Gross Margin",
+    description: "The dollar amount remaining after subtracting COGS from total revenue, representing the gross profit.",
+  },
   "Compare At Price": {
     title: "Compare At Price",
     description: "The original or higher price of a product displayed alongside the current sale price to highlight savings and encourage purchases.",
@@ -48,6 +52,15 @@ const metricDefinitions: Record<string, MetricDefinition> = {
   "Test Group": {
     title: "Test Group",
     description: "The set of metrics and customers exposed to a new variation in an experiment to assess its impact compared to the control group.",
+  },
+  "Incremental Revenue": {
+    title: "Incremental Revenue",
+    description: "Revenue in addition to all Control tests in an experiment. For example if the experiment only has 1 product, Control gross sales is $20,000, and Test A is $26,000, the Incremental Revenue is $6,000. If there are multiple products in the experiment you calculate this for every product and sum the total.",
+  },
+  "Click-Through Rate": {
+    title: "Click-Through Rate",
+    abbreviation: "CTR",
+    description: "The percentage of people who click on a specific link or image out of the total number of viewers, indicating the effectiveness of the content.",
   },
 };
 
