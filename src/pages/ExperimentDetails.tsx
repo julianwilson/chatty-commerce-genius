@@ -61,12 +61,32 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testBPrice = price * 1.1;
   const testBCOGS = testBPrice * 0.5;
 
+  // Define units sold for each variant
+  const controlUnits = 1200;
+  const testAUnits = 1450;
+  const testBUnits = 980;
+
+  // Calculate gross sales
+  const controlGrossSales = controlUnits * price;
+  const testAGrossSales = testAUnits * testAPrice;
+  const testBGrossSales = testBUnits * testBPrice;
+
+  // Calculate net sales (gross sales - (COGS * units))
+  const controlNetSales = controlGrossSales - (controlCOGS * controlUnits);
+  const testANetSales = testAGrossSales - (testACOGS * testAUnits);
+  const testBNetSales = testBGrossSales - (testBCOGS * testBUnits);
+
+  // Calculate gross margin percentage (net sales / gross sales * 100)
+  const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
+  const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
+  const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
+
   return [
     {
       metric: "Price",
       control: product.price,
-      testA: `$${(parseFloat(product.price.replace("$", "")) * 0.9).toFixed(2)}`,
-      testB: `$${(parseFloat(product.price.replace("$", "")) * 1.1).toFixed(2)}`,
+      testA: `$${testAPrice.toFixed(2)}`,
+      testB: `$${testBPrice.toFixed(2)}`,
     },
     {
       metric: "Price Change %",
@@ -76,15 +96,15 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "Compare At Price",
-      control: `$${(parseFloat(product.price.replace("$", "")) * 1.2).toFixed(2)}`,
+      control: `$${(price * 1.2).toFixed(2)}`,
       testA: product.price,
-      testB: `$${(parseFloat(product.price.replace("$", "")) * 1.3).toFixed(2)}`,
+      testB: `$${(price * 1.3).toFixed(2)}`,
     },
     {
       metric: "Units Sold",
-      control: 1200,
-      testA: 1450,
-      testB: 980,
+      control: controlUnits,
+      testA: testAUnits,
+      testB: testBUnits,
     },
     {
       metric: "COGS",
@@ -99,40 +119,34 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       testB: `$${(testBPrice - testBCOGS).toFixed(2)}`,
     },
     {
-      metric: "COGS",
-      control: "$24.99",
-      testA: "$24.99",
-      testB: "$24.99",
-    },
-    {
       metric: "Gross Sales $",
-      control: "$30,000",
-      testA: "$29,000",
-      testB: "$29,400",
+      control: `$${controlGrossSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      testA: `$${testAGrossSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      testB: `$${testBGrossSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     },
     {
       metric: "Net Sales $",
-      control: "$15,000",
-      testA: "$14,500",
-      testB: "$14,700",
+      control: `$${controlNetSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      testA: `$${testANetSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      testB: `$${testBNetSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     },
     {
       metric: "Gross Margin %",
-      control: "50%",
-      testA: "44%",
-      testB: "54%",
+      control: `${controlGrossMargin}%`,
+      testA: `${testAGrossMargin}%`,
+      testB: `${testBGrossMargin}%`,
     },
     {
       metric: "AOV",
-      control: "$55",
-      testA: "$52",
-      testB: "$58",
+      control: `$${(controlGrossSales / controlUnits).toFixed(2)}`,
+      testA: `$${(testAGrossSales / testAUnits).toFixed(2)}`,
+      testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
     },
     {
       metric: "Total Orders",
-      control: 1100,
-      testA: 1300,
-      testB: 900,
+      control: controlUnits,
+      testA: testAUnits,
+      testB: testBUnits,
     },
     {
       metric: "Conversion Rate",
