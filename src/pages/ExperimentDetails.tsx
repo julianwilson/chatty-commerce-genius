@@ -10,14 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Settings2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Accordion,
   AccordionContent,
@@ -65,37 +59,45 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testAPrice = price * 0.9;
   const testBPrice = price * 1.1;
 
+  // Use the same COGS for all variants
   const COGS = controlCOGS;
 
+  // Define units sold for each variant
   const controlUnits = 1200;
   const testAUnits = 1450;
   const testBUnits = 980;
 
+  // Calculate gross sales
   const controlGrossSales = controlUnits * price;
   const testAGrossSales = testAUnits * testAPrice;
   const testBGrossSales = testBUnits * testBPrice;
 
+  // Calculate net sales (gross sales - (COGS * units))
   const controlNetSales = controlGrossSales - (COGS * controlUnits);
   const testANetSales = testAGrossSales - (COGS * testAUnits);
   const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
+  // Generate random impressions between 25000-26500
   const controlImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
   const testAImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
   const testBImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
 
+  // Calculate revenue per view (Gross Sales / Impressions)
   const controlRPV = controlGrossSales / controlImpressions;
   const testARPV = testAGrossSales / testAImpressions;
   const testBRPV = testBGrossSales / testBImpressions;
 
+  // Calculate conversion rate (Total Orders / Impressions * 100)
   const controlConvRate = (controlUnits / controlImpressions) * 100;
   const testAConvRate = (testAUnits / testAImpressions) * 100;
   const testBConvRate = (testBUnits / testBImpressions) * 100;
 
+  // Calculate gross margin percentage (net sales / gross sales * 100)
   const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
   const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
   const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
 
-  const compareAtPrice = (price * 1.2).toFixed(2);
+  const compareAtPrice = (price * 1.2).toFixed(2); // Single compare at price for all variants
 
   return [
     {
@@ -214,7 +216,6 @@ export default function ExperimentDetails() {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [visibleMetrics, setVisibleMetrics] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -251,20 +252,6 @@ export default function ExperimentDetails() {
   }, [toast]);
 
   const experimentData = selectedProduct ? generateExperimentData(selectedProduct) : [];
-
-  useEffect(() => {
-    if (experimentData.length > 0) {
-      setVisibleMetrics(experimentData.map(row => row.metric));
-    }
-  }, [experimentData]);
-
-  const toggleMetric = (metric: string) => {
-    setVisibleMetrics(current =>
-      current.includes(metric)
-        ? current.filter(m => m !== metric)
-        : [...current, metric]
-    );
-  };
 
   const getValueColor = (value: string | number, metric: string) => {
     if (metric === "% of Traffic") return "";
@@ -315,9 +302,11 @@ export default function ExperimentDetails() {
     
     setSelectedProducts(prev => {
       if (prev.includes(productId)) {
+        // Unselect product and its variants
         setSelectedVariants(prev => prev.filter(id => !variantIds.includes(id)));
         return prev.filter(id => id !== productId);
       } else {
+        // Select product and its variants
         setSelectedVariants(prev => [...new Set([...prev, ...variantIds])]);
         return [...prev, productId];
       }
@@ -328,6 +317,7 @@ export default function ExperimentDetails() {
     setSelectedVariants(prev => {
       if (prev.includes(variantId)) {
         const newVariants = prev.filter(id => id !== variantId);
+        // If all variants of a product are unselected, unselect the product too
         const product = mockProducts.find(p => p.id === productId);
         if (product && !product.variants.some(v => newVariants.includes(v.id))) {
           setSelectedProducts(prev => prev.filter(id => id !== productId));
@@ -341,9 +331,11 @@ export default function ExperimentDetails() {
 
   const handleSelectAll = () => {
     if (selectedProducts.length === mockProducts.length) {
+      // Unselect all
       setSelectedProducts([]);
       setSelectedVariants([]);
     } else {
+      // Select all products and their variants
       const allProductIds = mockProducts.map(p => p.id);
       const allVariantIds = mockProducts.flatMap(p => p.variants.map(v => v.id));
       setSelectedProducts(allProductIds);
@@ -433,27 +425,79 @@ export default function ExperimentDetails() {
       
       <div className="grid grid-cols-[400px,1fr] gap-6">
         <div className="rounded-md border">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-semibold">Metrics</h3>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Settings2 className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {experimentData.map((row) => (
-                  <DropdownMenuCheckboxItem
-                    key={row.metric}
-                    checked={visibleMetrics.includes(row.metric)}
-                    onCheckedChange={() => toggleMetric(row.metric)}
-                  >
-                    {row.metric}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
+            <div className="flex items-center gap-2">
+              <Checkbox 
+                checked={selectedProducts.length === mockProducts.length}
+                onCheckedChange={handleSelectAll}
+              />
+              Product
+            </div>
+            <div>Price</div>
+            <div>Winner</div>
           </div>
+          <Accordion type="single" collapsible>
+            {mockProducts.map((product: Product) => (
+              <AccordionItem key={product.id} value={product.id.toString()}>
+                <AccordionTrigger className="px-4 hover:no-underline">
+                  <div 
+                    className="grid grid-cols-3 w-full text-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProduct(product);
+                    }}
+                  >
+                    <div className="font-medium flex items-center gap-2">
+                      <Checkbox 
+                        checked={selectedProducts.includes(product.id)}
+                        onCheckedChange={() => handleProductSelect(product.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      {product.title}
+                    </div>
+                    <div>{product.price}</div>
+                    <div>{product.testWinner}</div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="px-4 py-2 space-y-2">
+                    <div className="grid grid-cols-1 gap-2">
+                      {product.variants?.map((variant) => (
+                        <div
+                          key={variant.id}
+                          className="p-3 bg-background rounded-lg border cursor-pointer hover:bg-muted"
+                          onClick={() => setSelectedProduct({ ...product, price: variant.price })}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <Checkbox 
+                                  checked={selectedVariants.includes(variant.id)}
+                                  onCheckedChange={() => handleVariantSelect(variant.id, product.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <p className="font-medium">{variant.title}</p>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Price: {variant.price}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Slash Price: {variant.compare_at_price || "-"}
+                              </p>
+                            </div>
+                            <MiniBarChart testData={getTestSalesPercentages(product)} winner={product.testWinner} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -464,9 +508,7 @@ export default function ExperimentDetails() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {experimentData
-                .filter(row => visibleMetrics.includes(row.metric))
-                .map((row, index) => (
+              {experimentData.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell className="font-medium">{row.metric}</TableCell>
                   <TableCell 
