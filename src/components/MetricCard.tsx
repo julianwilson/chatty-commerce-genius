@@ -34,12 +34,10 @@ export const MetricCard = ({
           )}>
             {disabled ? "-" : `${percentage >= 0 ? "+" : ""}${percentage.toFixed(1)}%`}
           </p>
-          <div className="flex flex-col gap-0.5 text-sm text-muted-foreground">
-            <div className="flex items-center">
-              <span className="font-medium">
-                {disabled ? "-" : formatter.format(currentValue)} vs {disabled ? "-" : formatter.format(previousValue)}
-              </span>
-            </div>
+          <div className="text-sm text-muted-foreground">
+            <span className="font-medium">
+              {disabled ? "-" : formatter.format(currentValue)}
+            </span>
           </div>
         </div>
       </CardContent>
