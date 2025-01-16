@@ -59,45 +59,23 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testAPrice = price * 0.9;
   const testBPrice = price * 1.1;
 
-  // Use the same COGS for all variants
   const COGS = controlCOGS;
 
-  // Define units sold for each variant
   const controlUnits = 1200;
   const testAUnits = 1450;
   const testBUnits = 980;
 
-  // Calculate gross sales
   const controlGrossSales = controlUnits * price;
   const testAGrossSales = testAUnits * testAPrice;
   const testBGrossSales = testBUnits * testBPrice;
 
-  // Calculate net sales (gross sales - (COGS * units))
   const controlNetSales = controlGrossSales - (COGS * controlUnits);
   const testANetSales = testAGrossSales - (COGS * testAUnits);
   const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
-  // Generate random impressions between 25000-26500
-  const controlImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
-  const testAImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
-  const testBImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
-
-  // Calculate revenue per view (Gross Sales / Impressions)
-  const controlRPV = controlGrossSales / controlImpressions;
-  const testARPV = testAGrossSales / testAImpressions;
-  const testBRPV = testBGrossSales / testBImpressions;
-
-  // Calculate conversion rate (Total Orders / Impressions * 100)
-  const controlConvRate = (controlUnits / controlImpressions) * 100;
-  const testAConvRate = (testAUnits / testAImpressions) * 100;
-  const testBConvRate = (testBUnits / testBImpressions) * 100;
-
-  // Calculate gross margin percentage (net sales / gross sales * 100)
   const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
   const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
   const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
-
-  const compareAtPrice = (price * 1.2).toFixed(2); // Single compare at price for all variants
 
   return [
     {
@@ -105,18 +83,6 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       control: `$${price.toFixed(2)}`,
       testA: `$${testAPrice.toFixed(2)}`,
       testB: `$${testBPrice.toFixed(2)}`,
-    },
-    {
-      metric: "Price Change %",
-      control: "0%",
-      testA: "-10%",
-      testB: "+10%",
-    },
-    {
-      metric: "Compare At Price",
-      control: `$${compareAtPrice}`,
-      testA: `$${compareAtPrice}`,
-      testB: `$${compareAtPrice}`,
     },
     {
       metric: "Units Sold",
@@ -129,12 +95,6 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       control: `$${COGS.toFixed(2)}`,
       testA: `$${COGS.toFixed(2)}`,
       testB: `$${COGS.toFixed(2)}`,
-    },
-    {
-      metric: "Contribution Margin",
-      control: `$${(price - COGS).toFixed(2)}`,
-      testA: `$${(testAPrice - COGS).toFixed(2)}`,
-      testB: `$${(testBPrice - COGS).toFixed(2)}`,
     },
     {
       metric: "Gross Sales $",
@@ -154,6 +114,20 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       testA: `${testAGrossMargin}%`,
       testB: `${testBGrossMargin}%`,
     },
+  ];
+};
+
+const generateCartEconomicsData = (product: Product): ExperimentMetric[] => {
+  const price = parseFloat(product.price.replace("$", ""));
+  const controlUnits = 1200;
+  const testAUnits = 1450;
+  const testBUnits = 980;
+  
+  const controlGrossSales = controlUnits * price;
+  const testAGrossSales = testAUnits * (price * 0.9);
+  const testBGrossSales = testBUnits * (price * 1.1);
+
+  return [
     {
       metric: "AOV",
       control: `$${(controlGrossSales / controlUnits).toFixed(2)}`,
@@ -171,36 +145,6 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
       control: (controlUnits / (controlUnits * 0.85)).toFixed(2),
       testA: (testAUnits / (testAUnits * 0.85)).toFixed(2),
       testB: (testBUnits / (testBUnits * 0.85)).toFixed(2),
-    },
-    {
-      metric: "Total Orders",
-      control: controlUnits,
-      testA: testAUnits,
-      testB: testBUnits,
-    },
-    {
-      metric: "Conversion Rate",
-      control: `${controlConvRate.toFixed(1)}%`,
-      testA: `${testAConvRate.toFixed(1)}%`,
-      testB: `${testBConvRate.toFixed(1)}%`,
-    },
-    {
-      metric: "Impressions",
-      control: controlImpressions,
-      testA: testAImpressions,
-      testB: testBImpressions,
-    },
-    {
-      metric: "Revenue Per View",
-      control: `$${controlRPV.toFixed(2)}`,
-      testA: `$${testARPV.toFixed(2)}`,
-      testB: `$${testBRPV.toFixed(2)}`,
-    },
-    {
-      metric: "% of Traffic",
-      control: "33.33%",
-      testA: "33.33%",
-      testB: "33.33%",
     },
   ];
 };
@@ -252,6 +196,7 @@ export default function ExperimentDetails() {
   }, [toast]);
 
   const experimentData = selectedProduct ? generateExperimentData(selectedProduct) : [];
+  const cartEconomicsData = selectedProduct ? generateCartEconomicsData(selectedProduct) : [];
 
   const getValueColor = (value: string | number, metric: string) => {
     if (metric === "% of Traffic") return "";
@@ -265,27 +210,6 @@ export default function ExperimentDetails() {
     }
     return "";
   };
-
-  const getHighestProfitColumn = () => {
-    const profitRow = experimentData.find(row => row.metric === "Profit GM$");
-    if (!profitRow) return { control: false, testA: false, testB: false };
-
-    const values = {
-      control: parseFloat(profitRow.control.toString().replace("$", "").replace(",", "")),
-      testA: parseFloat(profitRow.testA.toString().replace("$", "").replace(",", "")),
-      testB: parseFloat(profitRow.testB.toString().replace("$", "").replace(",", ""))
-    };
-
-    const maxValue = Math.max(values.control, values.testA, values.testB);
-    
-    return {
-      control: values.control === maxValue,
-      testA: values.testA === maxValue,
-      testB: values.testB === maxValue
-    };
-  };
-
-  const highestProfitColumns = getHighestProfitColumn();
 
   const handlePublishChanges = () => {
     console.log("Publishing changes:", {
@@ -302,61 +226,25 @@ export default function ExperimentDetails() {
     
     setSelectedProducts(prev => {
       if (prev.includes(productId)) {
-        // Unselect product and its variants
         setSelectedVariants(prev => prev.filter(id => !variantIds.includes(id)));
         return prev.filter(id => id !== productId);
       } else {
-        // Select product and its variants
         setSelectedVariants(prev => [...new Set([...prev, ...variantIds])]);
         return [...prev, productId];
       }
     });
   };
 
-  const handleVariantSelect = (variantId: number, productId: number) => {
-    setSelectedVariants(prev => {
-      if (prev.includes(variantId)) {
-        const newVariants = prev.filter(id => id !== variantId);
-        // If all variants of a product are unselected, unselect the product too
-        const product = mockProducts.find(p => p.id === productId);
-        if (product && !product.variants.some(v => newVariants.includes(v.id))) {
-          setSelectedProducts(prev => prev.filter(id => id !== productId));
-        }
-        return newVariants;
-      } else {
-        return [...prev, variantId];
-      }
-    });
-  };
-
   const handleSelectAll = () => {
     if (selectedProducts.length === mockProducts.length) {
-      // Unselect all
       setSelectedProducts([]);
       setSelectedVariants([]);
     } else {
-      // Select all products and their variants
       const allProductIds = mockProducts.map(p => p.id);
       const allVariantIds = mockProducts.flatMap(p => p.variants.map(v => v.id));
       setSelectedProducts(allProductIds);
       setSelectedVariants(allVariantIds);
     }
-  };
-
-  const getTestSalesPercentages = (product: Product) => {
-    const salesRow = experimentData.find(row => row.metric === "Units Sold");
-    if (!salesRow) return { control: 0, testA: 0, testB: 0 };
-
-    const controlSales = Number(salesRow.control);
-    const testASales = Number(salesRow.testA);
-    const testBSales = Number(salesRow.testB);
-    const totalSales = controlSales + testASales + testBSales;
-
-    return {
-      control: (controlSales / totalSales) * 100,
-      testA: (testASales / totalSales) * 100,
-      testB: (testBSales / totalSales) * 100
-    };
   };
 
   if (loading) {
@@ -399,31 +287,7 @@ export default function ExperimentDetails() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <MetricCard
-          title="Overall Change"
-          percentage={15.8}
-          currentValue={158000}
-          previousValue={136000}
-          format="number"
-        />
-        <MetricCard
-          title="Incremental Revenue"
-          percentage={23.4}
-          currentValue={45000}
-          previousValue={36000}
-          format="currency"
-        />
-      </div>
-
-      <div className="bg-muted/50 rounded-lg p-4 mb-6">
-        <h2 className="font-semibold mb-2">AI Summary</h2>
-        <p className="text-sm text-muted-foreground">
-          The experiment revealed several standout winners, with Test A's 10% price reduction showing exceptional performance on the Lavender Dreams collection, achieving a 28% increase in conversion rate. The Rose Petals fragrance test variation also demonstrated strong results with a 15% uplift in average order value. However, Test B's 10% price increase notably underperformed, particularly on seasonal items, showing a 20% decrease in units sold. Overall, the winning variations contributed to a 15.8% improvement in performance metrics and generated an additional $45,000 in incremental revenue. Recommended action: Roll out the successful price optimizations across similar product categories while avoiding aggressive price increases on seasonal items.
-        </p>
-      </div>
-      
-      <div className="grid grid-cols-[400px,1fr] gap-6">
+      <div className="grid grid-cols-[400px,1fr] gap-6 mb-6">
         <div className="rounded-md border">
           <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
             <div className="flex items-center gap-2">
@@ -497,39 +361,67 @@ export default function ExperimentDetails() {
           </Accordion>
         </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[200px]">Metric</TableHead>
-                <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
-                <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
-                <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {experimentData.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{row.metric}</TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
-                  >
-                    {row.control}
-                  </TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
-                  >
-                    {row.testA}
-                  </TableCell>
-                  <TableCell 
-                    className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
-                  >
-                    {row.testB}
-                  </TableCell>
+        <div className="space-y-6">
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">Metric</TableHead>
+                  <TableHead>Control</TableHead>
+                  <TableHead>Test A</TableHead>
+                  <TableHead>Test B</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {experimentData.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{row.metric}</TableCell>
+                    <TableCell className={getValueColor(row.control, row.metric)}>
+                      {row.control}
+                    </TableCell>
+                    <TableCell className={getValueColor(row.testA, row.metric)}>
+                      {row.testA}
+                    </TableCell>
+                    <TableCell className={getValueColor(row.testB, row.metric)}>
+                      {row.testB}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="rounded-md border">
+            <div className="p-4 bg-muted/50 border-b">
+              <h3 className="font-semibold">Cart Economics</h3>
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">Metric</TableHead>
+                  <TableHead>Control</TableHead>
+                  <TableHead>Test A</TableHead>
+                  <TableHead>Test B</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {cartEconomicsData.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{row.metric}</TableCell>
+                    <TableCell className={getValueColor(row.control, row.metric)}>
+                      {row.control}
+                    </TableCell>
+                    <TableCell className={getValueColor(row.testA, row.metric)}>
+                      {row.testA}
+                    </TableCell>
+                    <TableCell className={getValueColor(row.testB, row.metric)}>
+                      {row.testB}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
 
