@@ -77,10 +77,10 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testANetSales = testAGrossSales - (COGS * testAUnits);
   const testBNetSales = testBGrossSales - (COGS * testBUnits);
 
-  // Generate random impressions between 2500-6500
-  const controlImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
-  const testAImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
-  const testBImpressions = Math.floor(Math.random() * (6500 - 2500 + 1)) + 2500;
+  // Generate random impressions between 25000-65000
+  const controlImpressions = Math.floor(Math.random() * (65000 - 25000 + 1)) + 25000;
+  const testAImpressions = Math.floor(Math.random() * (65000 - 25000 + 1)) + 25000;
+  const testBImpressions = Math.floor(Math.random() * (65000 - 25000 + 1)) + 25000;
 
   // Calculate revenue per view (Gross Sales / Impressions)
   const controlRPV = controlGrossSales / controlImpressions;
