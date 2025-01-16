@@ -17,17 +17,7 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     abbreviation: "UPT",
     description: "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
   },
-  "UPT": {
-    title: "Units Per Transaction",
-    abbreviation: "UPT",
-    description: "The average number of items that customers purchase in a single transaction, calculated by dividing the total units sold by the total number of orders.",
-  },
   "Cost of Goods Sold": {
-    title: "Cost of Goods Sold",
-    abbreviation: "COGS",
-    description: "The direct costs attributable to the production of the goods sold.",
-  },
-  "COGS": {
     title: "Cost of Goods Sold",
     abbreviation: "COGS",
     description: "The direct costs attributable to the production of the goods sold.",
@@ -80,7 +70,15 @@ interface MetricTooltipProps {
 }
 
 export function MetricTooltip({ metric, children }: MetricTooltipProps) {
-  const definition = metricDefinitions[metric];
+  // First try to find by exact match
+  let definition = metricDefinitions[metric];
+  
+  if (!definition) {
+    // If not found, try to find by abbreviation
+    definition = Object.values(metricDefinitions).find(
+      def => def.abbreviation === metric
+    );
+  }
   
   if (!definition) {
     return <>{children}</>;
