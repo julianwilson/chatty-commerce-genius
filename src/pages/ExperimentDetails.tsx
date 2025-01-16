@@ -29,8 +29,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { MiniBarChart } from "@/components/MiniBarChart";
-import { generateMockSalesData } from "@/lib/mockData";
 import { MetricCard } from "@/components/MetricCard";
+import { MetricTooltip } from "@/components/MetricTooltip";
+import { generateMockSalesData } from "@/lib/mockData";
 import { useToast } from "@/components/ui/use-toast";
 
 type ExperimentMetric = {
@@ -401,14 +402,14 @@ export default function ExperimentDetails() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <MetricCard
-          title="Revenue Per Visitor"
+          title={<MetricTooltip metric="Revenue Per View">Revenue Per View</MetricTooltip>}
           percentage={21}
           currentValue={1.03}
           previousValue={0.83}
           format="currency"
         />
         <MetricCard
-          title="Incremental Revenue"
+          title={<MetricTooltip metric="Incremental Revenue">Incremental Revenue</MetricTooltip>}
           percentage={23.4}
           currentValue={45000}
           previousValue={36000}
@@ -502,15 +503,15 @@ export default function ExperimentDetails() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[200px]">Metric</TableHead>
-                <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
-                <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
-                <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
+                <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Control</MetricTooltip></TableHead>
+                <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test A</MetricTooltip></TableHead>
+                <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test B</MetricTooltip></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {experimentData.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{row.metric}</TableCell>
+                  <TableCell className="font-medium"><MetricTooltip metric={row.metric}>{row.metric}</MetricTooltip></TableCell>
                   <TableCell 
                     className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
                   >
