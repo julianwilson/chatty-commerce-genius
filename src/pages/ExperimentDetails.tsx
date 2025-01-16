@@ -401,7 +401,7 @@ export default function ExperimentDetails() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <MetricCard
-          title="Revenue Per Visitor"
+          title="Revenue Per View"
           percentage={21}
           currentValue={1.03}
           previousValue={0.83}
