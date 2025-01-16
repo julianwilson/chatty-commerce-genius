@@ -97,6 +97,8 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
   const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
 
+  const compareAtPrice = (price * 1.2).toFixed(2); // Single compare at price for all variants
+
   return [
     {
       metric: "Price",
@@ -112,9 +114,9 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "Compare At Price",
-      control: `$${(price * 1.2).toFixed(2)}`,
-      testA: `$${price.toFixed(2)}`,
-      testB: `$${(price * 1.3).toFixed(2)}`,
+      control: `$${compareAtPrice}`,
+      testA: `$${compareAtPrice}`,
+      testB: `$${compareAtPrice}`,
     },
     {
       metric: "Units Sold",
