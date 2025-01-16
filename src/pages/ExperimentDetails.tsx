@@ -123,28 +123,29 @@ const generateCartEconomicsData = (product: Product): ExperimentMetric[] => {
   const testAUnits = 1450;
   const testBUnits = 980;
   
-  const controlGrossSales = controlUnits * price;
-  const testAGrossSales = testAUnits * (price * 0.9);
-  const testBGrossSales = testBUnits * (price * 1.1);
+  // Increased multipliers to reflect multiple product purchases
+  const controlGrossSales = controlUnits * price * 2.5; // Increased from 1
+  const testAGrossSales = testAUnits * (price * 0.9) * 2.8; // Increased multiplier
+  const testBGrossSales = testBUnits * (price * 1.1) * 2.2; // Increased multiplier
 
   return [
     {
       metric: "AOV",
-      control: `$${(controlGrossSales / controlUnits).toFixed(2)}`,
-      testA: `$${(testAGrossSales / testAUnits).toFixed(2)}`,
-      testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
+      control: `$${(controlGrossSales / (controlUnits * 0.7)).toFixed(2)}`, // Increased AOV by reducing denominator
+      testA: `$${(testAGrossSales / (testAUnits * 0.65)).toFixed(2)}`,
+      testB: `$${(testBGrossSales / (testBUnits * 0.75)).toFixed(2)}`,
     },
     {
       metric: "Total Cart Sales $",
-      control: `$${(controlGrossSales * 1.15).toFixed(2)}`,
-      testA: `$${(testAGrossSales * 1.15).toFixed(2)}`,
-      testB: `$${(testBGrossSales * 1.15).toFixed(2)}`,
+      control: `$${(controlGrossSales * 1.35).toFixed(2)}`, // Increased from 1.15
+      testA: `$${(testAGrossSales * 1.45).toFixed(2)}`,
+      testB: `$${(testBGrossSales * 1.25).toFixed(2)}`,
     },
     {
       metric: "Units Per Transaction",
-      control: (controlUnits / (controlUnits * 0.85)).toFixed(2),
-      testA: (testAUnits / (testAUnits * 0.85)).toFixed(2),
-      testB: (testBUnits / (testBUnits * 0.85)).toFixed(2),
+      control: (controlUnits / (controlUnits * 0.65)).toFixed(2), // Increased units per transaction
+      testA: (testAUnits / (testAUnits * 0.60)).toFixed(2),
+      testB: (testBUnits / (testBUnits * 0.70)).toFixed(2),
     },
   ];
 };
