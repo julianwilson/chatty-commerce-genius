@@ -100,7 +100,7 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
   return [
     {
       metric: "Price",
-      control: product.price,
+      control: `$${price.toFixed(2)}`,
       testA: `$${testAPrice.toFixed(2)}`,
       testB: `$${testBPrice.toFixed(2)}`,
     },
@@ -112,9 +112,9 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "Compare At Price",
-      control: `$${Math.round(price * 1.2)}`,
-      testA: `$${Math.round(parseFloat(product.price.replace('$', '')))}`,
-      testB: `$${Math.round(price * 1.3)}`,
+      control: `$${(price * 1.2).toFixed(2)}`,
+      testA: `$${price.toFixed(2)}`,
+      testB: `$${(price * 1.3).toFixed(2)}`,
     },
     {
       metric: "Units Sold",
@@ -130,21 +130,21 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "Contribution Margin",
-      control: `$${Math.round(price - COGS)}`,
-      testA: `$${Math.round(testAPrice - COGS)}`,
-      testB: `$${Math.round(testBPrice - COGS)}`,
+      control: `$${(price - COGS).toFixed(2)}`,
+      testA: `$${(testAPrice - COGS).toFixed(2)}`,
+      testB: `$${(testBPrice - COGS).toFixed(2)}`,
     },
     {
       metric: "Gross Sales $",
-      control: `$${Math.round(controlGrossSales).toLocaleString('en-US')}`,
-      testA: `$${Math.round(testAGrossSales).toLocaleString('en-US')}`,
-      testB: `$${Math.round(testBGrossSales).toLocaleString('en-US')}`,
+      control: `$${controlGrossSales.toFixed(2)}`,
+      testA: `$${testAGrossSales.toFixed(2)}`,
+      testB: `$${testBGrossSales.toFixed(2)}`,
     },
     {
       metric: "Net Sales $",
-      control: `$${Math.round(controlNetSales).toLocaleString('en-US')}`,
-      testA: `$${Math.round(testANetSales).toLocaleString('en-US')}`,
-      testB: `$${Math.round(testBNetSales).toLocaleString('en-US')}`,
+      control: `$${controlNetSales.toFixed(2)}`,
+      testA: `$${testANetSales.toFixed(2)}`,
+      testB: `$${testBNetSales.toFixed(2)}`,
     },
     {
       metric: "Gross Margin %",
@@ -154,9 +154,9 @@ const generateExperimentData = (product: Product): ExperimentMetric[] => {
     },
     {
       metric: "AOV",
-      control: `$${Math.round(controlGrossSales / controlUnits)}`,
-      testA: `$${Math.round(testAGrossSales / testAUnits)}`,
-      testB: `$${Math.round(testBGrossSales / testBUnits)}`,
+      control: `$${(controlGrossSales / controlUnits).toFixed(2)}`,
+      testA: `$${(testAGrossSales / testAUnits).toFixed(2)}`,
+      testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
     },
     {
       metric: "Total Orders",
