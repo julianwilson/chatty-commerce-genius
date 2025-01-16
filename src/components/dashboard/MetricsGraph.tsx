@@ -75,7 +75,7 @@ export const MetricsGraph = () => {
           {metrics.map((metric) => (
             <div key={metric.id} className="flex flex-col">
               <p className="text-xs font-medium text-muted-foreground">
-                <MetricTooltip metric="{metric.name}">{metric.name}</MetricTooltip>
+                <MetricTooltip metric={metric.name}>{metric.name}</MetricTooltip>
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-lg font-bold">{metric.value}</p>
