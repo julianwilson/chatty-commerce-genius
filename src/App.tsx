@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
-import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionsEmpty from "./pages/PromotionsEmpty";
@@ -16,7 +15,6 @@ import Collections from "./pages/Collections";
 import CollectionDetails from "./pages/CollectionDetails";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
-import Chat from "./pages/Chat";
 import Experiments from "./pages/Experiments";
 import ExperimentsEmpty from "./pages/ExperimentsEmpty";
 import CreateExperiment from "./pages/CreateExperiment";
@@ -45,7 +43,6 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/chat" element={<Chat />} />
                   <Route path="/promotions" element={<Promotions />} />
                   <Route path="/promotions/empty" element={<PromotionsEmpty />} />
                   <Route path="/promotions/create" element={<CreatePromotion />} />
@@ -65,7 +62,6 @@ const App = () => (
                 </Routes>
               </div>
             </main>
-            <ChatBox />
           </div>
         </SidebarProvider>
       </BrowserRouter>
