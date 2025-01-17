@@ -99,6 +99,19 @@ export default function ExperimentDetails() {
     };
   };
 
+  const getGrossSales = (product: Product) => {
+    const experimentData = generateExperimentData(product);
+    const controlData = experimentData.find(d => d.variant === "Control");
+    const testAData = experimentData.find(d => d.variant === "Test A");
+    const testBData = experimentData.find(d => d.variant === "Test B");
+
+    return {
+      control: controlData?.grossSales || 0,
+      testA: testAData?.grossSales || 0,
+      testB: testBData?.grossSales || 0,
+    };
+  };
+
   const handlePublishChanges = () => {
     console.log("Publishing changes:", {
       mode: publishMode,
@@ -193,6 +206,7 @@ export default function ExperimentDetails() {
         getTestSalesPercentages={getTestSalesPercentages}
         getHighestProfitColumn={getHighestProfitColumn}
         getValueColor={getValueColor}
+        getGrossSales={getGrossSales}
       />
 
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>

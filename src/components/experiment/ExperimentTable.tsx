@@ -22,6 +22,7 @@ interface ExperimentTableProps {
   getTestSalesPercentages: (product: Product) => { control: number; testA: number; testB: number };
   getHighestProfitColumn: () => { control: boolean; testA: boolean; testB: boolean };
   getValueColor: (value: string | number, metric: string) => string;
+  getGrossSales: (product: Product) => { control: number; testA: number; testB: number };
 }
 
 export const ExperimentTable = ({
@@ -35,6 +36,7 @@ export const ExperimentTable = ({
   getTestSalesPercentages,
   getHighestProfitColumn,
   getValueColor,
+  getGrossSales,
 }: ExperimentTableProps) => {
   const highestProfitColumns = getHighestProfitColumn();
 
@@ -105,7 +107,7 @@ export const ExperimentTable = ({
                               <MetricTooltip metric="Compare At Price">Compare At Price</MetricTooltip>: {variant.compare_at_price || "-"}
                             </p>
                           </div>
-                          <MiniBarChart testData={getTestSalesPercentages(product)} />
+                          <MiniBarChart testData={getGrossSales(product)} />
                         </div>
                       </div>
                     ))}
