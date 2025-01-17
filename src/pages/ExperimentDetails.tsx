@@ -101,14 +101,12 @@ export default function ExperimentDetails() {
 
   const getGrossSales = (product: Product) => {
     const experimentData = generateExperimentData(product);
-    const controlData = experimentData.find(d => d.variant === "Control");
-    const testAData = experimentData.find(d => d.variant === "Test A");
-    const testBData = experimentData.find(d => d.variant === "Test B");
+    const grossSalesMetric = experimentData.find(d => d.metric === "Gross Sales");
 
     return {
-      control: controlData?.grossSales || 0,
-      testA: testAData?.grossSales || 0,
-      testB: testBData?.grossSales || 0,
+      control: Number(grossSalesMetric?.control || 0),
+      testA: Number(grossSalesMetric?.testA || 0),
+      testB: Number(grossSalesMetric?.testB || 0),
     };
   };
 
