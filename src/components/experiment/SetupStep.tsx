@@ -74,15 +74,15 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Experiment Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter experiment name" {...field} />
+                <Input className="w-full" placeholder="Enter experiment name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,7 +93,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Type</FormLabel>
               <Select 
                 onValueChange={(value) => {
@@ -101,6 +101,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                   onTypeChange?.(value);
                 }} 
                 defaultValue={field.value}
+                className="w-full"
               >
                 <FormControl>
                   <SelectTrigger>
@@ -124,7 +125,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="startDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Start Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -166,9 +167,9 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="timezone"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value} className="w-full">
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select timezone" />
@@ -191,7 +192,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="endDate"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>End Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -229,7 +230,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           )}
         />
 
-        <div className="flex justify-end">
+        <div className="flex justify-end w-full">
           <Button type="submit">Next</Button>
         </div>
       </form>

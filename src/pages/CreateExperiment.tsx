@@ -47,7 +47,7 @@ export default function CreateExperiment() {
 
   if (currentStep === -1) {
     return (
-      <div className="max-w-3xl mx-auto pt-8">
+      <div className="max-w-5xl mx-auto pt-8">
         <div className="space-y-6">
           <div className="space-y-2 text-center">
             <h2 className="text-3xl font-bold tracking-tight">Let's work on your next experiment!</h2>
@@ -58,7 +58,7 @@ export default function CreateExperiment() {
 
           <Textarea
             placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
-            className="min-h-[120px] text-lg p-4 border-2 border-gray-400"
+            className="min-h-[120px] text-lg p-4 border-2 border-gray-400 w-full"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             onClick={handleInputClick}
@@ -82,7 +82,7 @@ export default function CreateExperiment() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         {steps.map((step, index) => (
           <div
