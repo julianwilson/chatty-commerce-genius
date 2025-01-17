@@ -29,7 +29,6 @@ const experimentTypes = [
   "Product Description",
   "Image Testing",
   "Collection Layout",
-  "Checkout Flow",
 ] as const;
 
 const timezones = [
@@ -48,6 +47,7 @@ const formSchema = z.object({
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
+  successMetric: z.enum(successMetrics),
 }).refine((data) => {
   return data.startDateTime <= data.endDateTime;
 }, {
@@ -72,6 +72,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       timezone: "America/New_York",
       startDateTime: tomorrow,
       endDateTime: twoWeeksFromTomorrow,
+      successMetric: "conversion-rate",
     },
   });
 
@@ -127,6 +128,30 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                       {type}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="successMetric"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Success Metric</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select success metric" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
+                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
+                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

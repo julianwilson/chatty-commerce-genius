@@ -59,7 +59,6 @@ const createFormSchema = (testGroups: string[]) => {
 
   return z.object({
     activateViaUtm: z.boolean(),
-    successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
     controlTrafficAllocation: z.number().min(0).max(100),
     ...testGroupFields,
   });
@@ -84,7 +83,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       activateViaUtm: false,
-      successMetric: "conversion-rate",
       controlTrafficAllocation: 33.33,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
@@ -169,30 +167,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="successMetric"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel><MetricTooltip metric="Success Metric">Success Metric</MetricTooltip></FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a success metric" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <div className="flex justify-between items-center">
           <h3 className="font-medium">Price Adjustments</h3>
           <Button
