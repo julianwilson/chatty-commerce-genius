@@ -85,6 +85,7 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
+                const value = Number(payload[0].value);
                 return (
                   <div className="rounded-lg border bg-background p-2 shadow-sm">
                     <div className="grid grid-cols-2 gap-2">
@@ -92,7 +93,7 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
                         Sales
                       </div>
                       <div className="text-[0.70rem] font-bold">
-                        <MoneyDisplay value={payload[0].value} showPrefix={false} />
+                        <MoneyDisplay value={value} showPrefix={false} />
                       </div>
                     </div>
                   </div>
