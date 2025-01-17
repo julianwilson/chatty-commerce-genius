@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ReactNode } from "react";
+import { MoneyDisplay } from "./MoneyDisplay";
 
 interface MetricCardProps {
   title: ReactNode;
@@ -21,11 +22,11 @@ export const MetricCard = ({
   const formatValue = (value: number) => {
     switch (format) {
       case "currency":
-        return `$${value.toFixed(2)}`;
+        return <MoneyDisplay value={value} />;
       case "percentage":
         return `${value.toFixed(1)}%`;
       default:
-        return value.toFixed(0);
+        return value.toLocaleString('en-US');
     }
   };
 

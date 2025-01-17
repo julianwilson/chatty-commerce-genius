@@ -6,6 +6,7 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
+import { MoneyDisplay } from "./MoneyDisplay";
 
 interface MiniBarChartProps {
   data?: { date: string; sales: number }[];
@@ -91,7 +92,7 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
                         Sales
                       </div>
                       <div className="text-[0.70rem] font-bold">
-                        {payload[0].value}
+                        <MoneyDisplay value={payload[0].value} showPrefix={false} />
                       </div>
                     </div>
                   </div>
