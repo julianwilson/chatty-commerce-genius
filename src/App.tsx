@@ -37,11 +37,11 @@ const App = () => (
             <div className="flex-none">
               <AppSidebar />
             </div>
-            <main className="flex-1">
+            <main className="flex-1 w-full">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
-              <div className="p-6">
+              <div className="p-6 container">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<Dashboard />} />

@@ -162,10 +162,10 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
+    <div className="space-y-8 w-full">
+      <div className="space-y-4 w-full">
         {filterRules.map((rule) => (
-          <div key={rule.id} className="flex gap-4 items-center">
+          <div key={rule.id} className="flex gap-4 items-center w-full">
             <Select
               value={rule.field}
               onValueChange={(value) => updateFilterRule(rule.id, "field", value)}
@@ -223,7 +223,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
       </div>
 
       <ScrollArea className="h-[500px] w-full rounded-md border">
-        <Table>
+        <Table className="w-full">
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]"></TableHead>
