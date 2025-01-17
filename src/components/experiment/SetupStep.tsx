@@ -18,11 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format, addDays, differenceInDays } from "date-fns";
 
 const experimentTypes = [
   "Price Testing",
@@ -42,29 +38,31 @@ const timezones = [
   "Pacific/Honolulu",
 ] as const;
 
-const successMetrics = [
-  "Gross Sales",
-  "Net Sales",
-  "Units Sold",
-  "Conversion Rate",
-  "Average Order Value",
-] as const;
+const getSuccessMetrics = (experimentType: string | undefined) => {
+  const baseMetrics = [
+    "Gross Sales",
+    "Net Sales",
+    "Units Sold",
+    "Conversion Rate",
+  ] as const;
 
-const formSchema = z.object({
-  name: z.string().min(1, "Experiment name is required"),
-  type: z.enum(experimentTypes),
-  startDateTime: z.date(),
-  endDateTime: z.date(),
-  timezone: z.enum(timezones),
-  successMetric: z.enum(successMetrics),
-}).refine((data) => {
-  return data.startDateTime <= data.endDateTime;
-}, {
-  message: "End date and time must be after start date and time",
-  path: ["endDateTime"],
-});
+  if (experimentType === "Image Testing") {
+    return [...baseMetrics, "Click-Through Rate"] as const;
+  }
 
-type FormValues = z.infer<typeof formSchema>;
+  return baseMetrics;
+};
+
+const createFormSchema = (experimentType: string | undefined) => {
+  return z.object({
+    name: z.string().min(1, "Experiment name is required"),
+    type: z.enum(experimentTypes),
+    timezone: z.enum(timezones),
+    successMetric: z.enum(getSuccessMetrics(experimentType)),
+  });
+};
+
+type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
 
 interface SetupStepProps {
   onNext: () => void;
@@ -73,28 +71,20 @@ interface SetupStepProps {
 }
 
 export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: SetupStepProps) {
-  const tomorrow = addDays(new Date(), 1);
-  const twoWeeksFromTomorrow = addDays(tomorrow, 14);
-
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createFormSchema(form?.watch("type"))),
     defaultValues: {
       timezone: "America/New_York",
-      startDateTime: tomorrow,
-      endDateTime: twoWeeksFromTomorrow,
       successMetric: "Gross Sales",
     },
   });
 
+  const experimentType = form.watch("type");
+  const successMetrics = getSuccessMetrics(experimentType);
+
   const onSubmit = (values: FormValues) => {
     console.log("Setup values:", values);
     onNext();
-  };
-
-  const calculateDurationInDays = () => {
-    const startDate = new Date(form.watch('startDateTime'));
-    const endDate = new Date(form.watch('endDateTime'));
-    return differenceInDays(endDate, startDate);
   };
 
   return (
@@ -124,8 +114,10 @@ export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: Setup
                 onValueChange={(value) => {
                   field.onChange(value);
                   onTypeChange?.(value);
-                }} 
-                defaultValue={field.value}
+                  // Reset success metric when type changes
+                  form.setValue("successMetric", successMetrics[0]);
+                }}
+                value={field.value}
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
@@ -156,7 +148,8 @@ export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: Setup
                   field.onChange(value);
                   onSuccessMetricChange?.(value);
                 }}
-                defaultValue={field.value}
+                value={field.value}
+                disabled={!experimentType}
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
@@ -176,126 +169,13 @@ export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: Setup
           )}
         />
 
-        <div className="flex gap-4">
-          <FormField
-            control={form.control}
-            name="startDateTime"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Start Date & Time</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP p")
-                        ) : (
-                          <span>Pick a date & time</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date > form.getValues("endDateTime")
-                      }
-                      initialFocus
-                    />
-                    <div className="p-3 border-t">
-                      <Input
-                        type="time"
-                        value={format(field.value, "HH:mm")}
-                        onChange={(e) => {
-                          const [hours, minutes] = e.target.value.split(":");
-                          const newDate = new Date(field.value);
-                          newDate.setHours(parseInt(hours), parseInt(minutes));
-                          field.onChange(newDate);
-                        }}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="endDateTime"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>End Date & Time</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP p")
-                        ) : (
-                          <span>Pick a date & time</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < form.getValues("startDateTime")
-                      }
-                      initialFocus
-                    />
-                    <div className="p-3 border-t">
-                      <Input
-                        type="time"
-                        value={format(field.value, "HH:mm")}
-                        onChange={(e) => {
-                          const [hours, minutes] = e.target.value.split(":");
-                          const newDate = new Date(field.value);
-                          newDate.setHours(parseInt(hours), parseInt(minutes));
-                          field.onChange(newDate);
-                        }}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="text-sm text-muted-foreground -mt-4">
-          Duration: {calculateDurationInDays()} days
-        </div>
-
         <FormField
           control={form.control}
           name="timezone"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select timezone" />
