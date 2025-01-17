@@ -7,6 +7,7 @@ interface MetricCardProps {
   currentValue: number;
   previousValue: number;
   format?: "currency" | "percentage" | "number";
+  disabled?: boolean;
 }
 
 export const MetricCard = ({
@@ -15,6 +16,7 @@ export const MetricCard = ({
   currentValue,
   previousValue,
   format = "number",
+  disabled = false,
 }: MetricCardProps) => {
   const formatValue = (value: number) => {
     switch (format) {
@@ -28,7 +30,7 @@ export const MetricCard = ({
   };
 
   return (
-    <Card>
+    <Card className={disabled ? "opacity-50 cursor-not-allowed" : ""}>
       <CardContent className="pt-6">
         <div className="text-2xl font-bold">{title}</div>
         <div className="flex items-center gap-2 mt-2">

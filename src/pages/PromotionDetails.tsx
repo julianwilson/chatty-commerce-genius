@@ -281,6 +281,7 @@ const PromotionDetails = () => {
                 currentValue={metrics.currentValue}
                 previousValue={metrics.previousValue}
                 format="currency"
+                disabled={selectedType === 'Site Wide'}
               />
             </div>
 
