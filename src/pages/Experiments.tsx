@@ -91,7 +91,7 @@ const columns: Column[] = [
   { id: "type", label: "Type" },
   { id: "startDate", label: "Start Date" },
   { id: "endDate", label: "End Date" },
-  { id: "sessions", label: "Sessions" },
+  { id: "sessions", label: "Impressions" },
   { id: "successMetric", label: "Success Metric" },
   { id: "incrementalChange", label: "Avg. Variant Change" },
 ];
