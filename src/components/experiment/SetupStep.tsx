@@ -106,10 +106,9 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                   onTypeChange?.(value);
                 }} 
                 defaultValue={field.value}
-                className="w-full"
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select experiment type" />
                   </SelectTrigger>
                 </FormControl>
