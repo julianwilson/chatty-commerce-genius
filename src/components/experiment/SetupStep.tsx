@@ -45,7 +45,7 @@ const successMetrics = [
   "conversion-rate",
   "revenue-per-visitor",
   "click-through-rate",
-  "gross-margin",
+  "sales",
 ] as const;
 
 const formSchema = z.object({
@@ -82,6 +82,8 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       successMetric: "conversion-rate",
     },
   });
+
+  const selectedType = form.watch("type");
 
   const onSubmit = (values: FormValues) => {
     console.log("Setup values:", values);
@@ -148,7 +150,11 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Success Metric</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+                disabled={!selectedType}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select success metric" />
@@ -157,8 +163,10 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                 <SelectContent>
                   <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
                   <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
+                  {selectedType === "Image Testing" && (
+                    <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  )}
+                  <SelectItem value="sales">Sales</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

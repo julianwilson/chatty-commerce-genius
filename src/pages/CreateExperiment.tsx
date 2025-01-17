@@ -11,7 +11,7 @@ import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
-const steps = ["1. Setup", "2. Rules", "3. Products", "4. Launch"] as const;
+const steps = ["Setup", "Rules", "Products", "Launch"] as const;
 
 export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
