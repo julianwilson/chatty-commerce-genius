@@ -58,7 +58,6 @@ const createFormSchema = (testGroups: string[]) => {
   });
 
   return z.object({
-    activateViaUtm: z.boolean(),
     controlTrafficAllocation: z.number().min(0).max(100),
     ...testGroupFields,
   });
@@ -82,7 +81,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      activateViaUtm: false,
       controlTrafficAllocation: 33.33,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
@@ -345,27 +343,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             </TableBody>
           </Table>
         </div>
-
-        <FormField
-          control={form.control}
-          name="activateViaUtm"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Activate Via UTM Only</FormLabel>
-                <div className="text-sm text-muted-foreground">
-                  Only activate experiment for traffic from UTM sources
-                </div>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={onBack}>

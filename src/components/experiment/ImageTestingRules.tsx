@@ -49,7 +49,6 @@ interface ImageTestingRulesProps {
 export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
   const [hideOtherImages, setHideOtherImages] = useState(false);
   const [bulkAltTag, setBulkAltTag] = useState("");
-  const [activateViaUtm, setActivateViaUtm] = useState(false);
   const [imageRange, setImageRange] = useState([1, 4]);
   const [selectedProduct, setSelectedProduct] = useState("1");
   const [successMetric, setSuccessMetric] = useState("conversion-rate");
@@ -191,19 +190,6 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
             />
           </div>
         </div>
-      </div>
-
-      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
-        <div className="space-y-0.5">
-          <Label className="text-base">Activate Via UTM Only</Label>
-          <div className="text-sm text-muted-foreground">
-            Only activate experiment for traffic from UTM sources
-          </div>
-        </div>
-        <Switch
-          checked={activateViaUtm}
-          onCheckedChange={setActivateViaUtm}
-        />
       </div>
 
       <div className="flex justify-between">
