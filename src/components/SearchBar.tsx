@@ -7,10 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useNavigate } from "react-router-dom";
 
 export const SearchBar = () => {
   const [open, setOpen] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
@@ -18,6 +25,7 @@ export const SearchBar = () => {
     if ((e.metaKey || e.ctrlKey) && e.key === "k") {
       e.preventDefault();
       setOpen(true);
+      setOpenPopover(false);
     }
   };
 
@@ -93,6 +101,7 @@ export const SearchBar = () => {
         break;
     }
     setOpen(false);
+    setOpenPopover(false);
     setSearch("");
   };
 
@@ -111,15 +120,48 @@ export const SearchBar = () => {
     }
   };
 
+  const SearchResults = () => (
+    <ScrollArea className="max-h-[400px]">
+      <div className="space-y-2 p-2">
+        {filteredItems.map((item) => (
+          <div
+            key={`${item.type}-${item.id}`}
+            className="p-2 hover:bg-muted rounded-md cursor-pointer"
+            onClick={() => handleItemClick(item)}
+          >
+            <div className="font-medium">{item.title}</div>
+            <div className="text-sm text-muted-foreground">
+              {getItemSubtext(item)}
+            </div>
+          </div>
+        ))}
+        {search && filteredItems.length === 0 && (
+          <div className="text-center text-muted-foreground py-4">
+            No results found
+          </div>
+        )}
+      </div>
+    </ScrollArea>
+  );
+
   return (
     <>
       <div className="relative w-full max-w-lg">
-        <Input
-          type="text"
-          placeholder="Search..."
-          className="w-full pl-4 pr-12"
-          onClick={() => setOpen(true)}
-        />
+        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+          <PopoverTrigger asChild>
+            <Input
+              type="text"
+              placeholder="Search..."
+              className="w-full pl-4 pr-12"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={() => setOpenPopover(true)}
+            />
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px] p-0" align="start">
+            <SearchResults />
+          </PopoverContent>
+        </Popover>
         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
           <div className="flex items-center text-sm text-muted-foreground">
             <Command className="w-4 h-4 mr-1" />
@@ -142,24 +184,8 @@ export const SearchBar = () => {
               className="w-full"
               autoFocus
             />
-            <div className="mt-4 space-y-2">
-              {filteredItems.map((item) => (
-                <div
-                  key={`${item.type}-${item.id}`}
-                  className="p-2 hover:bg-muted rounded-md cursor-pointer"
-                  onClick={() => handleItemClick(item)}
-                >
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {getItemSubtext(item)}
-                  </div>
-                </div>
-              ))}
-              {search && filteredItems.length === 0 && (
-                <div className="text-center text-muted-foreground py-4">
-                  No results found
-                </div>
-              )}
+            <div className="mt-4">
+              <SearchResults />
             </div>
           </div>
         </DialogContent>
