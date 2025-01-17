@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { Command } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Popover,
@@ -16,16 +10,16 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export const SearchBar = () => {
-  const [open, setOpen] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "k") {
       e.preventDefault();
-      setOpen(true);
-      setOpenPopover(false);
+      setOpenPopover(true);
+      searchInputRef.current?.focus();
     }
   };
 
@@ -100,7 +94,6 @@ export const SearchBar = () => {
         navigate(`/recipes/${item.id}`);
         break;
     }
-    setOpen(false);
     setOpenPopover(false);
     setSearch("");
   };
@@ -145,51 +138,29 @@ export const SearchBar = () => {
   );
 
   return (
-    <>
-      <div className="relative w-full max-w-lg">
-        <Popover open={openPopover} onOpenChange={setOpenPopover}>
-          <PopoverTrigger asChild>
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-4 pr-12"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onClick={() => setOpenPopover(true)}
-            />
-          </PopoverTrigger>
-          <PopoverContent className="w-[400px] p-0" align="start">
-            <SearchResults />
-          </PopoverContent>
-        </Popover>
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Command className="w-4 h-4 mr-1" />
-            <span>K</span>
-          </div>
+    <div className="relative w-full max-w-lg">
+      <Popover open={openPopover} onOpenChange={setOpenPopover}>
+        <PopoverTrigger asChild>
+          <Input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search..."
+            className="w-full pl-4 pr-12"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClick={() => setOpenPopover(true)}
+          />
+        </PopoverTrigger>
+        <PopoverContent className="w-[400px] p-0" align="start">
+          <SearchResults />
+        </PopoverContent>
+      </Popover>
+      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+        <div className="flex items-center text-sm text-muted-foreground">
+          <Command className="w-4 h-4 mr-1" />
+          <span>K</span>
         </div>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Search</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <Input
-              type="text"
-              placeholder="Type to search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full"
-              autoFocus
-            />
-            <div className="mt-4">
-              <SearchResults />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+    </div>
   );
 };
