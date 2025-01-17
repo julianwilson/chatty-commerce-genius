@@ -33,13 +33,15 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SidebarProvider defaultOpen={false}>
-          <div className="min-h-screen">
-            <AppSidebar />
-            <main className="ml-[var(--sidebar-width-icon)] flex-1 pr-[400px]">
+          <div className="flex min-h-screen">
+            <div className="flex-none">
+              <AppSidebar />
+            </div>
+            <main className="flex-1">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
-              <div className="p-4">
+              <div className="p-6">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<Dashboard />} />
