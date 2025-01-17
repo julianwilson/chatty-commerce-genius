@@ -44,11 +44,30 @@ const FIELD_OPTIONS = [
   { value: "productTitle", label: "Product Title" },
   { value: "productPrice", label: "Product Price" },
   { value: "productTags", label: "Product Tags" },
+  { value: "inventoryStock", label: "Inventory Stock" },
+  { value: "compareAtPrice", label: "Compare At Price" },
+  { value: "weight", label: "Weight" },
+  { value: "variantTitle", label: "Variant's Title" },
+  { value: "productVendor", label: "Product Vendor" },
+  { value: "productType", label: "Product Type" },
+  { value: "productCost", label: "Product Cost" },
+  { value: "hasMetafields", label: "Product Has Metafields" },
+  { value: "handle", label: "Product Handle" },
+  { value: "purchaseOption", label: "Product Purchase Option" },
+  { value: "requiresShipping", label: "Requires Shipping" },
+  { value: "giftCard", label: "Gift Card" },
+  { value: "taxable", label: "Taxable" },
 ];
 
 const OPERATOR_OPTIONS = [
   { value: "contains", label: "Contains" },
   { value: "doesNotContain", label: "Does not contain" },
+  { value: "equals", label: "Equals" },
+  { value: "notEquals", label: "Does not equal" },
+  { value: "greaterThan", label: "Greater than" },
+  { value: "lessThan", label: "Less than" },
+  { value: "true", label: "Is true" },
+  { value: "false", label: "Is false" },
 ];
 
 export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepProps) {
