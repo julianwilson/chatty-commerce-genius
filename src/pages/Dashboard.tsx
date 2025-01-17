@@ -72,7 +72,11 @@ const Dashboard = () => {
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle><MetricTooltip text="Experiment Sales" /> Experiment Sales</CardTitle>
+            <CardTitle>
+              <MetricTooltip metric="Experiment Sales">
+                Experiment Sales
+              </MetricTooltip>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalTests}</div>
@@ -82,7 +86,11 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle><MetricTooltip text="Promotional Sales" /> Promotional Sales</MetricTooltip></CardTitle>
+            <CardTitle>
+              <MetricTooltip metric="Promotional Sales">
+                Promotional Sales
+              </MetricTooltip>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-secondary">$36,625</div>
