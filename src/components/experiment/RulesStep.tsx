@@ -1,3 +1,6 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { ImageTestingRules } from "./ImageTestingRules";
 import { PriceTestingRules } from "./PriceTestingRules";
 
@@ -5,10 +8,9 @@ interface RulesStepProps {
   onNext: () => void;
   onBack: () => void;
   experimentType: string;
-  successMetric?: string;
 }
 
-export function RulesStep({ onNext, onBack, experimentType, successMetric }: RulesStepProps) {
+export function RulesStep({ onNext, onBack, experimentType }: RulesStepProps) {
   if (experimentType === "Image Testing") {
     return (
       <div className="space-y-8 w-full">
@@ -17,9 +19,10 @@ export function RulesStep({ onNext, onBack, experimentType, successMetric }: Rul
     );
   }
 
+  // For all other types, show the original price testing form
   return (
     <div className="space-y-8 w-full">
-      <PriceTestingRules onNext={onNext} onBack={onBack} successMetric={successMetric} />
+      <PriceTestingRules onNext={onNext} onBack={onBack} />
     </div>
   );
 }
