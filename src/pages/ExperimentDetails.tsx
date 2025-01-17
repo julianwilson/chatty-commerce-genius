@@ -33,6 +33,12 @@ import { MetricCard } from "@/components/MetricCard";
 import { MetricTooltip } from "@/components/MetricTooltip";
 import { generateMockSalesData } from "@/lib/mockData";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type ExperimentMetric = {
   metric: string;
@@ -381,23 +387,32 @@ export default function ExperimentDetails() {
           </Button>
           <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            onClick={() => {
-              setPublishMode('selected');
-              setShowPublishDialog(true);
-            }}
-            disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
-          >
-            Publish Selected
-          </Button>
-          <Button onClick={() => {
-            setPublishMode('all');
-            setShowPublishDialog(true);
-          }}>
-            Publish All Winning Changes
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>
+              Publish
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
+              onClick={() => {
+                setPublishMode('selected');
+                setShowPublishDialog(true);
+              }}
+            >
+              Selected
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setPublishMode('all');
+                setShowPublishDialog(true);
+              }}
+            >
+              All Winners
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
