@@ -46,15 +46,13 @@ const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
   startDateTime: z.date(),
-  endDateTime: z.date().refine((endDateTime, context) => {
-    if (context.parent.startDateTime > endDateTime) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "End date and time must be after start date and time",
-      });
-    }
-  }),
+  endDateTime: z.date(),
   timezone: z.enum(timezones),
+}).refine((data) => {
+  return data.startDateTime <= data.endDateTime;
+}, {
+  message: "End date and time must be after start date and time",
+  path: ["endDateTime"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
