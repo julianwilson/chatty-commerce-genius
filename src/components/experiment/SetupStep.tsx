@@ -81,7 +81,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full bg-gray-50 p-8 rounded-md">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         <FormField
           control={form.control}
           name="name"
@@ -141,7 +141,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -167,7 +167,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                     <div className="p-3 border-t">
                       <Input
                         type="time"
-                        className="bg-gray-50"
+                        className=""
                         value={format(field.value, "HH:mm")}
                         onChange={(e) => {
                           const [hours, minutes] = e.target.value.split(":");
@@ -196,7 +196,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -222,7 +222,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                     <div className="p-3 border-t">
                       <Input
                         type="time"
-                        className="bg-gray-50"
+                        className=""
                         value={format(field.value, "HH:mm")}
                         onChange={(e) => {
                           const [hours, minutes] = e.target.value.split(":");
@@ -248,7 +248,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
               <FormLabel>Timezone</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger className="">
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                 </FormControl>
