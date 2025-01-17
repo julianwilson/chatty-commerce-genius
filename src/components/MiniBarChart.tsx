@@ -59,10 +59,10 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                       <div className="grid grid-cols-2 gap-2">
                         <div className="text-[0.70rem] text-muted-foreground">
-                          Sales %
+                          Gross Sales
                         </div>
                         <div className="text-[0.70rem] font-bold">
-                          {value.toFixed(1)}%
+                          <MoneyDisplay value={value} />
                         </div>
                       </div>
                     </div>
