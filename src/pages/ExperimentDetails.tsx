@@ -223,6 +223,7 @@ export default function ExperimentDetails() {
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [experimentName, setExperimentName] = useState("Price Testing - Spring Collection");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -385,7 +386,7 @@ export default function ExperimentDetails() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">Experiment Details #{id}</h1>
+          <h1 className="text-2xl font-bold">{experimentName}</h1>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
