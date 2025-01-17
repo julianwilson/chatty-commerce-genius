@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { addDays, differenceInDays, format } from "date-fns";
 import { MetricTooltip } from "../MetricTooltip";
 
 const priceRoundingOptions = [
@@ -59,7 +58,6 @@ const createFormSchema = (testGroups: string[]) => {
 
   return z.object({
     activateViaUtm: z.boolean(),
-    successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
     controlTrafficAllocation: z.number().min(0).max(100),
     ...testGroupFields,
   });
@@ -70,21 +68,18 @@ type FormValues = z.infer<ReturnType<typeof createFormSchema>>;
 interface RulesStepProps {
   onNext: () => void;
   onBack: () => void;
+  successMetric?: string;
 }
 
-export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
+export function PriceTestingRules({ onNext, onBack, successMetric }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
   const formSchema = createFormSchema(testGroups);
   const { toast } = useToast();
-  
-  const tomorrow = addDays(new Date(), 1);
-  const twoWeeksFromTomorrow = addDays(tomorrow, 14);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       activateViaUtm: false,
-      successMetric: "conversion-rate",
       controlTrafficAllocation: 33.33,
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
@@ -158,12 +153,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     form.setValue(`test${nextLetter}PriceRounding` as any, "No Rounding");
     form.setValue(`test${nextLetter}PriceRoundingValue` as any, 0.99);
     form.setValue(`test${nextLetter}TrafficAllocation` as any, remainingShare * 2);
-  };
-
-  const calculateDurationInDays = () => {
-    const startDate = new Date(form.watch('startDateTime'));
-    const endDate = new Date(form.watch('endDateTime'));
-    return differenceInDays(endDate, startDate);
   };
 
   return (

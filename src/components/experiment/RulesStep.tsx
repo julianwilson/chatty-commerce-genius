@@ -12,7 +12,7 @@ export function RulesStep({ onNext, onBack, experimentType, successMetric }: Rul
   if (experimentType === "Image Testing") {
     return (
       <div className="space-y-8 w-full">
-        <ImageTestingRules onNext={onNext} onBack={onBack} successMetric={successMetric} />
+        <ImageTestingRules onNext={onNext} onBack={onBack} />
       </div>
     );
   }
