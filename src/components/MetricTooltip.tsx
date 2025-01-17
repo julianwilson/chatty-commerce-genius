@@ -69,7 +69,7 @@ const metricDefinitions: Record<string, MetricDefinition> = {
   },
   "Average Markdown %": {
     title: "Average Markdown %",
-    abbreviation: "Avg Markdown %",
+    abbreviation: "Avg. Markdown %",
     description: "The average percentage reduction from the original price of products, reflecting discounts and promotions offered. E.g. if the Shoes collection sold $20,000 with $4,000 in discounts, the Average Markdown % is 20%.",
   },
   "App Attributed Sales Generated": {
