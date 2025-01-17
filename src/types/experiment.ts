@@ -3,6 +3,7 @@ export type ExperimentMetric = {
   control: number | string;
   testA: number | string;
   testB: number | string;
+  format?: "money" | "percentage" | "decimal" | "number";
 };
 
 export type Product = {

@@ -2,9 +2,10 @@ interface MoneyDisplayProps {
   value: number;
   format?: "money" | "percentage" | "decimal" | "number";
   className?: string;
+  showPrefix?: boolean;
 }
 
-export const MoneyDisplay = ({ value, format = "money", className = "" }: MoneyDisplayProps) => {
+export const MoneyDisplay = ({ value, format = "money", className = "", showPrefix = true }: MoneyDisplayProps) => {
   const formatValue = (value: number, format: string) => {
     switch (format) {
       case "money":

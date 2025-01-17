@@ -144,17 +144,17 @@ export const ExperimentTable = ({
                 <TableCell 
                   className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
                 >
-                  <MoneyDisplay value={row.control} format={row.format} />
+                  <MoneyDisplay value={Number(row.control)} />
                 </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
                 >
-                  <MoneyDisplay value={row.testA} format={row.format} />
+                  <MoneyDisplay value={Number(row.testA)} />
                 </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
                 >
-                  <MoneyDisplay value={row.testB} format={row.format} />
+                  <MoneyDisplay value={Number(row.testB)} />
                 </TableCell>
               </TableRow>
             ))}
