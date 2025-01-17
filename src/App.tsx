@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
-import { ChatBox } from "@/components/ChatBox";
 import Dashboard from "./pages/Dashboard";
 import Promotions from "./pages/Promotions";
 import PromotionsEmpty from "./pages/PromotionsEmpty";
@@ -39,7 +38,7 @@ const App = () => (
             <div className="flex-none">
               <AppSidebar />
             </div>
-            <main className="flex-1 pr-[400px]">
+            <main className="flex-1">
               <div className="p-4 border-b">
                 <SearchBar />
               </div>
@@ -67,7 +66,6 @@ const App = () => (
                 </Routes>
               </div>
             </main>
-            <ChatBox />
           </div>
         </SidebarProvider>
       </BrowserRouter>
