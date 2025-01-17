@@ -52,8 +52,8 @@ export default function CreateExperiment() {
 
   if (currentStep === -1) {
     return (
-      <div className="w-full max-w-7xl mx-auto pt-8">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="space-y-6 max-w-3xl mx-auto mt-12">
+        <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
