@@ -108,7 +108,7 @@ export const SearchBar = () => {
   const getItemSubtext = (item: any) => {
     switch (item.type) {
       case "product":
-        return item.product_type;
+        return "Product";
       case "experiment":
         return "Experiment";
       case "promotion":
