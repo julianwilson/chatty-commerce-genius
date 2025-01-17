@@ -22,7 +22,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, addDays, differenceInDays } from "date-fns";
 
 const experimentTypes = [
   "Price Testing",
@@ -63,18 +63,27 @@ interface SetupStepProps {
 }
 
 export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
+  const tomorrow = addDays(new Date(), 1);
+  const twoWeeksFromTomorrow = addDays(tomorrow, 14);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       timezone: "America/New_York",
-      startDateTime: new Date(),
-      endDateTime: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      startDateTime: tomorrow,
+      endDateTime: twoWeeksFromTomorrow,
     },
   });
 
   const onSubmit = (values: FormValues) => {
     console.log("Setup values:", values);
     onNext();
+  };
+
+  const calculateDurationInDays = () => {
+    const startDate = new Date(form.watch('startDateTime'));
+    const endDate = new Date(form.watch('endDateTime'));
+    return differenceInDays(endDate, startDate);
   };
 
   return (
@@ -84,10 +93,10 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="w-full">
+            <FormItem>
               <FormLabel>Experiment Name</FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="Enter experiment name" {...field} />
+                <Input placeholder="Enter experiment name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,9 +107,9 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Type</FormLabel>
-              <Select 
+            <FormItem>
+              <FormLabel>Experiment Type</FormLabel>
+              <Select
                 onValueChange={(value) => {
                   field.onChange(value);
                   onTypeChange?.(value);
@@ -164,7 +173,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                     <div className="p-3 border-t">
                       <Input
                         type="time"
-                        className=""
                         value={format(field.value, "HH:mm")}
                         onChange={(e) => {
                           const [hours, minutes] = e.target.value.split(":");
@@ -219,7 +227,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                     <div className="p-3 border-t">
                       <Input
                         type="time"
-                        className=""
                         value={format(field.value, "HH:mm")}
                         onChange={(e) => {
                           const [hours, minutes] = e.target.value.split(":");
@@ -245,7 +252,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
               <FormLabel>Timezone</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                 </FormControl>

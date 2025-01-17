@@ -61,8 +61,6 @@ const createFormSchema = (testGroups: string[]) => {
     activateViaUtm: z.boolean(),
     successMetric: z.enum(["conversion-rate", "revenue-per-visitor", "click-through-rate", "gross-margin"]),
     controlTrafficAllocation: z.number().min(0).max(100),
-    startDateTime: z.string(),
-    endDateTime: z.string(),
     ...testGroupFields,
   });
 };
@@ -88,8 +86,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
       activateViaUtm: false,
       successMetric: "conversion-rate",
       controlTrafficAllocation: 33.33,
-      startDateTime: format(tomorrow, "yyyy-MM-dd'T'HH:mm"),
-      endDateTime: format(twoWeeksFromTomorrow, "yyyy-MM-dd'T'HH:mm"),
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testAPriceRounding: "No Rounding",
@@ -374,47 +370,6 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
               </TableRow>
             </TableBody>
           </Table>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="font-medium">Scheduling</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="startDateTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Date/Time</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="datetime-local"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="endDateTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>End Date/Time</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="datetime-local"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Duration: {calculateDurationInDays()} days
-          </div>
         </div>
 
         <FormField
