@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, X } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -103,6 +103,25 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     } as FormValues,
   });
 
+  const removeTestGroup = (letterToRemove: string) => {
+    const remainingGroups = testGroups.filter(letter => letter !== letterToRemove);
+    setTestGroups(remainingGroups);
+
+    // Redistribute traffic allocation
+    const removedAllocation = form.getValues(`test${letterToRemove}TrafficAllocation` as any);
+    const redistributedShare = removedAllocation / (remainingGroups.length + 1); // +1 for control
+
+    // Update control allocation
+    const newControlAllocation = form.getValues('controlTrafficAllocation') + redistributedShare;
+    form.setValue('controlTrafficAllocation', newControlAllocation);
+
+    // Update remaining test groups allocation
+    remainingGroups.forEach(letter => {
+      const currentValue = form.getValues(`test${letter}TrafficAllocation` as any);
+      form.setValue(`test${letter}TrafficAllocation` as any, currentValue + redistributedShare);
+    });
+  };
+
   const onSubmit = (values: FormValues) => {
     const totalAllocation = [values.controlTrafficAllocation]
       .concat(testGroups.map(letter => values[`test${letter}TrafficAllocation` as keyof FormValues] as number))
@@ -168,9 +187,9 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-                  <SelectItem value="revenue-per-visitor"><MetricTooltip metric="Revenue Per Visitor">Revenue Per Visitor</MetricTooltip></SelectItem>
-                  <SelectItem value="click-through-rate"><MetricTooltip metric="Click-Through Rate">Click-Through Rate</MetricTooltip></SelectItem>
-                  <SelectItem value="gross-margin"><MetricTooltip metric="Gross Margin">Gross Margin</MetricTooltip></SelectItem>
+                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
+                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  <SelectItem value="gross-margin">Gross Margin</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -194,8 +213,20 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
 
         <div className="grid grid-cols-2 gap-4">
           {testGroups.map((letter) => (
-            <div key={letter} className="space-y-4 p-4 border rounded-lg">
-              <h3 className="font-medium">Test {letter} Price Adjustment</h3>
+            <div key={letter} className="space-y-4 p-4 border rounded-lg relative">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium">Test {letter} Price Adjustment</h3>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeTestGroup(letter)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              
               <FormField
                 control={form.control}
                 name={`test${letter}PriceAdjustmentType` as any}
