@@ -1,20 +1,14 @@
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MetricTooltip } from "@/components/MetricTooltip";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MetricTooltip } from "@/components/MetricTooltip";
+import { MoneyDisplay } from "@/components/MoneyDisplay";
 import { Product, ExperimentMetric } from "@/types/experiment";
 
 interface ExperimentTableProps {
@@ -83,7 +77,7 @@ export const ExperimentTable = ({
                     />
                     {product.title}
                   </div>
-                  <div>{product.price}</div>
+                  <div><MoneyDisplay value={product.price} /></div>
                   <div>{product.testWinner}</div>
                 </div>
               </AccordionTrigger>
@@ -107,7 +101,7 @@ export const ExperimentTable = ({
                               <p className="font-medium">{variant.title}</p>
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              Price: {variant.price}
+                              Price: <MoneyDisplay value={variant.price} />
                             </p>
                             <p className="text-sm text-muted-foreground">
                               Slash Price: {variant.compare_at_price || "-"}
@@ -130,33 +124,37 @@ export const ExperimentTable = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}><MetricTooltip metric="Control">Control</MetricTooltip></TableHead>
-              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test A</MetricTooltip></TableHead>
-              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test B</MetricTooltip></TableHead>
+              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>
+                <MetricTooltip metric="Control">Control</MetricTooltip>
+              </TableHead>
+              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>
+                <MetricTooltip metric="Test Group">Test A</MetricTooltip>
+              </TableHead>
+              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>
+                <MetricTooltip metric="Test Group">Test B</MetricTooltip>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {experimentData.map((row, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">
-                  <MetricTooltip metric={row.metric}>
-                    {row.metric}
-                  </MetricTooltip>
+                  <MetricTooltip metric={row.metric}>{row.metric}</MetricTooltip>
                 </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
                 >
-                  {row.control}
+                  <MoneyDisplay value={row.control} format={row.format} />
                 </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
                 >
-                  {row.testA}
+                  <MoneyDisplay value={row.testA} format={row.format} />
                 </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
                 >
-                  {row.testB}
+                  <MoneyDisplay value={row.testB} format={row.format} />
                 </TableCell>
               </TableRow>
             ))}

@@ -40,114 +40,131 @@ export const generateExperimentData = (product: Product): ExperimentMetric[] => 
   const testBConvRate = (testBUnits / testBImpressions) * 100;
 
   // Calculate gross margin percentage (net sales / gross sales * 100)
-  const controlGrossMargin = (controlNetSales / controlGrossSales * 100).toFixed(1);
-  const testAGrossMargin = (testANetSales / testAGrossSales * 100).toFixed(1);
-  const testBGrossMargin = (testBNetSales / testBGrossSales * 100).toFixed(1);
+  const controlGrossMargin = (controlNetSales / controlGrossSales * 100);
+  const testAGrossMargin = (testANetSales / testAGrossSales * 100);
+  const testBGrossMargin = (testBNetSales / testBGrossSales * 100);
 
-  const compareAtPrice = (price * 1.2).toFixed(2); // Single compare at price for all variants
+  const compareAtPrice = price * 1.2;
 
   return [
     {
       metric: "Price",
-      control: `$${price.toFixed(2)}`,
-      testA: `$${testAPrice.toFixed(2)}`,
-      testB: `$${testBPrice.toFixed(2)}`,
+      control: price,
+      testA: testAPrice,
+      testB: testBPrice,
+      format: "money"
     },
     {
       metric: "Price Change %",
-      control: "0%",
-      testA: "-10%",
-      testB: "+10%",
+      control: 0,
+      testA: -10,
+      testB: 10,
+      format: "percentage"
     },
     {
       metric: "Compare At Price",
-      control: `$${compareAtPrice}`,
-      testA: `$${compareAtPrice}`,
-      testB: `$${compareAtPrice}`,
+      control: compareAtPrice,
+      testA: compareAtPrice,
+      testB: compareAtPrice,
+      format: "money"
     },
     {
       metric: "Units Sold",
       control: controlUnits,
       testA: testAUnits,
       testB: testBUnits,
+      format: "number"
     },
     {
       metric: "COGS",
-      control: `$${COGS.toFixed(2)}`,
-      testA: `$${COGS.toFixed(2)}`,
-      testB: `$${COGS.toFixed(2)}`,
+      control: COGS,
+      testA: COGS,
+      testB: COGS,
+      format: "money"
     },
     {
       metric: "Contribution Margin",
-      control: `$${(price - COGS).toFixed(2)}`,
-      testA: `$${(testAPrice - COGS).toFixed(2)}`,
-      testB: `$${(testBPrice - COGS).toFixed(2)}`,
+      control: price - COGS,
+      testA: testAPrice - COGS,
+      testB: testBPrice - COGS,
+      format: "money"
     },
     {
       metric: "Gross Sales",
-      control: `$${controlGrossSales.toFixed(2)}`,
-      testA: `$${testAGrossSales.toFixed(2)}`,
-      testB: `$${testBGrossSales.toFixed(2)}`,
+      control: controlGrossSales,
+      testA: testAGrossSales,
+      testB: testBGrossSales,
+      format: "money"
     },
     {
       metric: "Net Sales",
-      control: `$${controlNetSales.toFixed(2)}`,
-      testA: `$${testANetSales.toFixed(2)}`,
-      testB: `$${testBNetSales.toFixed(2)}`,
+      control: controlNetSales,
+      testA: testANetSales,
+      testB: testBNetSales,
+      format: "money"
     },
     {
-      metric: "Gross Margin",
-      control: `${controlGrossMargin}%`,
-      testA: `${testAGrossMargin}%`,
-      testB: `${testBGrossMargin}%`,
+      metric: "Gross Margin %",
+      control: controlGrossMargin,
+      testA: testAGrossMargin,
+      testB: testBGrossMargin,
+      format: "percentage"
     },
     {
       metric: "AOV",
-      control: `$${(controlGrossSales / controlUnits).toFixed(2)}`,
-      testA: `$${(testAGrossSales / testAUnits).toFixed(2)}`,
-      testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
+      control: controlGrossSales / controlUnits,
+      testA: testAGrossSales / testAUnits,
+      testB: testBGrossSales / testBUnits,
+      format: "money"
     },
     {
       metric: "Total Cart Sales",
-      control: `$${(controlGrossSales * 1.15).toFixed(2)}`,
-      testA: `$${(testAGrossSales * 1.15).toFixed(2)}`,
-      testB: `$${(testBGrossSales * 1.15).toFixed(2)}`,
+      control: controlGrossSales * 1.15,
+      testA: testAGrossSales * 1.15,
+      testB: testBGrossSales * 1.15,
+      format: "money"
     },
     {
       metric: "Units Per Transaction",
-      control: (controlUnits / (controlUnits * 0.85)).toFixed(2),
-      testA: (testAUnits / (testAUnits * 0.85)).toFixed(2),
-      testB: (testBUnits / (testBUnits * 0.85)).toFixed(2),
+      control: controlUnits / (controlUnits * 0.85),
+      testA: testAUnits / (testAUnits * 0.85),
+      testB: testBUnits / (testBUnits * 0.85),
+      format: "decimal"
     },
     {
       metric: "Total Orders",
       control: controlUnits,
       testA: testAUnits,
       testB: testBUnits,
+      format: "number"
     },
     {
       metric: "Conversion Rate",
-      control: `${controlConvRate.toFixed(1)}%`,
-      testA: `${testAConvRate.toFixed(1)}%`,
-      testB: `${testBConvRate.toFixed(1)}%`,
+      control: controlConvRate,
+      testA: testAConvRate,
+      testB: testBConvRate,
+      format: "percentage"
     },
     {
       metric: "Impressions",
       control: controlImpressions,
       testA: testAImpressions,
       testB: testBImpressions,
+      format: "number"
     },
     {
       metric: "Revenue Per View",
-      control: `$${controlRPV.toFixed(2)}`,
-      testA: `$${testARPV.toFixed(2)}`,
-      testB: `$${testBRPV.toFixed(2)}`,
+      control: controlRPV,
+      testA: testARPV,
+      testB: testBRPV,
+      format: "money"
     },
     {
       metric: "% of Traffic",
-      control: "33.33%",
-      testA: "33.33%",
-      testB: "33.33%",
+      control: 33.33,
+      testA: 33.33,
+      testB: 33.33,
+      format: "percentage"
     },
   ];
 };
