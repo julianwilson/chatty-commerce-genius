@@ -41,6 +41,13 @@ const timezones = [
   "Pacific/Honolulu",
 ] as const;
 
+const successMetrics = [
+  "conversion-rate",
+  "revenue-per-visitor",
+  "click-through-rate",
+  "gross-margin",
+] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
