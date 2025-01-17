@@ -243,6 +243,9 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
             )}
           />
         </div>
+        <div className="text-sm text-muted-foreground -mt-4">
+          Duration: {calculateDurationInDays()} days
+        </div>
 
         <FormField
           control={form.control}
