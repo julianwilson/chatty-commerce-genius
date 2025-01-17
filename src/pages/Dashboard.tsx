@@ -101,7 +101,7 @@ const Dashboard = () => {
       <MetricsGraph />
 
       {/* AI Experiment Card */}
-      <Card>
+      <Card noShadow>
         <CardContent className="pt-6">
           <div className="space-y-6">
             <div className="space-y-2 text-center">
