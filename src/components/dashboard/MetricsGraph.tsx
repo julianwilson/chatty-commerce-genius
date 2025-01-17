@@ -41,7 +41,7 @@ const metrics = [
   { id: 'newRevenue', name: 'App Attributed Sales Generated', value: '$23,456', change: '+60%' },
   { id: 'aur', name: 'AUR', value: '$45.67', change: '+49%' },
   { id: 'aov', name: 'AOV', value: '$89.12', change: '+32%' },
-  { id: 'unitsPerTransaction', name: 'Units Per Transaction', value: '2.5', change: '+25%' }
+  { id: 'unitsPerTransaction', name: 'UPT', value: '2.5', change: '+25%' }
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {

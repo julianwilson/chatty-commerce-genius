@@ -79,7 +79,6 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{totalTests}</div>
             <div className="text-3xl font-bold text-secondary">$194,862</div>
             <div className="text-sm text-muted-foreground mt-2">5 of 25 experiments completed</div>
           </CardContent>
