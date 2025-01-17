@@ -72,7 +72,7 @@ interface SetupStepProps {
 
 export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: SetupStepProps) {
   const form = useForm<FormValues>({
-    resolver: zodResolver(createFormSchema(form?.watch("type"))),
+    resolver: zodResolver(createFormSchema(undefined)),
     defaultValues: {
       timezone: "America/New_York",
       successMetric: "Gross Sales",
