@@ -29,7 +29,7 @@ const metricDefinitions: Record<string, MetricDefinition> = {
   "Revenue Per View": {
     title: "Revenue Per View",
     abbreviation: "RPV",
-    description: "The average amount of revenue generated from each impression to a website, calculated by dividing total revenue by the number of impressions.",
+    description: "The total amount of revenue generated from each impression to a website, calculated by dividing gross sales by impressions.",
   },
   "Gross Margin %": {
     title: "Gross Margin %",

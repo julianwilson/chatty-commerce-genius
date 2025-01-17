@@ -41,7 +41,7 @@ export const ExperimentTable = ({
   return (
     <div className="grid grid-cols-[400px,1fr] gap-6">
       <div className="rounded-md border">
-        <div className="grid grid-cols-3 w-full text-sm p-3 font-medium bg-muted">
+        <div className="grid grid-cols-2 w-full text-sm p-3 font-medium bg-muted">
           <div className="flex items-center gap-2">
             <Checkbox 
               checked={selectedProducts.length === mockProducts.length}
@@ -56,14 +56,13 @@ export const ExperimentTable = ({
             Product
           </div>
           <div>Price</div>
-          <div>Winner</div>
         </div>
         <Accordion type="single" collapsible>
           {mockProducts.map((product: Product) => (
             <AccordionItem key={product.id} value={product.id.toString()}>
               <AccordionTrigger className="px-4 hover:no-underline">
                 <div 
-                  className="grid grid-cols-3 w-full text-sm"
+                  className="grid grid-cols-2 w-full text-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onSelectProduct(product);
@@ -77,8 +76,7 @@ export const ExperimentTable = ({
                     />
                     {product.title}
                   </div>
-                  <div><MoneyDisplay value={product.price} /></div>
-                  <div>{product.testWinner}</div>
+                  <div><MoneyDisplay value={Number(product.price.replace(/[^0-9.-]+/g, ''))} /></div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -104,10 +102,10 @@ export const ExperimentTable = ({
                               Price: <MoneyDisplay value={Number(variant.price.replace(/[^0-9.-]+/g, ''))} />
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              Compare At Price: {variant.compare_at_price || "-"}
+                              <MetricTooltip metric="Compare At Price">Compare At Price</MetricTooltip>: {variant.compare_at_price || "-"}
                             </p>
                           </div>
-                          <MiniBarChart testData={getTestSalesPercentages(product)} winner={product.testWinner} />
+                          <MiniBarChart testData={getTestSalesPercentages(product)} />
                         </div>
                       </div>
                     ))}
