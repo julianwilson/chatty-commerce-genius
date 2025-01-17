@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Upload } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Accordion,
@@ -388,32 +388,38 @@ export default function ExperimentDetails() {
           </Button>
           <h1 className="text-2xl font-bold">{experimentName}</h1>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button>
-              Publish
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
-              onClick={() => {
-                setPublishMode('selected');
-                setShowPublishDialog(true);
-              }}
-            >
-              Selected
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                setPublishMode('all');
-                setShowPublishDialog(true);
-              }}
-            >
-              All Winners
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <Button variant="outline">
+            <Upload className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                Publish
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                disabled={selectedProducts.length === 0 && selectedVariants.length === 0}
+                onClick={() => {
+                  setPublishMode('selected');
+                  setShowPublishDialog(true);
+                }}
+              >
+                Selected
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setPublishMode('all');
+                  setShowPublishDialog(true);
+                }}
+              >
+                All Winners
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-6">
