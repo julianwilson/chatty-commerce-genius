@@ -51,8 +51,6 @@ const successMetrics = [
   "sales",
 ] as const;
 
-const utmActions = ["Enable", "Disable"] as const;
-
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
@@ -60,13 +58,6 @@ const formSchema = z.object({
   endDateTime: z.date(),
   timezone: z.enum(timezones),
   successMetric: z.enum(successMetrics),
-  utmControls: z.boolean(),
-  utmAction: z.enum(utmActions).optional(),
-  utmSource: z.string().optional(),
-  utmMedium: z.string().optional(),
-  utmCampaign: z.string().optional(),
-  utmTerm: z.string().optional(),
-  utmContent: z.string().optional(),
 }).refine((data) => {
   return data.startDateTime <= data.endDateTime;
 }, {
@@ -92,8 +83,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       startDateTime: tomorrow,
       endDateTime: twoWeeksFromTomorrow,
       successMetric: "conversion-rate",
-      utmControls: false,
-      utmAction: "Enable",
     },
   });
 
@@ -325,127 +314,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
             </FormItem>
           )}
         />
-
-        <div className="space-y-4">
-          <div className="flex flex-row items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <Label className="text-base">UTM Controls</Label>
-              <div className="text-sm text-muted-foreground">
-                Control experiment activation based on UTM parameters
-              </div>
-            </div>
-            <FormField
-              control={form.control}
-              name="utmControls"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {form.watch("utmControls") && (
-            <div className="space-y-4 rounded-lg border p-4">
-              <FormField
-                control={form.control}
-                name="utmAction"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Action</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select action" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Enable">Enable</SelectItem>
-                        <SelectItem value="Disable">Disable</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="utmSource"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Source</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. google, facebook" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="utmMedium"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Medium</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. cpc, email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="utmCampaign"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Campaign</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. summer_sale" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="utmTerm"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Term</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. running+shoes" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="utmContent"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Content</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. textlink" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-        </div>
 
         <div className="flex justify-end w-full">
           <Button type="submit">Next</Button>

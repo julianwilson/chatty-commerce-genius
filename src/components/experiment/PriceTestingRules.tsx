@@ -28,10 +28,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { addDays, differenceInDays, format } from "date-fns";
 import { MetricTooltip } from "../MetricTooltip";
+import { UTMControls, utmRulesSchema } from "./UTMControls";
 
 const priceRoundingOptions = [
   "No Rounding",
@@ -59,6 +60,8 @@ const createFormSchema = (testGroups: string[]) => {
 
   return z.object({
     controlTrafficAllocation: z.number().min(0).max(100),
+    utmControls: z.boolean(),
+    utmRules: utmRulesSchema.optional(),
     ...testGroupFields,
   });
 };
@@ -82,6 +85,15 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       controlTrafficAllocation: 33.33,
+      utmControls: false,
+      utmRules: [{
+        action: "Enable",
+        source: "",
+        medium: "",
+        campaign: "",
+        term: "",
+        content: "",
+      }],
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testAPriceRounding: "No Rounding",
@@ -92,7 +104,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
       testBPriceRounding: "No Rounding",
       testBPriceRoundingValue: 0.99,
       testBTrafficAllocation: 33.34,
-    } as FormValues,
+    },
   });
 
   const removeTestGroup = (letterToRemove: string) => {
@@ -343,6 +355,8 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             </TableBody>
           </Table>
         </div>
+
+        <UTMControls form={form} />
 
         <div className="flex justify-between">
           <Button variant="outline" onClick={onBack}>
