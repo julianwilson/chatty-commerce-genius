@@ -63,7 +63,7 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     description: "Revenue in addition to all Control tests in an experiment. For example if the experiment only has 1 product, Control gross sales is $20,000, and Test A is $26,000, the Incremental Revenue is $6,000. If there are multiple products in the experiment you calculate this for every product and sum the total.",
   },
   "Variant Change": {
-    abbreviation: "Variant Change",
+    title: "Variant Change",
     abbreviation: "Avg. Variant Change",
     description: "The average percentage change between Control and winning variant in all tests in the experiment. For example if there are 3 tests, and the winning variant of each is has a 10%, 12%, and 25% higher success metric. The Incremental Change is 15.67%.",
   },
