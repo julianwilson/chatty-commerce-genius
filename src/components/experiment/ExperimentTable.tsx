@@ -57,9 +57,9 @@ export const ExperimentTable = ({
           </div>
           <div>Price</div>
         </div>
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible defaultValue={`item-${mockProducts[0]?.id}`}>
           {mockProducts.map((product: Product) => (
-            <AccordionItem key={product.id} value={product.id.toString()}>
+            <AccordionItem key={product.id} value={`item-${product.id}`}>
               <AccordionTrigger className="px-4 hover:no-underline">
                 <div 
                   className="grid grid-cols-2 w-full text-sm"
