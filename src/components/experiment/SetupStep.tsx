@@ -45,8 +45,15 @@ const timezones = [
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDateTime: z.date(),
+  endDateTime: z.date().refine((endDateTime, context) => {
+    if (context.parent.startDateTime > endDateTime) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "End date and time must be after start date and time",
+      });
+    }
+  }),
   timezone: z.enum(timezones),
 });
 
@@ -62,8 +69,8 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       timezone: "America/New_York",
-      startDate: new Date(),
-      endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      startDateTime: new Date(),
+      endDateTime: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     },
   });
 
@@ -74,7 +81,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full bg-gray-50 p-8 rounded-md">
         <FormField
           control={form.control}
           name="name"
@@ -121,47 +128,117 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel>Start Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date()
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-4">
+          <FormField
+            control={form.control}
+            name="startDateTime"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Start Date & Time</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP p")
+                        ) : (
+                          <span>Pick a date & time</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date < new Date() || date > form.getValues("endDateTime")
+                      }
+                      initialFocus
+                    />
+                    <div className="p-3 border-t">
+                      <Input
+                        type="time"
+                        className="bg-gray-50"
+                        value={format(field.value, "HH:mm")}
+                        onChange={(e) => {
+                          const [hours, minutes] = e.target.value.split(":");
+                          const newDate = new Date(field.value);
+                          newDate.setHours(parseInt(hours), parseInt(minutes));
+                          field.onChange(newDate);
+                        }}
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="endDateTime"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>End Date & Time</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full pl-3 text-left font-normal bg-gray-50",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP p")
+                        ) : (
+                          <span>Pick a date & time</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date < form.getValues("startDateTime")
+                      }
+                      initialFocus
+                    />
+                    <div className="p-3 border-t">
+                      <Input
+                        type="time"
+                        className="bg-gray-50"
+                        value={format(field.value, "HH:mm")}
+                        onChange={(e) => {
+                          const [hours, minutes] = e.target.value.split(":");
+                          const newDate = new Date(field.value);
+                          newDate.setHours(parseInt(hours), parseInt(minutes));
+                          field.onChange(newDate);
+                        }}
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -169,9 +246,9 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} className="w-full">
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-gray-50">
                     <SelectValue placeholder="Select timezone" />
                   </SelectTrigger>
                 </FormControl>
@@ -183,48 +260,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="endDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel>End Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date() || (form.watch("startDate") && date < form.watch("startDate"))
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
               <FormMessage />
             </FormItem>
           )}
