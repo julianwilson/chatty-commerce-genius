@@ -1,13 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface MetricCardProps {
-  title: string;
+  title: ReactNode;
   percentage: number;
   currentValue: number;
   previousValue: number;
-  format?: "currency" | "number";
-  disabled?: boolean;
+  format?: "currency" | "percentage" | "number";
 }
 
 export const MetricCard = ({
@@ -15,30 +14,33 @@ export const MetricCard = ({
   percentage,
   currentValue,
   previousValue,
-  format = "currency",
-  disabled = false,
+  format = "number",
 }: MetricCardProps) => {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: format === "currency" ? "currency" : "decimal",
-    currency: "USD",
-  });
+  const formatValue = (value: number) => {
+    switch (format) {
+      case "currency":
+        return `$${value.toFixed(2)}`;
+      case "percentage":
+        return `${value.toFixed(1)}%`;
+      default:
+        return value.toFixed(0);
+    }
+  };
 
   return (
-    <Card className={cn(disabled && "opacity-50")}>
+    <Card>
       <CardContent className="pt-6">
-        <h3 className="text-sm font-medium text-muted-foreground mb-2">{title}</h3>
-        <div className="flex flex-col gap-1">
-          <p className={cn(
-            "text-2xl font-bold",
-            !disabled && (percentage >= 0 ? "text-secondary" : "text-destructive")
-          )}>
-            {disabled ? "-" : `${percentage >= 0 ? "+" : ""}${percentage.toFixed(1)}%`}
-          </p>
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">
-              {disabled ? "-" : formatter.format(currentValue)}
-            </span>
-          </div>
+        <div className="text-2xl font-bold">{title}</div>
+        <div className="flex items-center gap-2 mt-2">
+          <span className="text-3xl font-bold">
+            {formatValue(currentValue)}
+          </span>
+          <span className={`text-sm ${percentage >= 0 ? "text-green-600" : "text-red-600"}`}>
+            {percentage >= 0 ? "+" : ""}{percentage}%
+          </span>
+        </div>
+        <div className="text-sm text-muted-foreground mt-1">
+          vs {formatValue(previousValue)}
         </div>
       </CardContent>
     </Card>
