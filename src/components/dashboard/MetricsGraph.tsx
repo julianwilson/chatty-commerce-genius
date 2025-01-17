@@ -38,8 +38,7 @@ const generateMockData = () => {
 };
 
 const metrics = [
-  { id: 'promotionalAmount', name: 'Promotional $', value: '$12,345', change: '+43%' },
-  { id: 'newRevenue', name: 'New $ Generated', value: '$23,456', change: '+60%' },
+  { id: 'newRevenue', name: 'App Attributed Sales Generated', value: '$23,456', change: '+60%' },
   { id: 'aur', name: 'AUR', value: '$45.67', change: '+49%' },
   { id: 'aov', name: 'AOV', value: '$89.12', change: '+32%' },
   { id: 'unitsPerTransaction', name: 'Units Per Transaction', value: '2.5', change: '+25%' }
@@ -101,11 +100,10 @@ export const MetricsGraph = () => {
               <XAxis dataKey="week" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="promotionalAmount" stroke="#8884d8" name="Promotional $" />
-              <Line type="monotone" dataKey="newRevenue" stroke="#82ca9d" name="New $ Generated" />
+              <Line type="monotone" dataKey="newRevenue" stroke="#82ca9d" name="App Attributed Sales Generated" />
               <Line type="monotone" dataKey="aur" stroke="#ffc658" name="AUR" />
               <Line type="monotone" dataKey="aov" stroke="#ff7300" name="AOV" />
-              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#00C49F" name="Units Per Transaction" />
+              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#00C49F" name="UPT" />
             </LineChart>
           </ResponsiveContainer>
         </div>

@@ -72,6 +72,18 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     abbreviation: "Avg Markdown %",
     description: "The average percentage reduction from the original price of products, reflecting discounts and promotions offered. E.g. if the Shoes collection sold $20,000 with $4,000 in discounts, the Average Markdown % is 20%.",
   },
+  "App Attributed Sales Generated": {
+    title: "App Attributed Sales Generated",
+    description: "Total gross sales above control in experiments generated over date range. Include total additional contribution margin of all winning experiments that have been pushed live.",
+  },
+  "Experiment Sales": {
+    title: "Experiment Sales",
+    description: "Total gross sales generated from all experiments created in app over date range.",
+  },
+  "Promotional Sales": {
+    title: "Promotional Sales",
+    description: "Total gross sales measured during promotions created in app over date range.",
+  },
 };
 
 interface MetricTooltipProps {

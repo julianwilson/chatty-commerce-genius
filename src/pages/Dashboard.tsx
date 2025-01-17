@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 import { CheckCircle2 } from "lucide-react";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
+import { MetricTooltip } from "@/components/MetricTooltip";
 
 // Mock recommendations data
 const recommendations = [
@@ -67,6 +68,32 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* Experiment and Promotion Metrics */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle><MetricTooltip text="Experiment Sales" /> Experiment Sales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{totalTests}</div>
+            <div className="text-3xl font-bold text-secondary">$194,862</div>
+            <div className="text-sm text-muted-foreground mt-2">5 of 25 experiments completed</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle><MetricTooltip text="Promotional Sales" /> Promotional Sales</MetricTooltip></CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-secondary">$36,625</div>
+            <div className="text-sm text-muted-foreground mt-2">1 of 2 promotions completed</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Metrics Graph */}
+      <MetricsGraph />
+
       {/* AI Experiment Card */}
       <Card>
         <CardContent className="pt-6">
@@ -94,30 +121,6 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Total Tests Run and Incremental Revenue */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Tests Run</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalTests}</div>
-            <div className="text-sm text-muted-foreground mt-2">5 of 25 tests completed</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>New Revenue Generated</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-secondary">$1.25M</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Metrics Graph */}
-      <MetricsGraph />
 
       {/* Recommendations Section */}
       <div className="mb-8">
