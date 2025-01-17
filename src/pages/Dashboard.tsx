@@ -42,7 +42,6 @@ const recommendations = [
 
 // Mock activities data
 const activities = [
-  { type: "collection", text: "Created New Collections (Summer Dresses, Going out dresses)" },
   { type: "experiment", text: "Started Experiment (Dresses +- 5%)" },
   { type: "experiment", text: "Ended Experiment (Dresses +- 5%)" },
   { type: "experiment", text: "Started Experiment (George Foreman Grill +- 10%)" },
