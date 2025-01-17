@@ -37,11 +37,13 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
             />
             <Bar dataKey="value" fill="#4f46e5" radius={[2, 2, 0, 0]} />
             <Tooltip
+              cursor={{ fill: "#f3f4f6" }}
+              position={{ x: 0, y: 0 }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const value = payload[0].value as number;
                   return (
-                    <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="absolute rounded-lg border bg-background p-2 shadow-sm" style={{ zIndex: 50 }}>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="text-[0.70rem] text-muted-foreground">
                           Gross Sales
@@ -68,11 +70,13 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
         <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <Bar dataKey="sales" fill="#4f46e5" radius={[2, 2, 0, 0]} />
           <Tooltip
+            cursor={{ fill: "#f3f4f6" }}
+            position={{ x: 0, y: 0 }}
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const value = Number(payload[0].value);
                 return (
-                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                  <div className="absolute rounded-lg border bg-background p-2 shadow-sm" style={{ zIndex: 50 }}>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="text-[0.70rem] text-muted-foreground">
                         Sales
