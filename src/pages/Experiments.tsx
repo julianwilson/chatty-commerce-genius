@@ -92,7 +92,7 @@ const columns: Column[] = [
   { id: "endDate", label: "End Date" },
   { id: "sessions", label: "Sessions" },
   { id: "successMetric", label: "Success Metric" },
-  { id: "incrementalChange", label: "Incremental Change" },
+  { id: "incrementalChange", label: "Avg. Variant Change" },
 ];
 
 export default function Experiments() {
