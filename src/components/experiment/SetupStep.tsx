@@ -42,12 +42,21 @@ const timezones = [
   "Pacific/Honolulu",
 ] as const;
 
+const successMetrics = [
+  "Gross Sales",
+  "Net Sales",
+  "Units Sold",
+  "Conversion Rate",
+  "Average Order Value",
+] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
   type: z.enum(experimentTypes),
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
+  successMetric: z.enum(successMetrics),
 }).refine((data) => {
   return data.startDateTime <= data.endDateTime;
 }, {
@@ -60,9 +69,10 @@ type FormValues = z.infer<typeof formSchema>;
 interface SetupStepProps {
   onNext: () => void;
   onTypeChange?: (type: string) => void;
+  onSuccessMetricChange?: (metric: string) => void;
 }
 
-export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
+export function SetupStep({ onNext, onTypeChange, onSuccessMetricChange }: SetupStepProps) {
   const tomorrow = addDays(new Date(), 1);
   const twoWeeksFromTomorrow = addDays(tomorrow, 14);
 
@@ -72,6 +82,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       timezone: "America/New_York",
       startDateTime: tomorrow,
       endDateTime: twoWeeksFromTomorrow,
+      successMetric: "Gross Sales",
     },
   });
 
@@ -125,6 +136,37 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                   {experimentTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="successMetric"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Success Metric</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  onSuccessMetricChange?.(value);
+                }}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select success metric" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {successMetrics.map((metric) => (
+                    <SelectItem key={metric} value={metric}>
+                      {metric}
                     </SelectItem>
                   ))}
                 </SelectContent>
