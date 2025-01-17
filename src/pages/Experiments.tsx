@@ -16,6 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MetricTooltip } from "@/components/MetricTooltip";
 
 const experimentStatuses = ["Draft", "Running", "Paused", "Completed"] as const;
 const experimentTypes = ["Price Testing", "Image Testing"] as const;
@@ -154,7 +155,7 @@ export default function Experiments() {
               <TableRow>
                 {columns.map((column) => (
                   visibleColumns.includes(column.id) && (
-                    <TableHead key={column.id}>{column.label}</TableHead>
+                    <TableHead key={column.id}><MetricTooltip metric={column.label]>{column.label}</MetricTooltip></TableHead>
                   )
                 ))}
               </TableRow>
