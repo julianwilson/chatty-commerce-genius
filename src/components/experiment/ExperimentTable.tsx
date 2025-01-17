@@ -1,5 +1,6 @@
 import { MiniBarChart } from "@/components/MiniBarChart";
 import { Checkbox } from "@/components/ui/checkbox";
+import { MetricTooltip } from "@/components/MetricTooltip";
 import {
   Accordion,
   AccordionContent,
@@ -137,7 +138,11 @@ export const ExperimentTable = ({
           <TableBody>
             {experimentData.map((row, index) => (
               <TableRow key={index}>
-                <TableCell className="font-medium">{row.metric}</TableCell>
+                <TableCell className="font-medium">
+                  <MetricTooltip metric={row.metric}>
+                    {row.metric}
+                  </MetricTooltip>
+                </TableCell>
                 <TableCell 
                   className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
                 >
