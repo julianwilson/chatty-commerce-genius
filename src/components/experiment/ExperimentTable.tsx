@@ -101,10 +101,10 @@ export const ExperimentTable = ({
                               <p className="font-medium">{variant.title}</p>
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              Price: <MoneyDisplay value={variant.price} />
+                              Price: <MoneyDisplay value={Number(variant.price.replace(/[^0-9.-]+/g, ''))} />
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              Slash Price: {variant.compare_at_price || "-"}
+                              Compare At Price: {variant.compare_at_price || "-"}
                             </p>
                           </div>
                           <MiniBarChart testData={getTestSalesPercentages(product)} winner={product.testWinner} />
