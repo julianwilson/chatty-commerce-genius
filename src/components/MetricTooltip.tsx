@@ -89,6 +89,10 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     title: "Promotional Sales",
     description: "Total gross sales measured during promotions created in app over date range.",
   },
+  "Contribution Margin": {
+    title: "Contribution Margin",
+    description: "The amount of revenue left after subtracting COGS from the current price. E.g. $30 price with $10 COGS is a $20 contribution margin.",
+  },
 };
 
 interface MetricTooltipProps {
