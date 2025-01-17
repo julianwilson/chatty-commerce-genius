@@ -26,33 +26,89 @@ export const SearchBar = () => {
     return () => document.removeEventListener("keydown", handleKeyDown as any);
   }, []);
 
-  // Mock products data - in a real app, this would come from your API
+  // Mock data - in a real app, this would come from your API
   const products = [
     {
       id: 7664801349847,
       title: "Scentiment Diffuser Mini - The One Fragrance Oil",
       product_type: "Diffuser",
+      type: "product"
     },
     {
       id: 7664801382615,
       title: "Scentiment Diffuser Mini - Vanilla Bean Fragrance Oil",
       product_type: "Diffuser",
+      type: "product"
     },
     {
       id: 7664801415383,
       title: "Scentiment Diffuser Mini - Fresh Linen Fragrance Oil",
       product_type: "Diffuser",
+      type: "product"
     },
   ];
 
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(search.toLowerCase())
+  const experiments = [
+    { id: 1, title: "Dresses price test", type: "experiment" },
+    { id: 2, title: "Free shipping threshold", type: "experiment" },
+    { id: 3, title: "Product description length", type: "experiment" },
+  ];
+
+  const promotions = [
+    { id: 1, title: "Summer dresses sale", type: "promotion" },
+    { id: 2, title: "Winter clearance", type: "promotion" },
+    { id: 3, title: "Valentine's special", type: "promotion" },
+  ];
+
+  const recipes = [
+    { id: 1, title: "Increase Compare At Price 25% Site Wide", type: "recipe" },
+    { id: 2, title: "BOGO on Spring Collection", type: "recipe" },
+    { id: 3, title: "30% Off Winter Items", type: "recipe" },
+  ];
+
+  const allItems = [
+    ...products.map(p => ({ ...p, title: p.title, id: p.id })),
+    ...experiments.map(e => ({ ...e, title: e.title, id: e.id })),
+    ...promotions.map(p => ({ ...p, title: p.title, id: p.id })),
+    ...recipes.map(r => ({ ...r, title: r.title, id: r.id }))
+  ];
+
+  const filteredItems = allItems.filter((item) =>
+    item.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleProductClick = (productId: number) => {
-    navigate(`/products/${productId}`);
+  const handleItemClick = (item: any) => {
+    switch (item.type) {
+      case "product":
+        navigate(`/products/${item.id}`);
+        break;
+      case "experiment":
+        navigate(`/experiments/${item.id}`);
+        break;
+      case "promotion":
+        navigate(`/promotions/${item.id}`);
+        break;
+      case "recipe":
+        navigate(`/recipes/${item.id}`);
+        break;
+    }
     setOpen(false);
     setSearch("");
+  };
+
+  const getItemSubtext = (item: any) => {
+    switch (item.type) {
+      case "product":
+        return item.product_type;
+      case "experiment":
+        return "Experiment";
+      case "promotion":
+        return "Promotion";
+      case "recipe":
+        return "Recipe";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -75,7 +131,7 @@ export const SearchBar = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Search Products</DialogTitle>
+            <DialogTitle>Search</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Input
@@ -87,21 +143,21 @@ export const SearchBar = () => {
               autoFocus
             />
             <div className="mt-4 space-y-2">
-              {filteredProducts.map((product) => (
+              {filteredItems.map((item) => (
                 <div
-                  key={product.id}
+                  key={`${item.type}-${item.id}`}
                   className="p-2 hover:bg-muted rounded-md cursor-pointer"
-                  onClick={() => handleProductClick(product.id)}
+                  onClick={() => handleItemClick(item)}
                 >
-                  <div className="font-medium">{product.title}</div>
+                  <div className="font-medium">{item.title}</div>
                   <div className="text-sm text-muted-foreground">
-                    {product.product_type}
+                    {getItemSubtext(item)}
                   </div>
                 </div>
               ))}
-              {search && filteredProducts.length === 0 && (
+              {search && filteredItems.length === 0 && (
                 <div className="text-center text-muted-foreground py-4">
-                  No products found
+                  No results found
                 </div>
               )}
             </div>
