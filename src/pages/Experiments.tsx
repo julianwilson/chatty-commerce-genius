@@ -155,7 +155,7 @@ export default function Experiments() {
               <TableRow>
                 {columns.map((column) => (
                   visibleColumns.includes(column.id) && (
-                    <TableHead key={column.id}><MetricTooltip metric={column.label]>{column.label}</MetricTooltip></TableHead>
+                    <TableHead key={column.id}><MetricTooltip metric={column.label}>{column.label}</MetricTooltip></TableHead>
                   )
                 ))}
               </TableRow>
