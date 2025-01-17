@@ -84,19 +84,19 @@ export const generateExperimentData = (product: Product): ExperimentMetric[] => 
       testB: `$${(testBPrice - COGS).toFixed(2)}`,
     },
     {
-      metric: "Gross Sales $",
+      metric: "Gross Sales",
       control: `$${controlGrossSales.toFixed(2)}`,
       testA: `$${testAGrossSales.toFixed(2)}`,
       testB: `$${testBGrossSales.toFixed(2)}`,
     },
     {
-      metric: "Net Sales $",
+      metric: "Net Sales",
       control: `$${controlNetSales.toFixed(2)}`,
       testA: `$${testANetSales.toFixed(2)}`,
       testB: `$${testBNetSales.toFixed(2)}`,
     },
     {
-      metric: "Gross Margin %",
+      metric: "Gross Margin",
       control: `${controlGrossMargin}%`,
       testA: `${testAGrossMargin}%`,
       testB: `${testBGrossMargin}%`,
@@ -108,7 +108,7 @@ export const generateExperimentData = (product: Product): ExperimentMetric[] => 
       testB: `$${(testBGrossSales / testBUnits).toFixed(2)}`,
     },
     {
-      metric: "Total Cart Sales $",
+      metric: "Total Cart Sales",
       control: `$${(controlGrossSales * 1.15).toFixed(2)}`,
       testA: `$${(testAGrossSales * 1.15).toFixed(2)}`,
       testB: `$${(testBGrossSales * 1.15).toFixed(2)}`,

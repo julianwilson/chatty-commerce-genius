@@ -130,9 +130,9 @@ export const ExperimentTable = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>Control</TableHead>
-              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>Test A</TableHead>
-              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>Test B</TableHead>
+              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}><MetricTooltip metric="Control">Control</MetricTooltip></TableHead>
+              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test A</MetricTooltip></TableHead>
+              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}><MetricTooltip metric="Test Group">Test B</MetricTooltip></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
