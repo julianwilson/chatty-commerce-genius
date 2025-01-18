@@ -22,7 +22,6 @@ import ExperimentDetails from "./pages/ExperimentDetails";
 import Recipes from "./pages/Recipes";
 import SalesPlan from "./pages/SalesPlan";
 import Settings from "./pages/Settings";
-import Calendar from "./pages/Calendar";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +57,6 @@ const App = () => (
                   <Route path="/experiments/create" element={<CreateExperiment />} />
                   <Route path="/experiments/:id" element={<ExperimentDetails />} />
                   <Route path="/recipes" element={<Recipes />} />
-                  <Route path="/calendar" element={<Calendar />} />
                   <Route path="/sales-plan" element={<SalesPlan />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>

@@ -93,6 +93,10 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     title: "Contribution Margin",
     description: "The amount of revenue left after subtracting COGS from the current price. E.g. $30 price with $10 COGS is a $20 contribution margin.",
   },
+  "Last Year Comp": {
+    title: "Last Year Comp",
+    description: "Gross sales in comparison to the same period last year. Typically used for YoY gross sales comparison.",
+  },
 };
 
 interface MetricTooltipProps {

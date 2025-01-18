@@ -5,10 +5,15 @@ import { ChevronLeft } from "lucide-react";
 import { SetupStep } from "@/components/promotion/SetupStep";
 import { ProductsStep } from "@/components/promotion/ProductsStep";
 import { LaunchStep } from "@/components/promotion/LaunchStep";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
 
 const steps = ["Setup", "Products", "Launch"] as const;
+
+const suggestionPrompts = [
+  "Run site wide 20% off sale for the next 14 days",
+  "Create Valentine's Day free shipping sale"
+];
 
 export default function CreatePromotion() {
   const [currentStep, setCurrentStep] = useState(-1);
@@ -40,12 +45,6 @@ export default function CreatePromotion() {
   const goToPreviousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleInputClick = () => {
-    if (!aiPrompt) {
-      setAiPrompt("Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in Best Sellers");
     }
   };
 
@@ -83,14 +82,16 @@ export default function CreatePromotion() {
             </p>
           </div>
 
-          <Textarea
-            placeholder="E.g. Setup a 20% off site wide promotion starting tomorrow for a week but exclude products in New Arrivals"
-            className="min-h-[120px] text-lg p-4 border-2 border-gray-400"
-            value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
-            onClick={handleInputClick}
-          />
-
+          <div className="max-w-2xl mx-auto">
+            <h1 className="text-2xl font-bold mb-6">Create a New Promotion</h1>
+            <AiInputWithSuggestions
+              value={aiPrompt}
+              onChange={setAiPrompt}
+              onContinue={handleAiContinue}
+              placeholder="Describe the promotion you want to create..."
+              suggestions={suggestionPrompts}
+            />
+          </div>
           <div className="flex flex-col gap-3 pt-4">
             <Button size="lg" onClick={handleAiContinue}>
               Continue with AI

@@ -58,6 +58,7 @@ const formSchema = z.object({
   endDateTime: z.date(),
   timezone: z.enum(timezones),
   successMetric: z.enum(successMetrics),
+  autoCreateExperiments: z.boolean().default(false),
 }).refine((data) => {
   return data.startDateTime <= data.endDateTime;
 }, {
@@ -83,6 +84,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       startDateTime: tomorrow,
       endDateTime: twoWeeksFromTomorrow,
       successMetric: "conversion-rate",
+      autoCreateExperiments: false,
     },
   });
 
@@ -286,8 +288,34 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
             )}
           />
         </div>
-        <div className="text-sm text-muted-foreground -mt-4">
-          Duration: {calculateDurationInDays()} days
+
+        <div className="grid gap-4">
+          <div className="text-sm text-muted-foreground -mt-4">
+            Duration: {calculateDurationInDays()} days
+          </div>
+          
+          <FormField
+            control={form.control}
+            name="autoCreateExperiments"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <div className="flex items-center space-x-2">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-0.5">
+                    <FormLabel>New Products Automatically Create Separate Experiment</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      When Enabled, a price experiment will automatically be created once daily for all newly added products within this experiment's filtered products list.
+                    </p>
+                  </div>
+                </div>
+              </FormItem>
+            )}
+          />
         </div>
 
         <FormField

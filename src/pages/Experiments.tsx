@@ -125,6 +125,9 @@ export default function Experiments() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Experiments</h1>
         <div className="flex gap-2">
+          <Button onClick={() => navigate('/experiments/create')}>
+            <Plus className="mr-2 h-4 w-4" /> New Experiment
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -143,11 +146,9 @@ export default function Experiments() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => navigate('/experiments/create')}>
-            <Plus className="mr-2 h-4 w-4" /> New Experiment
-          </Button>
         </div>
       </div>
+
       <div className="rounded-md border">
         <div className="overflow-x-auto">
           <Table>

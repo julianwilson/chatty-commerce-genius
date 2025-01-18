@@ -9,28 +9,88 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useState } from "react";
-import { CreatePromotionModal } from "@/components/CreatePromotionModal";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { MetricTooltip } from "@/components/MetricTooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useState, useEffect } from "react";
 
-// Weekly data for the last 12 weeks
-const weeklyData = Array.from({ length: 12 }, (_, i) => {
-  const week = 12 - i;
-  const baseDate = new Date();
-  baseDate.setDate(baseDate.getDate() - (week * 7));
+type DateRange = "Last 12 Weeks" | "Last 30 Days" | "Last 90 Days" | "Last 6 Months" | "Last 12 Months";
+type GroupBy = "Day" | "Week" | "Month";
+
+interface PromotionDataPoint {
+  period: string;
+  date: string;
+  grossSales: number;
+  adSpend: number;
+  unitsSold: number;
+  aur: number;
+  aov: number;
+  avgMarkdown: number;
+}
+
+const generateData = (dateRange: DateRange, groupBy: GroupBy): PromotionDataPoint[] => {
+  const now = new Date();
+  let days: number;
+  let interval: number;
+  let format: string;
   
-  return {
-    week: `Week ${week}`,
-    date: baseDate.toLocaleDateString(),
-    grossSales: 50000 + Math.random() * 30000,
-    adSpend: 5000 + Math.random() * 3000,
-    unitsSold: 1000 + Math.random() * 500,
-    aur: 45 + Math.random() * 10,
-    aov: 120 + Math.random() * 30,
-    avgMarkdown: 15 + Math.random() * 10,
-  };
-}).reverse();
+  switch (dateRange) {
+    case "Last 30 Days":
+      days = 30;
+      break;
+    case "Last 90 Days":
+      days = 90;
+      break;
+    case "Last 6 Months":
+      days = 180;
+      break;
+    case "Last 12 Months":
+      days = 365;
+      break;
+    default: // Last 12 Weeks
+      days = 84; // 12 weeks
+  }
+
+  switch (groupBy) {
+    case "Day":
+      interval = 1;
+      format = "MMM D";
+      break;
+    case "Month":
+      interval = 30;
+      format = "MMM YYYY";
+      break;
+    default: // Week
+      interval = 7;
+      format = "Week";
+  }
+
+  const periods = Math.ceil(days / interval);
+  
+  return Array.from({ length: periods }, (_, i) => {
+    const daysAgo = days - (i * interval);
+    const baseDate = new Date(now);
+    baseDate.setDate(baseDate.getDate() - daysAgo);
+    
+    return {
+      period: groupBy === "Week" ? `Week ${periods - i}` : baseDate.toLocaleDateString(),
+      date: baseDate.toLocaleDateString(),
+      grossSales: 50000 + Math.random() * 30000,
+      adSpend: 5000 + Math.random() * 3000,
+      unitsSold: 1000 + Math.random() * 500,
+      aur: 45 + Math.random() * 10,
+      aov: 120 + Math.random() * 30,
+      avgMarkdown: 15 + Math.random() * 10,
+    };
+  }).reverse();
+};
 
 const promotionsData = [
   {
@@ -156,24 +216,24 @@ const promotionsData = [
   }
 ];
 
-const PromotionTrendsGraph = () => {
-  const chartOptions = {
+const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
+  const options: Highcharts.Options = {
     chart: {
       type: 'line',
-      height: 300,
+      height: '400px',
       style: {
-        fontFamily: 'inherit'
+        fontFamily: 'Inter, sans-serif'
       }
     },
     title: {
-      text: 'Performance Metrics',
+      text: 'Promotion Performance Trends',
       style: {
         fontSize: '16px',
         fontWeight: 'bold'
       }
     },
     xAxis: {
-      categories: weeklyData.map(d => d.week),
+      categories: data.map(d => d.period),
       labels: {
         style: { fontSize: '12px' }
       }
@@ -181,127 +241,162 @@ const PromotionTrendsGraph = () => {
     yAxis: [{
       title: {
         text: 'Amount ($)',
-        style: { fontSize: '12px' }
+        style: {
+          fontSize: '12px'
+        }
       },
       labels: {
-        format: '${value:,.0f}',
-        style: { fontSize: '12px' }
+        style: { fontSize: '12px' },
+        formatter: function () {
+          return '$' + (this.value as number).toLocaleString();
+        }
       }
     }, {
-      opposite: true,
       title: {
-        text: 'Percentage',
-        style: { fontSize: '12px' }
+        text: 'Units',
+        style: {
+          fontSize: '12px'
+        }
       },
+      opposite: true,
       labels: {
-        format: '{value}%',
         style: { fontSize: '12px' }
       }
     }],
-    tooltip: {
-      shared: true,
-      headerFormat: '<b>{point.x}</b><br/>',
-      pointFormatter: function() {
-        if (this.series.name === 'Avg. Markdown') {
-          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}%<br/>`;
-        }
-        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.y, this.series.name === 'Gross Sales' ? 0 : 2)}<br/>`;
+    series: [{
+      name: 'Gross Sales',
+      type: 'line',
+      data: data.map(d => Math.round(d.grossSales)),
+      color: '#2563eb',
+      tooltip: {
+        valuePrefix: '$'
       }
-    },
-    plotOptions: {
-      line: {
-        marker: {
-          enabled: true,
-          radius: 4
-        }
+    }, {
+      name: 'Ad Spend',
+      type: 'line',
+      data: data.map(d => Math.round(d.adSpend)),
+      color: '#dc2626',
+      tooltip: {
+        valuePrefix: '$'
       }
-    },
-    series: [
-      {
-        name: 'Gross Sales',
-        data: weeklyData.map(d => d.grossSales),
-        color: '#1E3A8A',
-        yAxis: 0,
-        zIndex: 5
-      },
-      {
-        name: 'Ad Spend',
-        data: weeklyData.map(d => d.adSpend),
-        color: '#047857',
-        yAxis: 0
-      },
-      {
-        name: 'AOV',
-        data: weeklyData.map(d => d.aov),
-        color: '#EA580C',
-        yAxis: 0
-      },
-      {
-        name: 'AUR',
-        data: weeklyData.map(d => d.aur),
-        color: '#DB2777',
-        yAxis: 0
-      },
-      {
-        name: 'Avg. Markdown',
-        data: weeklyData.map(d => d.avgMarkdown),
-        color: '#2563EB',
-        yAxis: 1
+    }, {
+      name: 'Units Sold',
+      type: 'line',
+      data: data.map(d => Math.round(d.unitsSold)),
+      yAxis: 1,
+      color: '#16a34a'
+    }, {
+      name: 'AOV',
+      type: 'line',
+      data: data.map(d => Math.round(d.aov)),
+      color: '#ea580c',
+      tooltip: {
+        valuePrefix: '$'
       }
-    ],
+    }, {
+      name: 'AUR',
+      type: 'line',
+      data: data.map(d => Math.round(d.aur)),
+      color: '#db2777',
+      tooltip: {
+        valuePrefix: '$'
+      }
+    }],
     credits: {
       enabled: false
     },
     legend: {
-      enabled: true,
       align: 'center',
-      verticalAlign: 'bottom'
+      verticalAlign: 'bottom',
+      itemStyle: {
+        fontSize: '12px'
+      }
+    },
+    tooltip: {
+      shared: true,
+      crosshairs: true
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-      <div className="flex items-center gap-4 mb-4">
-        <div className="text-sm text-gray-500">
-          Tracking key performance metrics over time
-        </div>
+    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </div>
+  );
+};
+
+const Filter = ({ onFilterChange }: { onFilterChange: (data: PromotionDataPoint[]) => void }) => {
+  const [dateRange, setDateRange] = useState<DateRange>("Last 12 Weeks");
+  const [groupBy, setGroupBy] = useState<GroupBy>("Week");
+
+  useEffect(() => {
+    const newData = generateData(dateRange, groupBy);
+    onFilterChange(newData);
+  }, [dateRange, groupBy, onFilterChange]);
+
+  return (
+    <div className="flex gap-4 items-center mb-6">
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium">Date Range:</span>
+        <Select value={dateRange} onValueChange={(value) => setDateRange(value as DateRange)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Last 12 Weeks">Last 12 Weeks</SelectItem>
+            <SelectItem value="Last 30 Days">Last 30 Days</SelectItem>
+            <SelectItem value="Last 90 Days">Last 90 Days</SelectItem>
+            <SelectItem value="Last 6 Months">Last 6 Months</SelectItem>
+            <SelectItem value="Last 12 Months">Last 12 Months</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={chartOptions}
-      />
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium">Grouped By:</span>
+        <Select value={groupBy} onValueChange={(value) => setGroupBy(value as GroupBy)}>
+          <SelectTrigger className="w-[120px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Day">Day</SelectItem>
+            <SelectItem value="Week">Week</SelectItem>
+            <SelectItem value="Month">Month</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };
 
 export default function Promotions() {
   const navigate = useNavigate();
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [graphData, setGraphData] = useState(generateData("Last 12 Weeks", "Week"));
 
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Promotions</h1>
-        <Button onClick={() => setShowCreateModal(true)}>
+        <Button onClick={() => navigate('/promotions/create')}>
           <Plus className="w-4 h-4 mr-2" />
           Create Promotion
         </Button>
       </div>
 
-      <PromotionTrendsGraph />
+      <Filter onFilterChange={setGraphData} />
+      <PromotionTrendsGraph data={graphData} />
 
       <div className="bg-white rounded-lg shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Status</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
               <TableHead>Total Sales</TableHead>
-              <TableHead>LY Comp %</TableHead>
-              <TableHead>Avg. Markdown %</TableHead>
+              <TableHead><MetricTooltip metric="Last Year Comp">Last Year Comp</MetricTooltip></TableHead>
+              <TableHead><MetricTooltip metric="Avg. Markdown %">Avg. Markdown %</MetricTooltip></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -311,9 +406,18 @@ export default function Promotions() {
                 className="cursor-pointer hover:bg-gray-50"
                 onClick={() => navigate(`/promotions/${promotion.id}`)}
               >
+                <TableCell>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    promotion.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
+                    promotion.status === 'Scheduled' ? 'bg-yellow-100 text-yellow-800' :
+                    promotion.status === 'Running' ? 'bg-green-100 text-green-800' :
+                    'bg-blue-100 text-blue-800'
+                  }`}>
+                    {promotion.status}
+                  </span>
+                </TableCell>
                 <TableCell className="font-medium">{promotion.name}</TableCell>
                 <TableCell>{promotion.type}</TableCell>
-                <TableCell>{promotion.status}</TableCell>
                 <TableCell>{promotion.startDate}</TableCell>
                 <TableCell>{promotion.endDate}</TableCell>
                 <TableCell>{promotion.totalSales}</TableCell>
@@ -326,11 +430,6 @@ export default function Promotions() {
           </TableBody>
         </Table>
       </div>
-
-      <CreatePromotionModal
-        open={showCreateModal}
-        onOpenChange={setShowCreateModal}
-      />
     </div>
   );
 }

@@ -10,8 +10,14 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
 
 const steps = ["Setup", "Rules", "Products", "Launch"] as const;
+
+const experimentSuggestions = [
+  "Test 10%/15%/20% lower price points for New Arrivals",
+  "Test 20% lower for slow sellers"
+];
 
 export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
@@ -29,12 +35,6 @@ export default function CreateExperiment() {
   const goToPreviousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleInputClick = () => {
-    if (!aiPrompt) {
-      setAiPrompt("Setup an A/B test for our Best Sellers collection with a 20% price increase");
     }
   };
 
@@ -73,12 +73,12 @@ export default function CreateExperiment() {
               </p>
             </div>
 
-            <Textarea
-              placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
-              className="min-h-[120px] text-lg p-4 border-2 border-gray-400 w-full"
+            <AiInputWithSuggestions
               value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              onClick={handleInputClick}
+              onChange={setAiPrompt}
+              onContinue={handleAiContinue}
+              placeholder="Describe the experiment you want to create..."
+              suggestions={experimentSuggestions}
             />
 
             <div className="flex flex-col gap-3 pt-4">

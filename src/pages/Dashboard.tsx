@@ -8,6 +8,7 @@ import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 import { CheckCircle2 } from "lucide-react";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 import { MetricTooltip } from "@/components/MetricTooltip";
+import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
 
 // Mock recommendations data
 const recommendations = [
@@ -49,6 +50,11 @@ const activities = [
   { type: "promotion", text: "Started Promotion (20% off site wide)" },
 ];
 
+const dashboardSuggestions = [
+  "What's driving the increase in AOV this month?",
+  "Show me top performing products by revenue"
+];
+
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalTests] = useState("25");
@@ -62,6 +68,8 @@ const Dashboard = () => {
   };
 
   const handleAiContinue = () => {
+    // Handle AI prompt submission
+    console.log("AI Prompt:", aiPrompt);
     navigate('/experiments/create');
   };
 
@@ -111,12 +119,12 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <Textarea
-              placeholder="E.g. Setup an A/B test for our Best Sellers collection with a 20% price increase"
-              className="h-12 text-lg p-4 border-2 border-gray-400"
+            <AiInputWithSuggestions
               value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              onClick={handleInputClick}
+              onChange={setAiPrompt}
+              onContinue={handleAiContinue}
+              placeholder="Ask about your metrics, products, or get recommendations..."
+              suggestions={dashboardSuggestions}
             />
 
             <div className="flex flex-col gap-3 pt-4">

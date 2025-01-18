@@ -1,5 +1,4 @@
 import {
-  Calendar,
   BarChart,
   Percent,
   ShoppingCart,
@@ -21,7 +20,6 @@ import {
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
   { title: "Recipes", url: "/recipes", icon: ReceiptText },
