@@ -14,8 +14,6 @@ import { CreatePromotionModal } from "@/components/CreatePromotionModal";
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-const promotionStatuses = ["Draft", "Scheduled", "Running", "Ended"] as const;
-
 // Weekly data for the last 12 weeks
 const weeklyData = Array.from({ length: 12 }, (_, i) => {
   const week = 12 - i;
@@ -39,7 +37,7 @@ const promotionsData = [
     id: 1,
     name: "Summer dresses sale",
     type: "Sitewide Markdown Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Dec 26 2024",
     endDate: "Jan 08 2025",
     totalSales: "$53,478",
@@ -50,7 +48,7 @@ const promotionsData = [
     id: 2,
     name: "Winter clearance",
     type: "Sitewide Discount Code Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Jan 15 2025",
     endDate: "Feb 01 2025",
     totalSales: "$42,890",
@@ -61,7 +59,7 @@ const promotionsData = [
     id: 3,
     name: "Valentine's special",
     type: "Collection Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Feb 07 2025",
     endDate: "Feb 14 2025",
     totalSales: "$38,654",
@@ -72,7 +70,7 @@ const promotionsData = [
     id: 4,
     name: "Spring collection launch",
     type: "Bogo Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Mar 01 2025",
     endDate: "Mar 15 2025",
     totalSales: "$67,234",
@@ -83,7 +81,7 @@ const promotionsData = [
     id: 5,
     name: "Easter weekend deals",
     type: "Free Shipping Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Mar 29 2025",
     endDate: "Apr 01 2025",
     totalSales: "$28,976",
@@ -94,7 +92,7 @@ const promotionsData = [
     id: 6,
     name: "Mother's day special",
     type: "Shipping Update",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "May 08 2025",
     endDate: "May 12 2025",
     totalSales: "$45,321",
@@ -105,7 +103,7 @@ const promotionsData = [
     id: 7,
     name: "Summer swimwear",
     type: "Influencer",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Jun 01 2025",
     endDate: "Jun 30 2025",
     totalSales: "$58,432",
@@ -116,7 +114,7 @@ const promotionsData = [
     id: 8,
     name: "Back to school",
     type: "Event",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Aug 15 2025",
     endDate: "Sep 05 2025",
     totalSales: "$72,154",
@@ -127,7 +125,7 @@ const promotionsData = [
     id: 9,
     name: "Fall fashion fest",
     type: "Loyalty Bonus",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Sep 20 2025",
     endDate: "Oct 05 2025",
     totalSales: "$49,876",
@@ -138,7 +136,7 @@ const promotionsData = [
     id: 10,
     name: "Black Friday deals",
     type: "Sitewide Markdown Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Nov 29 2025",
     endDate: "Dec 02 2025",
     totalSales: "$98,765",
@@ -149,7 +147,7 @@ const promotionsData = [
     id: 11,
     name: "Cyber Monday special",
     type: "Sitewide Discount Code Sale",
-    status: promotionStatuses[Math.floor(Math.random() * promotionStatuses.length)],
+    status: ["Draft", "Scheduled", "Running", "Ended"][Math.floor(Math.random() * 4)],
     startDate: "Dec 02 2025",
     endDate: "Dec 03 2025",
     totalSales: "$87,654",
@@ -158,27 +156,17 @@ const promotionsData = [
   }
 ];
 
-// Add promotion annotations
-const promotionAnnotations = promotionsData.map(promo => ({
-  x: weeklyData.findIndex(week => 
-    new Date(week.date) >= new Date(promo.startDate) && 
-    new Date(week.date) <= new Date(promo.endDate)
-  ),
-  text: promo.name,
-  type: promo.type
-})).filter(anno => anno.x !== -1);
-
 const PromotionTrendsGraph = () => {
   const chartOptions = {
     chart: {
-      type: 'column',
+      type: 'line',
       height: 300,
       style: {
         fontFamily: 'inherit'
       }
     },
     title: {
-      text: 'Performance Metrics (% of Total)',
+      text: 'Performance Metrics',
       style: {
         fontSize: '16px',
         fontWeight: 'bold'
@@ -190,7 +178,17 @@ const PromotionTrendsGraph = () => {
         style: { fontSize: '12px' }
       }
     },
-    yAxis: {
+    yAxis: [{
+      title: {
+        text: 'Amount ($)',
+        style: { fontSize: '12px' }
+      },
+      labels: {
+        format: '${value:,.0f}',
+        style: { fontSize: '12px' }
+      }
+    }, {
+      opposite: true,
       title: {
         text: 'Percentage',
         style: { fontSize: '12px' }
@@ -199,88 +197,65 @@ const PromotionTrendsGraph = () => {
         format: '{value}%',
         style: { fontSize: '12px' }
       }
-    },
+    }],
     tooltip: {
       shared: true,
       headerFormat: '<b>{point.x}</b><br/>',
       pointFormatter: function() {
-        if (this.series.name === 'AUR' || this.series.name === 'AOV') {
-          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.actualValue, 2)}<br/>`;
+        if (this.series.name === 'Avg. Markdown') {
+          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}%<br/>`;
         }
-
-        const formattedValue = this.series.name === 'Gross Sales' ? 
-          `$${Highcharts.numberFormat(this.actualValue, 0, '.', ',')}` :
-          this.series.name === 'Avg. Markdown' ?
-            `${Highcharts.numberFormat(this.actualValue, 1)}%` :
-            Highcharts.numberFormat(this.actualValue, 0);
-
-        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}% (${formattedValue})<br/>`;
+        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.y, this.series.name === 'Gross Sales' ? 0 : 2)}<br/>`;
       }
     },
     plotOptions: {
-      column: {
-        stacking: 'normal'
+      line: {
+        marker: {
+          enabled: true,
+          radius: 4
+        }
       }
     },
     series: [
       {
         name: 'Gross Sales',
-        data: weeklyData.map(d => ({
-          // Show Gross Sales as 100% of itself
-          y: 100,
-          actualValue: d.grossSales
-        })),
-        color: '#1E3A8A'
+        data: weeklyData.map(d => d.grossSales),
+        color: '#1E3A8A',
+        yAxis: 0,
+        zIndex: 5
       },
       {
         name: 'Ad Spend',
-        data: weeklyData.map(d => ({
-          y: (d.adSpend / d.grossSales) * 100,
-          actualValue: d.adSpend
-        })),
-        color: '#047857'
+        data: weeklyData.map(d => d.adSpend),
+        color: '#047857',
+        yAxis: 0
       },
       {
         name: 'AOV',
-        data: weeklyData.map(d => ({
-          y: (d.aov / d.grossSales) * 100,
-          actualValue: d.aov
-        })),
-        color: '#EA580C'
+        data: weeklyData.map(d => d.aov),
+        color: '#EA580C',
+        yAxis: 0
       },
       {
         name: 'AUR',
-        data: weeklyData.map(d => ({
-          y: (d.aur / d.grossSales) * 100,
-          actualValue: d.aur
-        })),
-        color: '#DB2777'
+        data: weeklyData.map(d => d.aur),
+        color: '#DB2777',
+        yAxis: 0
       },
       {
         name: 'Avg. Markdown',
-        data: weeklyData.map(d => ({
-          y: d.avgMarkdown,
-          actualValue: d.avgMarkdown
-        })),
-        color: '#2563EB'
+        data: weeklyData.map(d => d.avgMarkdown),
+        color: '#2563EB',
+        yAxis: 1
       }
     ],
-    annotations: [{
-      labelOptions: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        verticalAlign: 'top',
-        y: 15
-      },
-      labels: promotionAnnotations.map(anno => ({
-        point: { x: anno.x, y: 105 },
-        text: anno.text,
-        style: {
-          fontSize: '10px'
-        }
-      }))
-    }],
     credits: {
       enabled: false
+    },
+    legend: {
+      enabled: true,
+      align: 'center',
+      verticalAlign: 'bottom'
     }
   };
 
@@ -288,7 +263,7 @@ const PromotionTrendsGraph = () => {
     <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
       <div className="flex items-center gap-4 mb-4">
         <div className="text-sm text-gray-500">
-          All metrics shown as percentages. Hover for actual values.
+          Tracking key performance metrics over time
         </div>
       </div>
       <HighchartsReact
