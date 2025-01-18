@@ -40,6 +40,7 @@ const dailyData = [
     sessions: 1200,
     impressions: 3600,
     aov: 150,
+    adSpend: 1000,
   },
   {
     date: "2025-01-02",
@@ -51,6 +52,7 @@ const dailyData = [
     sessions: 1300,
     impressions: 3900,
     aov: 160,
+    adSpend: 1200,
   },
   {
     date: "2025-01-03",
@@ -62,6 +64,7 @@ const dailyData = [
     sessions: 1250,
     impressions: 3750,
     aov: 155,
+    adSpend: 1100,
   },
   {
     date: "2025-01-04",
@@ -73,6 +76,7 @@ const dailyData = [
     sessions: 1400,
     impressions: 4200,
     aov: 170,
+    adSpend: 1400,
   },
   {
     date: "2025-01-05",
@@ -84,6 +88,7 @@ const dailyData = [
     sessions: 1350,
     impressions: 4050,
     aov: 165,
+    adSpend: 1300,
   },
 ];
 
@@ -98,6 +103,7 @@ const previousPeriodData = [
     sessions: 1000,
     impressions: 3000,
     aov: 140,
+    adSpend: 900,
   },
   {
     date: "2025-01-02",
@@ -109,6 +115,7 @@ const previousPeriodData = [
     sessions: 1100,
     impressions: 3300,
     aov: 145,
+    adSpend: 1000,
   },
   {
     date: "2025-01-03",
@@ -120,6 +127,7 @@ const previousPeriodData = [
     sessions: 1050,
     impressions: 3150,
     aov: 142,
+    adSpend: 950,
   },
   {
     date: "2025-01-04",
@@ -131,6 +139,7 @@ const previousPeriodData = [
     sessions: 1200,
     impressions: 3600,
     aov: 155,
+    adSpend: 1150,
   },
   {
     date: "2025-01-05",
@@ -142,6 +151,7 @@ const previousPeriodData = [
     sessions: 1150,
     impressions: 3450,
     aov: 150,
+    adSpend: 1050,
   },
 ];
 
@@ -303,7 +313,7 @@ const PromotionDetails = () => {
                     }
                   },
                   title: {
-                    text: 'Daily Sales',
+                    text: 'Daily Sales & Ad Spend',
                     style: {
                       fontSize: '16px',
                       fontWeight: 'bold'
@@ -317,25 +327,48 @@ const PromotionDetails = () => {
                       }
                     }
                   },
-                  yAxis: {
+                  yAxis: [{
                     title: {
                       text: 'Sales ($)',
                       style: {
                         fontSize: '12px'
                       }
                     }
-                  },
+                  }, {
+                    title: {
+                      text: 'Ad Spend ($)',
+                      style: {
+                        fontSize: '12px'
+                      }
+                    },
+                    opposite: true
+                  }],
                   series: [
                     {
-                      name: 'Current Period',
+                      name: 'Current Period Sales',
                       data: dailyData.map(day => day.sales),
-                      color: '#1E3A8A'
+                      color: '#1E3A8A',
+                      yAxis: 0
                     },
                     {
-                      name: 'Same Period LY',
+                      name: 'Same Period LY Sales',
                       data: previousPeriodData.map(day => day.sales),
                       color: '#9CA3AF',
-                      dashStyle: 'ShortDash'
+                      dashStyle: 'ShortDash',
+                      yAxis: 0
+                    },
+                    {
+                      name: 'Current Period Ad Spend',
+                      data: dailyData.map(day => day.adSpend),
+                      color: '#047857',
+                      yAxis: 1
+                    },
+                    {
+                      name: 'Same Period LY Ad Spend',
+                      data: previousPeriodData.map(day => day.adSpend),
+                      color: '#84CC16',
+                      dashStyle: 'ShortDash',
+                      yAxis: 1
                     }
                   ],
                   tooltip: {
@@ -343,7 +376,8 @@ const PromotionDetails = () => {
                     pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>${point.y:,.2f}</b><br/>' +
                       'Units Sold: <b>{point.units}</b><br/>' +
                       'Average Unit Retail: <b>${point.aur}</b><br/>' +
-                      'Average Markdown: <b>{point.markdown}%</b>',
+                      'Average Markdown: <b>{point.markdown}%</b><br/>' +
+                      'ROAS: <b>{point.roas}x</b>',
                     shared: true,
                     useHTML: true
                   },
@@ -352,10 +386,11 @@ const PromotionDetails = () => {
                       point: {
                         events: {
                           mouseOver: function() {
-                            const data = this.series.name === 'Current Period' ? dailyData : previousPeriodData;
+                            const data = this.series.name.includes('Current Period') ? dailyData : previousPeriodData;
                             this.units = data[this.index].unitsSold;
                             this.aur = data[this.index].averageUnitRetail;
                             this.markdown = data[this.index].averageMarkdown;
+                            this.roas = (data[this.index].sales / data[this.index].adSpend).toFixed(2);
                           }
                         }
                       }
