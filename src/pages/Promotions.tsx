@@ -178,7 +178,7 @@ const PromotionTrendsGraph = () => {
       }
     },
     title: {
-      text: 'Sales Performance & Metrics',
+      text: 'Performance Metrics (% of Total)',
       style: {
         fontSize: '16px',
         fontWeight: 'bold'
@@ -190,19 +190,7 @@ const PromotionTrendsGraph = () => {
         style: { fontSize: '12px' }
       }
     },
-    yAxis: [{
-      // Primary y-axis for Gross Sales
-      title: {
-        text: 'Gross Sales ($)',
-        style: { fontSize: '12px' }
-      },
-      labels: {
-        format: '${value:,.0f}',
-        style: { fontSize: '12px' }
-      }
-    }, {
-      // Secondary y-axis for percentages
-      opposite: true,
+    yAxis: {
       title: {
         text: 'Percentage',
         style: { fontSize: '12px' }
@@ -210,44 +198,30 @@ const PromotionTrendsGraph = () => {
       labels: {
         format: '{value}%',
         style: { fontSize: '12px' }
-      },
-      max: 100
-    }],
+      }
+    },
     tooltip: {
       shared: true,
       headerFormat: '<b>{point.x}</b><br/>',
       pointFormatter: function() {
-        if (this.series.name === 'Gross Sales') {
-          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.y, 0, '.', ',')}<br/>`;
-        }
         return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}%<br/>` +
-               `Actual Value: ${Highcharts.numberFormat(this.actualValue, 2)}<br/>`;
+               `Value: ${this.series.name === 'Gross Sales' ? '$' : ''}${Highcharts.numberFormat(this.actualValue, 2)}${this.series.name === 'Avg. Markdown' ? '%' : ''}<br/>`;
       }
     },
     plotOptions: {
       column: {
-        grouping: false,
-        stacking: undefined
-      },
-      series: {
-        pointPadding: 0.2,
-        groupPadding: 0
+        stacking: 'normal'
       }
     },
     series: [
       {
         name: 'Gross Sales',
-        data: weeklyData.map(d => d.grossSales),
-        color: '#1E3A8A',
-        pointPadding: 0.3,
-        pointPlacement: 0,
-        yAxis: 0,
-        zIndex: 0,
-        states: {
-          inactive: {
-            opacity: 1
-          }
-        }
+        data: weeklyData.map(d => ({
+          // Show Gross Sales as 100% of itself
+          y: 100,
+          actualValue: d.grossSales
+        })),
+        color: '#1E3A8A'
       },
       {
         name: 'Ad Spend',
@@ -255,11 +229,7 @@ const PromotionTrendsGraph = () => {
           y: (d.adSpend / d.grossSales) * 100,
           actualValue: d.adSpend
         })),
-        color: '#047857',
-        pointPadding: 0.4,
-        pointPlacement: 0,
-        yAxis: 1,
-        zIndex: 2
+        color: '#047857'
       },
       {
         name: 'AOV',
@@ -267,11 +237,7 @@ const PromotionTrendsGraph = () => {
           y: (d.aov / d.grossSales) * 100,
           actualValue: d.aov
         })),
-        color: '#EA580C',
-        pointPadding: 0.4,
-        pointPlacement: 0,
-        yAxis: 1,
-        zIndex: 2
+        color: '#EA580C'
       },
       {
         name: 'AUR',
@@ -279,23 +245,15 @@ const PromotionTrendsGraph = () => {
           y: (d.aur / d.grossSales) * 100,
           actualValue: d.aur
         })),
-        color: '#DB2777',
-        pointPadding: 0.4,
-        pointPlacement: 0,
-        yAxis: 1,
-        zIndex: 2
+        color: '#DB2777'
       },
       {
         name: 'Avg. Markdown',
         data: weeklyData.map(d => ({
           y: d.avgMarkdown,
-          actualValue: (d.grossSales * d.avgMarkdown) / 100
+          actualValue: d.avgMarkdown
         })),
-        color: '#2563EB',
-        pointPadding: 0.4,
-        pointPlacement: 0,
-        yAxis: 1,
-        zIndex: 2
+        color: '#2563EB'
       }
     ],
     annotations: [{
@@ -321,7 +279,7 @@ const PromotionTrendsGraph = () => {
     <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
       <div className="flex items-center gap-4 mb-4">
         <div className="text-sm text-gray-500">
-          Comparing Gross Sales with Metric Percentages
+          All metrics shown as percentages. Hover for actual values.
         </div>
       </div>
       <HighchartsReact
