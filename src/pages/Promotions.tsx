@@ -204,8 +204,17 @@ const PromotionTrendsGraph = () => {
       shared: true,
       headerFormat: '<b>{point.x}</b><br/>',
       pointFormatter: function() {
-        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}%<br/>` +
-               `Value: ${this.series.name === 'Gross Sales' ? '$' : ''}${Highcharts.numberFormat(this.actualValue, 2)}${this.series.name === 'Avg. Markdown' ? '%' : ''}<br/>`;
+        if (this.series.name === 'AUR' || this.series.name === 'AOV') {
+          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.actualValue, 2)}<br/>`;
+        }
+
+        const formattedValue = this.series.name === 'Gross Sales' ? 
+          `$${Highcharts.numberFormat(this.actualValue, 0, '.', ',')}` :
+          this.series.name === 'Avg. Markdown' ?
+            `${Highcharts.numberFormat(this.actualValue, 1)}%` :
+            Highcharts.numberFormat(this.actualValue, 0);
+
+        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}% (${formattedValue})<br/>`;
       }
     },
     plotOptions: {
