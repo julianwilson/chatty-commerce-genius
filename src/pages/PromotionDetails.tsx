@@ -358,16 +358,9 @@ const PromotionDetails = () => {
                       yAxis: 0
                     },
                     {
-                      name: 'Current Period Ad Spend',
+                      name: 'Ad Spend',
                       data: dailyData.map(day => day.adSpend),
                       color: '#047857',
-                      yAxis: 1
-                    },
-                    {
-                      name: 'Same Period LY Ad Spend',
-                      data: previousPeriodData.map(day => day.adSpend),
-                      color: '#84CC16',
-                      dashStyle: 'ShortDash',
                       yAxis: 1
                     }
                   ],
