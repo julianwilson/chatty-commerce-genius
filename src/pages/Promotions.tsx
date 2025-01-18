@@ -11,8 +11,28 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { CreatePromotionModal } from "@/components/CreatePromotionModal";
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 const promotionStatuses = ["Draft", "Scheduled", "Running", "Ended"] as const;
+
+// Weekly data for the last 12 weeks
+const weeklyData = Array.from({ length: 12 }, (_, i) => {
+  const week = 12 - i;
+  const baseDate = new Date();
+  baseDate.setDate(baseDate.getDate() - (week * 7));
+  
+  return {
+    week: `Week ${week}`,
+    date: baseDate.toLocaleDateString(),
+    grossSales: 50000 + Math.random() * 30000,
+    adSpend: 5000 + Math.random() * 3000,
+    unitsSold: 1000 + Math.random() * 500,
+    aur: 45 + Math.random() * 10,
+    aov: 120 + Math.random() * 30,
+    avgMarkdown: 15 + Math.random() * 10,
+  };
+}).reverse();
 
 const promotionsData = [
   {
@@ -138,71 +158,170 @@ const promotionsData = [
   }
 ];
 
-export default function Promotions() {
-  const navigate = useNavigate();
+// Add promotion annotations
+const promotionAnnotations = promotionsData.map(promo => ({
+  x: weeklyData.findIndex(week => 
+    new Date(week.date) >= new Date(promo.startDate) && 
+    new Date(week.date) <= new Date(promo.endDate)
+  ),
+  text: promo.name,
+  type: promo.type
+})).filter(anno => anno.x !== -1);
+
+const PromotionTrendsGraph = () => {
+  const [selectedMetric, setSelectedMetric] = useState<string>('grossSales');
+  
+  const metricOptions = {
+    grossSales: { name: 'Gross Sales', format: '${value:,.0f}', color: '#1E3A8A' },
+    adSpend: { name: 'Ad Spend', format: '${value:,.0f}', color: '#047857' },
+    unitsSold: { name: 'Units Sold', format: '{value:,.0f}', color: '#7C3AED' },
+    aur: { name: 'AUR', format: '${value:.2f}', color: '#DB2777' },
+    aov: { name: 'AOV', format: '${value:.2f}', color: '#EA580C' },
+    avgMarkdown: { name: 'Avg. Markdown %', format: '{value:.1f}%', color: '#2563EB' }
+  };
+
+  const chartOptions = {
+    chart: {
+      type: 'line',
+      height: 300,
+      style: {
+        fontFamily: 'inherit'
+      }
+    },
+    title: {
+      text: metricOptions[selectedMetric].name + ' Trend',
+      style: {
+        fontSize: '16px',
+        fontWeight: 'bold'
+      }
+    },
+    xAxis: {
+      categories: weeklyData.map(d => d.week),
+      labels: {
+        style: { fontSize: '12px' }
+      }
+    },
+    yAxis: {
+      title: {
+        text: metricOptions[selectedMetric].name,
+        style: { fontSize: '12px' }
+      },
+      labels: {
+        format: metricOptions[selectedMetric].format,
+        style: { fontSize: '12px' }
+      }
+    },
+    series: [{
+      name: metricOptions[selectedMetric].name,
+      data: weeklyData.map(d => d[selectedMetric]),
+      color: metricOptions[selectedMetric].color,
+      marker: {
+        enabled: true,
+        radius: 4
+      }
+    }],
+    annotations: [{
+      labelOptions: {
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        verticalAlign: 'top',
+        y: 15
+      },
+      labels: promotionAnnotations.map(anno => ({
+        point: { x: anno.x, y: -30 },
+        text: anno.text,
+        style: {
+          fontSize: '10px'
+        }
+      }))
+    }],
+    tooltip: {
+      headerFormat: '<b>{point.x}</b><br/>',
+      pointFormat: '{series.name}: ' + metricOptions[selectedMetric].format
+    },
+    credits: {
+      enabled: false
+    }
+  };
 
   return (
-    <div className="p-8">
+    <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {Object.entries(metricOptions).map(([key, value]) => (
+          <Button
+            key={key}
+            variant={selectedMetric === key ? "default" : "outline"}
+            onClick={() => setSelectedMetric(key)}
+            size="sm"
+          >
+            {value.name}
+          </Button>
+        ))}
+      </div>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={chartOptions}
+      />
+    </div>
+  );
+};
+
+export default function Promotions() {
+  const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  return (
+    <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Promotions</h1>
-        <Button onClick={() => navigate("/promotions/create")}>
-          <Plus className="mr-2 h-4 w-4" /> New Promotion
+        <Button onClick={() => setShowCreateModal(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Create Promotion
         </Button>
       </div>
-      <div className="rounded-md border">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Status</TableHead>
-                <TableHead>Promotion Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead>Total Sales $</TableHead>
-                <TableHead>LY % Comp</TableHead>
-                <TableHead>Avg Markdown %</TableHead>
+
+      <PromotionTrendsGraph />
+
+      <div className="bg-white rounded-lg shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
+              <TableHead>Total Sales</TableHead>
+              <TableHead>LY Comp %</TableHead>
+              <TableHead>Avg. Markdown %</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {promotionsData.map((promotion) => (
+              <TableRow
+                key={promotion.id}
+                className="cursor-pointer hover:bg-gray-50"
+                onClick={() => navigate(`/promotions/${promotion.id}`)}
+              >
+                <TableCell className="font-medium">{promotion.name}</TableCell>
+                <TableCell>{promotion.type}</TableCell>
+                <TableCell>{promotion.status}</TableCell>
+                <TableCell>{promotion.startDate}</TableCell>
+                <TableCell>{promotion.endDate}</TableCell>
+                <TableCell>{promotion.totalSales}</TableCell>
+                <TableCell className={promotion.lyComp >= 0 ? "text-green-600" : "text-red-600"}>
+                  {promotion.lyComp > 0 ? "+" : ""}{promotion.lyComp}%
+                </TableCell>
+                <TableCell>{promotion.avgMarkdown}%</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {promotionsData.map((promotion) => (
-                <TableRow key={promotion.id}>
-                  <TableCell>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      promotion.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
-                      promotion.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
-                      promotion.status === 'Running' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {promotion.status}
-                    </span>
-                  </TableCell>
-                  <TableCell 
-                    className="font-medium cursor-pointer hover:text-blue-600 hover:underline"
-                    onClick={() => navigate(`/promotions/${promotion.id}`)}
-                  >
-                    {promotion.name}
-                  </TableCell>
-                  <TableCell>{promotion.type}</TableCell>
-                  <TableCell>{promotion.startDate}</TableCell>
-                  <TableCell>{promotion.endDate}</TableCell>
-                  <TableCell>{promotion.totalSales}</TableCell>
-                  <TableCell 
-                    className={`font-medium ${
-                      promotion.lyComp >= 0 
-                        ? 'text-green-600' 
-                        : 'text-red-600'
-                    }`}
-                  >
-                    {promotion.lyComp > 0 ? '+' : ''}{promotion.lyComp}%
-                  </TableCell>
-                  <TableCell>{promotion.avgMarkdown}%</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </div>
+
+      <CreatePromotionModal
+        open={showCreateModal}
+        onOpenChange={setShowCreateModal}
+      />
     </div>
   );
 }
