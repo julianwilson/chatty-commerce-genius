@@ -178,7 +178,7 @@ const PromotionTrendsGraph = () => {
       }
     },
     title: {
-      text: 'Metrics as % of Gross Sales',
+      text: 'Sales Performance & Metrics',
       style: {
         fontSize: '16px',
         fontWeight: 'bold'
@@ -190,37 +190,76 @@ const PromotionTrendsGraph = () => {
         style: { fontSize: '12px' }
       }
     },
-    yAxis: {
+    yAxis: [{
+      // Primary y-axis for Gross Sales
       title: {
-        text: 'Percentage of Gross Sales',
+        text: 'Gross Sales ($)',
+        style: { fontSize: '12px' }
+      },
+      labels: {
+        format: '${value:,.0f}',
+        style: { fontSize: '12px' }
+      }
+    }, {
+      // Secondary y-axis for percentages
+      opposite: true,
+      title: {
+        text: 'Percentage',
         style: { fontSize: '12px' }
       },
       labels: {
         format: '{value}%',
         style: { fontSize: '12px' }
-      }
-    },
+      },
+      max: 100
+    }],
     tooltip: {
       shared: true,
-      valueDecimals: 1,
-      valueSuffix: '%',
       headerFormat: '<b>{point.x}</b><br/>',
-      pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}%<br/>' +
-        'Actual Value: {point.actualValue:,.2f}<br/>'
+      pointFormatter: function() {
+        if (this.series.name === 'Gross Sales') {
+          return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: $${Highcharts.numberFormat(this.y, 0, '.', ',')}<br/>`;
+        }
+        return `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: ${Highcharts.numberFormat(this.y, 1)}%<br/>` +
+               `Actual Value: ${Highcharts.numberFormat(this.actualValue, 2)}<br/>`;
+      }
     },
     plotOptions: {
       column: {
-        stacking: 'normal'
+        grouping: false,
+        stacking: undefined
+      },
+      series: {
+        pointPadding: 0.2,
+        groupPadding: 0
       }
     },
     series: [
+      {
+        name: 'Gross Sales',
+        data: weeklyData.map(d => d.grossSales),
+        color: '#1E3A8A',
+        pointPadding: 0.3,
+        pointPlacement: 0,
+        yAxis: 0,
+        zIndex: 0,
+        states: {
+          inactive: {
+            opacity: 1
+          }
+        }
+      },
       {
         name: 'Ad Spend',
         data: weeklyData.map(d => ({
           y: (d.adSpend / d.grossSales) * 100,
           actualValue: d.adSpend
         })),
-        color: '#047857'
+        color: '#047857',
+        pointPadding: 0.4,
+        pointPlacement: 0,
+        yAxis: 1,
+        zIndex: 2
       },
       {
         name: 'AOV',
@@ -228,7 +267,11 @@ const PromotionTrendsGraph = () => {
           y: (d.aov / d.grossSales) * 100,
           actualValue: d.aov
         })),
-        color: '#EA580C'
+        color: '#EA580C',
+        pointPadding: 0.4,
+        pointPlacement: 0,
+        yAxis: 1,
+        zIndex: 2
       },
       {
         name: 'AUR',
@@ -236,7 +279,11 @@ const PromotionTrendsGraph = () => {
           y: (d.aur / d.grossSales) * 100,
           actualValue: d.aur
         })),
-        color: '#DB2777'
+        color: '#DB2777',
+        pointPadding: 0.4,
+        pointPlacement: 0,
+        yAxis: 1,
+        zIndex: 2
       },
       {
         name: 'Avg. Markdown',
@@ -244,7 +291,11 @@ const PromotionTrendsGraph = () => {
           y: d.avgMarkdown,
           actualValue: (d.grossSales * d.avgMarkdown) / 100
         })),
-        color: '#2563EB'
+        color: '#2563EB',
+        pointPadding: 0.4,
+        pointPlacement: 0,
+        yAxis: 1,
+        zIndex: 2
       }
     ],
     annotations: [{
@@ -254,7 +305,7 @@ const PromotionTrendsGraph = () => {
         y: 15
       },
       labels: promotionAnnotations.map(anno => ({
-        point: { x: anno.x, y: 105 }, // Position above the bars
+        point: { x: anno.x, y: 105 },
         text: anno.text,
         style: {
           fontSize: '10px'
@@ -270,7 +321,7 @@ const PromotionTrendsGraph = () => {
     <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
       <div className="flex items-center gap-4 mb-4">
         <div className="text-sm text-gray-500">
-          Showing metrics as percentage of Gross Sales (${weeklyData[weeklyData.length - 1].grossSales.toLocaleString()})
+          Comparing Gross Sales with Metric Percentages
         </div>
       </div>
       <HighchartsReact
