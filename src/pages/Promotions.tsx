@@ -169,27 +169,16 @@ const promotionAnnotations = promotionsData.map(promo => ({
 })).filter(anno => anno.x !== -1);
 
 const PromotionTrendsGraph = () => {
-  const [selectedMetric, setSelectedMetric] = useState<string>('grossSales');
-  
-  const metricOptions = {
-    grossSales: { name: 'Gross Sales', format: '${value:,.0f}', color: '#1E3A8A' },
-    adSpend: { name: 'Ad Spend', format: '${value:,.0f}', color: '#047857' },
-    unitsSold: { name: 'Units Sold', format: '{value:,.0f}', color: '#7C3AED' },
-    aur: { name: 'AUR', format: '${value:.2f}', color: '#DB2777' },
-    aov: { name: 'AOV', format: '${value:.2f}', color: '#EA580C' },
-    avgMarkdown: { name: 'Avg. Markdown %', format: '{value:.1f}%', color: '#2563EB' }
-  };
-
   const chartOptions = {
     chart: {
-      type: 'line',
+      type: 'column',
       height: 300,
       style: {
         fontFamily: 'inherit'
       }
     },
     title: {
-      text: metricOptions[selectedMetric].name + ' Trend',
+      text: 'Metrics as % of Gross Sales',
       style: {
         fontSize: '16px',
         fontWeight: 'bold'
@@ -203,23 +192,61 @@ const PromotionTrendsGraph = () => {
     },
     yAxis: {
       title: {
-        text: metricOptions[selectedMetric].name,
+        text: 'Percentage of Gross Sales',
         style: { fontSize: '12px' }
       },
       labels: {
-        format: metricOptions[selectedMetric].format,
+        format: '{value}%',
         style: { fontSize: '12px' }
       }
     },
-    series: [{
-      name: metricOptions[selectedMetric].name,
-      data: weeklyData.map(d => d[selectedMetric]),
-      color: metricOptions[selectedMetric].color,
-      marker: {
-        enabled: true,
-        radius: 4
+    tooltip: {
+      shared: true,
+      valueDecimals: 1,
+      valueSuffix: '%',
+      headerFormat: '<b>{point.x}</b><br/>',
+      pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}%<br/>' +
+        'Actual Value: {point.actualValue:,.2f}<br/>'
+    },
+    plotOptions: {
+      column: {
+        stacking: 'normal'
       }
-    }],
+    },
+    series: [
+      {
+        name: 'Ad Spend',
+        data: weeklyData.map(d => ({
+          y: (d.adSpend / d.grossSales) * 100,
+          actualValue: d.adSpend
+        })),
+        color: '#047857'
+      },
+      {
+        name: 'AOV',
+        data: weeklyData.map(d => ({
+          y: (d.aov / d.grossSales) * 100,
+          actualValue: d.aov
+        })),
+        color: '#EA580C'
+      },
+      {
+        name: 'AUR',
+        data: weeklyData.map(d => ({
+          y: (d.aur / d.grossSales) * 100,
+          actualValue: d.aur
+        })),
+        color: '#DB2777'
+      },
+      {
+        name: 'Avg. Markdown',
+        data: weeklyData.map(d => ({
+          y: d.avgMarkdown,
+          actualValue: (d.grossSales * d.avgMarkdown) / 100
+        })),
+        color: '#2563EB'
+      }
+    ],
     annotations: [{
       labelOptions: {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -227,17 +254,13 @@ const PromotionTrendsGraph = () => {
         y: 15
       },
       labels: promotionAnnotations.map(anno => ({
-        point: { x: anno.x, y: -30 },
+        point: { x: anno.x, y: 105 }, // Position above the bars
         text: anno.text,
         style: {
           fontSize: '10px'
         }
       }))
     }],
-    tooltip: {
-      headerFormat: '<b>{point.x}</b><br/>',
-      pointFormat: '{series.name}: ' + metricOptions[selectedMetric].format
-    },
     credits: {
       enabled: false
     }
@@ -245,17 +268,10 @@ const PromotionTrendsGraph = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
-      <div className="flex flex-wrap gap-2 mb-4">
-        {Object.entries(metricOptions).map(([key, value]) => (
-          <Button
-            key={key}
-            variant={selectedMetric === key ? "default" : "outline"}
-            onClick={() => setSelectedMetric(key)}
-            size="sm"
-          >
-            {value.name}
-          </Button>
-        ))}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="text-sm text-gray-500">
+          Showing metrics as percentage of Gross Sales (${weeklyData[weeklyData.length - 1].grossSales.toLocaleString()})
+        </div>
       </div>
       <HighchartsReact
         highcharts={Highcharts}
