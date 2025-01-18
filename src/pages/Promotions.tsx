@@ -262,6 +262,20 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
       labels: {
         style: { fontSize: '12px' }
       }
+    }, {
+      title: {
+        text: 'Percentage (%)',
+        style: {
+          fontSize: '12px'
+        }
+      },
+      opposite: true,
+      labels: {
+        style: { fontSize: '12px' },
+        formatter: function () {
+          return this.value + '%';
+        }
+      }
     }],
     series: [{
       name: 'Gross Sales',
@@ -300,6 +314,15 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
       color: '#db2777',
       tooltip: {
         valuePrefix: '$'
+      }
+    }, {
+      name: 'Avg. Markdown %',
+      type: 'line',
+      data: data.map(d => Math.round(d.avgMarkdown)),
+      yAxis: 2,
+      color: '#9333ea',
+      tooltip: {
+        valueSuffix: '%'
       }
     }],
     credits: {

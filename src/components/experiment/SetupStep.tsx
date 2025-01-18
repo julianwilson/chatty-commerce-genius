@@ -27,13 +27,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
-const experimentTypes = [
-  "Price Testing",
-  "Product Description",
-  "Image Testing",
-  "Collection Layout",
-] as const;
-
 const timezones = [
   "America/New_York",
   "America/Chicago",
@@ -53,7 +46,6 @@ const successMetrics = [
 
 const formSchema = z.object({
   name: z.string().min(1, "Experiment name is required"),
-  type: z.enum(experimentTypes),
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
@@ -70,10 +62,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface SetupStepProps {
   onNext: () => void;
-  onTypeChange?: (type: string) => void;
+  onBack: () => void;
 }
 
-export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
+export function SetupStep({ onNext, onBack }: SetupStepProps) {
   const tomorrow = addDays(new Date(), 1);
   const twoWeeksFromTomorrow = addDays(tomorrow, 14);
 
@@ -87,8 +79,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
       autoCreateExperiments: false,
     },
   });
-
-  const selectedType = form.watch("type");
 
   const onSubmit = (values: FormValues) => {
     console.log("Setup values:", values);
@@ -120,37 +110,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
 
         <FormField
           control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Experiment Type</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  onTypeChange?.(value);
-                }} 
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select experiment type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {experimentTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="successMetric"
           render={({ field }) => (
             <FormItem>
@@ -158,7 +117,6 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
-                disabled={!selectedType}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -168,9 +126,7 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
                 <SelectContent>
                   <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
                   <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                  {selectedType === "Image Testing" && (
-                    <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                  )}
+                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
                   <SelectItem value="sales">Sales</SelectItem>
                 </SelectContent>
               </Select>
@@ -343,8 +299,17 @@ export function SetupStep({ onNext, onTypeChange }: SetupStepProps) {
           )}
         />
 
-        <div className="flex justify-end w-full">
-          <Button type="submit">Next</Button>
+        <div className="flex gap-4 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+          >
+            Back
+          </Button>
+          <Button type="submit">
+            Continue
+          </Button>
         </div>
       </form>
     </Form>

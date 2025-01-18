@@ -3,7 +3,11 @@ import { SetupStep } from "@/components/experiment/SetupStep";
 import { RulesStep } from "@/components/experiment/RulesStep";
 import { ProductsStep } from "@/components/experiment/ProductsStep";
 import { LaunchStep } from "@/components/experiment/LaunchStep";
-import { Textarea } from "@/components/ui/textarea";
+import { TypeStep } from "@/components/experiment/TypeStep";
+import { ProfilesStep } from "@/components/experiment/shipping/ProfilesStep";
+import { RatesStep } from "@/components/experiment/shipping/RatesStep";
+import { RulesStep as ShippingRulesStep } from "@/components/experiment/shipping/RulesStep";
+import { LaunchStep as ShippingLaunchStep } from "@/components/experiment/shipping/LaunchStep";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
@@ -12,7 +16,8 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
 
-const steps = ["Setup", "Rules", "Products", "Launch"] as const;
+const regularSteps = ["Type", "Setup", "Rules", "Products", "Launch"] as const;
+const shippingSteps = ["Type", "Profiles", "Rates", "Rules", "Launch"] as const;
 
 const experimentSuggestions = [
   "Test 10%/15%/20% lower price points for New Arrivals",
@@ -23,8 +28,11 @@ export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(-1);
   const [aiPrompt, setAiPrompt] = useState("");
   const [experimentType, setExperimentType] = useState<string>("");
+  const [selectedZones, setSelectedZones] = useState<string[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const steps = experimentType === "Shipping Testing" ? shippingSteps : regularSteps;
 
   const goToNextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -48,6 +56,11 @@ export default function CreateExperiment() {
       return;
     }
     setCurrentStep(0);
+  };
+
+  const handleTypeSelection = (type: string) => {
+    setExperimentType(type);
+    goToNextStep();
   };
 
   if (currentStep === -1) {
@@ -114,46 +127,93 @@ export default function CreateExperiment() {
 
       <Card className="p-8">
         <div className="flex justify-between items-center mb-8">
-          {steps.map((step, index) => (
-            <div
-              key={step}
-              className={cn(
-                "flex items-center gap-2",
-                currentStep >= index ? "text-primary" : "text-muted-foreground"
-              )}
-            >
+          {currentStep === 0 ? (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary text-white">
+                1
+              </div>
+              <span className="text-primary">Type</span>
+            </div>
+          ) : (
+            steps.slice(1).map((step, index) => (
               <div
+                key={step}
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center",
-                  currentStep >= index ? "bg-primary text-white" : "bg-muted"
+                  "flex items-center gap-2",
+                  currentStep > index ? "text-primary" : "text-muted-foreground"
                 )}
               >
-                {index + 1}
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center",
+                    currentStep > index ? "bg-primary text-white" : "bg-muted"
+                  )}
+                >
+                  {index + 1}
+                </div>
+                <span>{step}</span>
               </div>
-              <span>{step}</span>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         <div className="mt-8">
           {currentStep === 0 && (
-            <SetupStep onNext={goToNextStep} onTypeChange={setExperimentType} />
+            <TypeStep onNext={handleTypeSelection} />
           )}
-          {currentStep === 1 && (
-            <RulesStep onNext={goToNextStep} onBack={goToPreviousStep} experimentType={experimentType} />
-          )}
-          {currentStep === 2 && (
-            <ProductsStep onNext={goToNextStep} onBack={goToPreviousStep} initialFilters={aiPrompt ? [
-              {
-                id: "1",
-                field: "collection",
-                operator: "contains",
-                value: "Best Sellers"
-              }
-            ] : undefined} />
-          )}
-          {currentStep === 3 && (
-            <LaunchStep onBack={goToPreviousStep} onClose={() => {}} />
+          {experimentType === "Shipping Testing" ? (
+            <>
+              {currentStep === 1 && (
+                <ProfilesStep 
+                  onNext={goToNextStep} 
+                  onBack={goToPreviousStep}
+                  onProfileSelect={setSelectedZones}
+                />
+              )}
+              {currentStep === 2 && (
+                <RatesStep
+                  onNext={goToNextStep}
+                  onBack={goToPreviousStep}
+                />
+              )}
+              {currentStep === 3 && (
+                <ShippingRulesStep
+                  onNext={goToNextStep}
+                  onBack={goToPreviousStep}
+                />
+              )}
+              {currentStep === 4 && (
+                <ShippingLaunchStep
+                  onBack={goToPreviousStep}
+                  onClose={() => navigate("/experiments")}
+                />
+              )}
+            </>
+          ) : (
+            <>
+              {currentStep === 1 && experimentType && (
+                <SetupStep 
+                  onNext={goToNextStep} 
+                  onBack={() => setCurrentStep(0)}
+                />
+              )}
+              {currentStep === 2 && experimentType && (
+                <RulesStep onNext={goToNextStep} onBack={goToPreviousStep} experimentType={experimentType} />
+              )}
+              {currentStep === 3 && experimentType && (
+                <ProductsStep onNext={goToNextStep} onBack={goToPreviousStep} initialFilters={aiPrompt ? [
+                  {
+                    id: "1",
+                    field: "collection",
+                    operator: "contains",
+                    value: "Best Sellers"
+                  }
+                ] : undefined} />
+              )}
+              {currentStep === 4 && experimentType && (
+                <LaunchStep onBack={goToPreviousStep} onClose={() => {}} />
+              )}
+            </>
           )}
         </div>
       </Card>

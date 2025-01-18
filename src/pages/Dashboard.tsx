@@ -9,6 +9,7 @@ import { CheckCircle2 } from "lucide-react";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 import { MetricTooltip } from "@/components/MetricTooltip";
 import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
+import { ShippingBreakdownChart } from "@/components/dashboard/ShippingBreakdownChart";
 
 // Mock recommendations data
 const recommendations = [
@@ -51,7 +52,7 @@ const activities = [
 ];
 
 const dashboardSuggestions = [
-  "What's driving the increase in AOV this month?",
+  "Decrease Sale products by up to 15% for the next month",
   "Show me top performing products by revenue"
 ];
 
@@ -143,6 +144,13 @@ const Dashboard = () => {
           {recommendations.map((recommendation, index) => (
             <RecommendationCard key={index} recommendation={recommendation} />
           ))}
+        </div>
+      </div>
+
+      {/* Shipping Metrics */}
+      <div className="mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ShippingBreakdownChart />
         </div>
       </div>
 
