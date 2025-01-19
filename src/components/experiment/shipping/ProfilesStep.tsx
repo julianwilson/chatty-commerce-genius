@@ -33,9 +33,9 @@ const profiles: Profile[] = [
     locations: 3,
     zones: 3,
     zoneRows: [
-      { id: "domestic", name: "DOMESTIC", region: "United States" },
-      { id: "row", name: "REST OF THE WORLD", region: "Rest of World" },
-      { id: "paris", name: "PARIS DOMESTIC", region: "France" }
+      { id: "general-domestic", name: "DOMESTIC", region: "United States" },
+      { id: "general-row", name: "REST OF THE WORLD", region: "Rest of World" },
+      { id: "general-paris", name: "PARIS DOMESTIC", region: "France" }
     ]
   },
   {
@@ -45,8 +45,8 @@ const profiles: Profile[] = [
     locations: 2,
     zones: 2,
     zoneRows: [
-      { id: "row", name: "REST OF WORLD", region: "Rest of World" },
-      { id: "us", name: "UNITED STATES", region: "United States" }
+      { id: "special-row", name: "REST OF WORLD", region: "Rest of World" },
+      { id: "special-us", name: "UNITED STATES", region: "United States" }
     ]
   }
 ];

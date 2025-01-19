@@ -1,14 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
-import { CheckCircle2 } from "lucide-react";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 import { MetricTooltip } from "@/components/MetricTooltip";
-import { AiInputWithSuggestions } from "@/components/AiInputWithSuggestions";
 import { ShippingBreakdownChart } from "@/components/dashboard/ShippingBreakdownChart";
 
 // Mock recommendations data
@@ -51,31 +46,13 @@ const activities = [
   { type: "promotion", text: "Started Promotion (20% off site wide)" },
 ];
 
-const dashboardSuggestions = [
-  "Decrease Sale products by up to 15% for the next month",
-  "Show me top performing products by revenue"
-];
-
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalTests] = useState("25");
-  const [aiPrompt, setAiPrompt] = useState("");
   const navigate = useNavigate();
 
-  const handleInputClick = () => {
-    if (!aiPrompt) {
-      setAiPrompt("Setup an A/B test for our Best Sellers collection with a 20% price increase");
-    }
-  };
-
-  const handleAiContinue = () => {
-    // Handle AI prompt submission
-    console.log("AI Prompt:", aiPrompt);
-    navigate('/experiments/create');
-  };
-
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       {/* Experiment and Promotion Metrics */}
       <div className="grid grid-cols-2 gap-4">
         <Card>
@@ -108,34 +85,6 @@ const Dashboard = () => {
 
       {/* Metrics Graph */}
       <MetricsGraph />
-
-      {/* AI Experiment Card */}
-      <Card noShadow>
-        <CardContent className="pt-6">
-          <div className="space-y-6">
-            <div className="space-y-2 text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Let's get started on generating more revenue!</h2>
-              <p className="text-muted-foreground text-lg">
-                Get help from AI and start optimizing in no time.
-              </p>
-            </div>
-
-            <AiInputWithSuggestions
-              value={aiPrompt}
-              onChange={setAiPrompt}
-              onContinue={handleAiContinue}
-              placeholder="Ask about your metrics, products, or get recommendations..."
-              suggestions={dashboardSuggestions}
-            />
-
-            <div className="flex flex-col gap-3 pt-4">
-              <Button size="lg" onClick={handleAiContinue} className="max-w-[500px] mx-auto">
-                Start with AI
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Recommendations Section */}
       <div className="mb-8">

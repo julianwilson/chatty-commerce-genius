@@ -62,11 +62,8 @@ export function TypeStep({ onNext }: TypeStepProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-2 text-center mb-8">
+        <div className="text-center mb-8">
           <h2 className="text-2xl font-semibold tracking-tight">Choose Experiment Type</h2>
-          <p className="text-muted-foreground">
-            Select the type of experiment you want to create
-          </p>
         </div>
 
         <div className="grid gap-4">
