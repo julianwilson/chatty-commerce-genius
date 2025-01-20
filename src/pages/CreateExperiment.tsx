@@ -115,9 +115,10 @@ export default function CreateExperiment() {
           ) : (
             <>
               {currentStep === 0 && experimentType && (
-                <SetupStep 
-                  onNext={goToNextStep} 
+                <SetupStep
+                  onNext={goToNextStep}
                   onBack={() => setExperimentType("")}
+                  experimentType={experimentType}
                 />
               )}
               {currentStep === 1 && experimentType && (

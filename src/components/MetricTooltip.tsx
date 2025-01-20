@@ -26,8 +26,8 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     title: "Control",
     description: "The baseline group in an experiment that does not receive the experimental treatment, used for comparison against the test group. For example if Test A did $5,000 in sales and Control did $2,500 that is +100% of Test A from Control.",
   },
-  "Revenue Per View": {
-    title: "Revenue Per View",
+  "Revenue Per Visitor": {
+    title: "Revenue Per Visitor",
     abbreviation: "RPV",
     description: "The total amount of revenue generated from each impression to a website, calculated by dividing gross sales by impressions.",
   },

@@ -27,15 +27,9 @@ import { generatePromotionName } from "@/utils/promotionUtils";
 import { useToast } from "@/components/ui/use-toast";
 
 const promotionTypes = [
-  "Sitewide Markdown Sale",
-  "Sitewide Discount Code Sale",
-  "Collection Sale",
-  "Bogo Sale",
-  "Free Shipping Sale",
-  "Shipping Update",
-  "Influencer",
-  "Event",
-  "Loyalty Bonus",
+  "Site Wide Markdown Sale",
+  "Product Sale",
+  "Free Shipping",
 ] as const;
 
 const timezones = [

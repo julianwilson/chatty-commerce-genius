@@ -33,6 +33,7 @@ import HighchartsReact from 'highcharts-react-official';
 import { parse, isWithinInterval } from 'date-fns';
 import { ProductActivityCard } from "@/components/ProductActivityCard";
 import { MetricTooltip } from "@/components/MetricTooltip";
+import { DynamicPricingHistory } from "@/components/product/DynamicPricingHistory";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -280,43 +281,9 @@ const ProductDetails = () => {
         </Select>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Units & <MetricTooltip metric="AUR">AUR</MetricTooltip></CardTitle>
-          <CardDescription>
-            {promotionStartDate && promotionEndDate 
-              ? `Performance data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of units sold and AUR'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full">
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={performanceChartOptions}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Sales Analysis</CardTitle>
-          <CardDescription>
-            {promotionStartDate && promotionEndDate 
-              ? `Sales data from ${promotionStartDate} to ${promotionEndDate}`
-              : '30-day view of sales'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] w-full">
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={salesChartOptions}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mb-6">
+        <DynamicPricingHistory productId={id || ""} />
+      </div>
 
       <Card>
         <CardHeader>

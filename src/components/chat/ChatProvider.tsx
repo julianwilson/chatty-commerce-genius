@@ -3,6 +3,14 @@ import { ChatWindow } from './ChatWindow';
 import { MentionLink } from './MentionLink';
 import { CodeSnippet } from './CodeSnippet';
 
+const TEST_SUGGESTION_RESPONSE = [
+  <>I'll analyze your last 6 months sales data and recommend some tests...</>,
+  <>Based on what I'm seeing we could try the following:<ul className="list-disc pl-6 mt-2 space-y-1">
+<li>1. Raise prices of best sellers in a multivariant test between 10-25%, while monitoring daily ad spend and conversion rate.</li>
+<li>2. Change your free shipping from all orders to orders above $50 as your AOV is $45. Increasing your AOV can greatly add to profit margins.</li>
+<li>3. Deduce prices of all Sale products by 15% for the next 14 days and see if we can increase daily unit sales.</li></ul></>
+];
+
 const sampleResponses = [
   <>
     Based on your historical data, I recommend testing a free shipping threshold of $75. This balances cart value increase with conversion rate. Would you like me to create an <MentionLink type="experiments">A/B test</MentionLink> to validate this?
@@ -76,19 +84,45 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     setMessages(prev => [...prev, newMessage]);
 
-    // Add assistant response after a short delay
+    // Add assistant response
     if (message.sender === 'user') {
       setIsTyping(true);
-      setTimeout(() => {
-        const randomResponse = sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
-        setMessages(prev => [...prev, {
-          id: Math.random().toString(36).substring(7),
-          sender: 'assistant',
-          content: randomResponse,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
-        setIsTyping(false);
-      }, 1500);
+
+      // Check for test suggestion request
+      if (typeof message.content === 'string' && message.content.toLowerCase() === 'suggest tests i can run') {
+        // First response after 1 second
+        setTimeout(() => {
+          setMessages(prev => [...prev, {
+            id: Math.random().toString(36).substring(7),
+            sender: 'assistant',
+            content: TEST_SUGGESTION_RESPONSE[0],
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }]);
+          
+          // Second response after 2 more seconds
+          setTimeout(() => {
+            setMessages(prev => [...prev, {
+              id: Math.random().toString(36).substring(7),
+              sender: 'assistant',
+              content: TEST_SUGGESTION_RESPONSE[1],
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }]);
+            setIsTyping(false);
+          }, 2000);
+        }, 1000);
+      } else {
+        // Default random response behavior
+        setTimeout(() => {
+          const randomResponse = sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
+          setMessages(prev => [...prev, {
+            id: Math.random().toString(36).substring(7),
+            sender: 'assistant',
+            content: randomResponse,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }]);
+          setIsTyping(false);
+        }, 1500);
+      }
     }
   };
 

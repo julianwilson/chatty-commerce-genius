@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SearchBar } from "@/components/SearchBar";
 import { ChatProvider, useChat } from "@/components/chat/ChatProvider";
 import Dashboard from "./pages/Dashboard";
+import DashboardEmpty from "./pages/DashboardEmpty";
 import Promotions from "./pages/Promotions";
 import PromotionsEmpty from "./pages/PromotionsEmpty";
 import CreatePromotion from "./pages/CreatePromotion";
@@ -23,6 +24,15 @@ import ExperimentDetails from "./pages/ExperimentDetails";
 import Recipes from "./pages/Recipes";
 import SalesPlan from "./pages/SalesPlan";
 import Settings from "./pages/Settings";
+import DynamicPricing from "./pages/DynamicPricing";
+
+// Analytics Pages
+import AnalyticsSummary from "./pages/analytics/Summary";
+import AnalyticsShipping from "./pages/analytics/Shipping";
+import AnalyticsVisitors from "./pages/analytics/Visitors";
+import AnalyticsDiscounts from "./pages/analytics/Discounts";
+import AnalyticsGroups from "./pages/analytics/Groups";
+import ExperimentAnalytics from "./pages/analytics/ExperimentAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +58,7 @@ function MainContent() {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/empty" element={<DashboardEmpty />} />
             <Route path="/promotions" element={<Promotions />} />
             <Route path="/promotions/empty" element={<PromotionsEmpty />} />
             <Route path="/promotions/create" element={<CreatePromotion />} />
@@ -63,6 +74,15 @@ function MainContent() {
             <Route path="/recipes" element={<Recipes />} />
             <Route path="/sales-plan" element={<SalesPlan />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/dynamic-pricing" element={<DynamicPricing />} />
+            
+            {/* Analytics Routes */}
+            <Route path="/analytics/summary" element={<AnalyticsSummary />} />
+            <Route path="/analytics/shipping" element={<AnalyticsShipping />} />
+            <Route path="/analytics/visitors" element={<AnalyticsVisitors />} />
+            <Route path="/analytics/discounts" element={<AnalyticsDiscounts />} />
+            <Route path="/analytics/groups" element={<AnalyticsGroups />} />
+            <Route path="/analytics/experiments/:id" element={<ExperimentAnalytics />} />
           </Routes>
         </div>
       </main>

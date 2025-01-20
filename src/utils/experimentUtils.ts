@@ -29,7 +29,7 @@ export const generateExperimentData = (product: Product): ExperimentMetric[] => 
   const testAImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
   const testBImpressions = Math.floor(Math.random() * (26500 - 25000 + 1)) + 25000;
 
-  // Calculate revenue per view (Gross Sales / Impressions)
+  // Calculate revenue per visitor (Gross Sales / Impressions)
   const controlRPV = controlGrossSales / controlImpressions;
   const testARPV = testAGrossSales / testAImpressions;
   const testBRPV = testBGrossSales / testBImpressions;
@@ -153,7 +153,7 @@ export const generateExperimentData = (product: Product): ExperimentMetric[] => 
       format: "number"
     },
     {
-      metric: "Revenue Per View",
+      metric: "Revenue Per Visitor",
       control: controlRPV,
       testA: testARPV,
       testB: testBRPV,

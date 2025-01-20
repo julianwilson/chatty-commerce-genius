@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { ExperimentHeader } from "@/components/experiment/ExperimentHeader";
-import { ExperimentMetrics } from "@/components/experiment/ExperimentMetrics";
 import { ExperimentSummary } from "@/components/experiment/ExperimentSummary";
 import { ExperimentTable } from "@/components/experiment/ExperimentTable";
+import { ExperimentMetricsGraphs } from "@/components/experiment/ExperimentMetricsGraphs";
 import { generateExperimentData } from "@/utils/experimentUtils";
 import { Product } from "@/types/experiment";
 
@@ -188,11 +188,12 @@ export default function ExperimentDetails() {
           setShowPublishDialog(true);
         }}
       />
+      
+      <div className="space-y-6 mb-8">
+        <ExperimentSummary />
+        <ExperimentMetricsGraphs />
+      </div>
 
-      <ExperimentMetrics />
-      
-      <ExperimentSummary />
-      
       <ExperimentTable
         mockProducts={mockProducts}
         selectedProducts={selectedProducts}

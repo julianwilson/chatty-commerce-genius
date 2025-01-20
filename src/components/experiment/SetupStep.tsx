@@ -37,11 +37,10 @@ const timezones = [
   "Pacific/Honolulu",
 ] as const;
 
-const successMetrics = [
-  "conversion-rate",
-  "revenue-per-visitor",
-  "click-through-rate",
-  "sales",
+const baseSuccessMetrics = [
+  "profit",
+  "revenue",
+  "conversion",
 ] as const;
 
 const formSchema = z.object({
@@ -49,7 +48,7 @@ const formSchema = z.object({
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
-  successMetric: z.enum(successMetrics),
+  successMetric: z.string(),
   autoCreateExperiments: z.boolean().default(false),
 }).refine((data) => {
   return data.startDateTime <= data.endDateTime;
@@ -63,11 +62,17 @@ type FormValues = z.infer<typeof formSchema>;
 interface SetupStepProps {
   onNext: () => void;
   onBack: () => void;
+  experimentType: string;
 }
 
-export function SetupStep({ onNext, onBack }: SetupStepProps) {
+export function SetupStep({ onNext, onBack, experimentType }: SetupStepProps) {
   const tomorrow = addDays(new Date(), 1);
   const twoWeeksFromTomorrow = addDays(tomorrow, 14);
+
+  const successMetrics = [...baseSuccessMetrics];
+  if (experimentType === "Image Testing") {
+    successMetrics.push("click-through-rate" as const);
+  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -75,7 +80,7 @@ export function SetupStep({ onNext, onBack }: SetupStepProps) {
       timezone: "America/New_York",
       startDateTime: tomorrow,
       endDateTime: twoWeeksFromTomorrow,
-      successMetric: "conversion-rate",
+      successMetric: "profit",
       autoCreateExperiments: false,
     },
   });
@@ -124,10 +129,12 @@ export function SetupStep({ onNext, onBack }: SetupStepProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-                  <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-                  <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-                  <SelectItem value="sales">Sales</SelectItem>
+                  <SelectItem value="profit">Profit</SelectItem>
+                  <SelectItem value="revenue">Revenue</SelectItem>
+                  <SelectItem value="conversion">Conversion</SelectItem>
+                  {experimentType === "Image Testing" && (
+                    <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
