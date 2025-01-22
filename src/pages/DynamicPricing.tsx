@@ -64,6 +64,7 @@ const initialRules: PriceRule[] = [
 ];
 
 export default function DynamicPricing() {
+  const navigate = useNavigate();
   const [rules, setRules] = useState<PriceRule[]>(initialRules);
   const [showNewRule, setShowNewRule] = useState(false);
   const [newRule, setNewRule] = useState<Partial<PriceRule>>({
@@ -109,9 +110,10 @@ export default function DynamicPricing() {
   return (
     <div className="p-8 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dynamic Pricing Rules</h1>
-        <Button onClick={() => setShowNewRule(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Add Rule
+        <h1 className="text-2xl font-semibold">Dynamic Pricing</h1>
+        <Button onClick={() => navigate('/dynamic-pricing/create')}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Rule
         </Button>
       </div>
 

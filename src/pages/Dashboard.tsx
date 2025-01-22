@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 import { MetricTooltip } from "@/components/MetricTooltip";
-import { ShippingBreakdownChart } from "@/components/dashboard/ShippingBreakdownChart";
-import { ShippingAOVChart } from "@/components/dashboard/ShippingAOVChart";
 
 // Mock recommendations data
 const recommendations = [
@@ -94,15 +92,6 @@ const Dashboard = () => {
           {recommendations.map((recommendation, index) => (
             <RecommendationCard key={index} recommendation={recommendation} />
           ))}
-        </div>
-      </div>
-
-      {/* Analytics Section */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Analytics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ShippingBreakdownChart />
-          <ShippingAOVChart />
         </div>
       </div>
 

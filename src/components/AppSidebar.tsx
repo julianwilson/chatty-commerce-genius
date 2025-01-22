@@ -13,6 +13,8 @@ import {
   UserSquare2,
   PieChart,
   DollarSign,
+  Menu,
+  MessageSquare,
 } from "lucide-react";
 import {
   Sidebar,
@@ -36,6 +38,8 @@ const items = [
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
   { title: "Analytics", url: "/analytics/summary", icon: PieChart },
   { title: "Dynamic Pricing", url: "/dynamic-pricing", icon: DollarSign },
+  { title: "Navigation", url: "/navigation", icon: Menu },
+  { title: "User Feedback", url: "/user-feedback", icon: MessageSquare },
   { title: "Recipes", url: "/recipes", icon: ReceiptText },
   { title: "Products", url: "/products", icon: ShoppingCart },
   { title: "Settings", url: "/settings", icon: Settings },

@@ -25,6 +25,9 @@ import Recipes from "./pages/Recipes";
 import SalesPlan from "./pages/SalesPlan";
 import Settings from "./pages/Settings";
 import DynamicPricing from "./pages/DynamicPricing";
+import CreateDynamicPricingRule from "./pages/CreateDynamicPricingRule";
+import Navigation from "./pages/Navigation";
+import { UserFeedback } from "./components/user-feedback/UserFeedback";
 
 // Analytics Pages
 import AnalyticsSummary from "./pages/analytics/Summary";
@@ -58,6 +61,7 @@ function MainContent() {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/navigation" element={<Navigation />} />
             <Route path="/dashboard/empty" element={<DashboardEmpty />} />
             <Route path="/promotions" element={<Promotions />} />
             <Route path="/promotions/empty" element={<PromotionsEmpty />} />
@@ -75,6 +79,8 @@ function MainContent() {
             <Route path="/sales-plan" element={<SalesPlan />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/dynamic-pricing" element={<DynamicPricing />} />
+            <Route path="/dynamic-pricing/create" element={<CreateDynamicPricingRule />} />
+            <Route path="/user-feedback" element={<UserFeedback />} />
             
             {/* Analytics Routes */}
             <Route path="/analytics/summary" element={<AnalyticsSummary />} />
