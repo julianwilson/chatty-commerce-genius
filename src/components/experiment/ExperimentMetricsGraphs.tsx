@@ -127,7 +127,7 @@ export function ExperimentMetricsGraphs() {
     series: [{
       name: metric.name,
       data: [metric.control, metric.winner],
-      color: '#2563eb'
+      color: '#1D9BF0'
     }],
     credits: {
       enabled: false

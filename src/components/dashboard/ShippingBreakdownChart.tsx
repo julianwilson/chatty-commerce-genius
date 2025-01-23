@@ -17,62 +17,60 @@ export function ShippingBreakdownChart() {
 
   const options: Highcharts.Options = {
     chart: {
-      type: 'column',
+      type: 'pie',
+      backgroundColor: 'transparent',
       height: '300px',
       style: {
-        fontFamily: 'Inter, sans-serif'
+        fontFamily: 'inherit'
       }
     },
     title: {
       text: undefined
     },
-    xAxis: {
-      type: 'category',
-      labels: {
-        style: { fontSize: '12px' }
-      }
-    },
-    yAxis: {
-      title: {
-        text: 'Number of Orders',
-        style: {
-          fontSize: '12px'
-        }
-      },
-      labels: {
-        style: { fontSize: '12px' }
-      }
-    },
-    legend: {
-      enabled: false
-    },
-    tooltip: {
-      formatter: function() {
-        const point = this.point as any;
-        return `<b>${point.name}</b><br/>
-                Orders: ${point.y.toLocaleString()}<br/>
-                Percentage: ${point.percentage}%<br/>
-                AOV: $${point.aov.toFixed(2)}`;
-      }
-    },
     plotOptions: {
-      column: {
-        borderRadius: 5,
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        colors: ['#1D9BF0', '#8ECDF8'],
         dataLabels: {
           enabled: true,
-          formatter: function() {
-            const point = this.point as any;
-            return `${point.percentage}%`;
-          },
+          format: '<b>{point.name}</b>: {point.percentage:.1f}%',
           style: {
-            fontSize: '12px'
+            color: '#71767B'
           }
         }
       }
     },
-    series: shippingData,
+    series: [{
+      name: 'Shipping',
+      colorByPoint: true,
+      data: [{
+        name: 'Paid Shipping',
+        y: 65
+      }, {
+        name: 'Free Shipping',
+        y: 35
+      }]
+    }],
+    legend: {
+      itemStyle: {
+        color: '#71767B'
+      }
+    },
     credits: {
       enabled: false
+    },
+    tooltip: {
+      backgroundColor: '#000000',
+      borderColor: '#2F3336',
+      style: {
+        color: '#FFFFFF'
+      },
+      formatter: function() {
+        const point = this.point as any;
+        return `<b>${point.name}</b><br/>
+                Percentage: ${point.percentage}%`;
+      }
     }
   };
 

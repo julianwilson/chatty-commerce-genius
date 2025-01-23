@@ -25,7 +25,7 @@ export const RecommendationCard = ({ recommendation }: { recommendation: Recomme
           <TrendingUp className="h-5 w-5 text-green-500" /> : 
           <TrendingDown className="h-5 w-5 text-red-500" />;
       case 'alert':
-        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
+        return <AlertTriangle className="h-5 w-5 text-[#1D9BF0]" />;
     }
   };
 

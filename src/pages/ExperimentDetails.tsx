@@ -73,8 +73,8 @@ export default function ExperimentDetails() {
     if (typeof value === "string") {
       if (value.includes("%")) {
         const numValue = parseFloat(value.replace("%", "").replace("+", ""));
-        if (numValue > 0) return "text-green-600";
-        if (numValue < 0) return "text-red-600";
+        if (numValue > 0) return "text-[#1D9BF0]";
+        if (numValue < 0) return "text-[#FF3737]";
       }
     }
     return "";

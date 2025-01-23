@@ -11,7 +11,7 @@ export function ShippingAOVChart() {
         { name: 'Paid Shipping', y: 128.50, orders: 2845 },
         { name: 'Free Shipping', y: 185.75, orders: 1532 }
       ],
-      color: '#10b981' // emerald-500
+      color: '#1D9BF0' // updated color
     }
   ];
 
@@ -19,8 +19,9 @@ export function ShippingAOVChart() {
     chart: {
       type: 'bar',
       height: '300px',
+      backgroundColor: 'transparent', // updated background color
       style: {
-        fontFamily: 'Inter, sans-serif'
+        fontFamily: 'inherit' // updated font family
       }
     },
     title: {
@@ -29,8 +30,12 @@ export function ShippingAOVChart() {
     xAxis: {
       type: 'category',
       labels: {
-        style: { fontSize: '12px' }
-      }
+        style: { 
+          color: '#71767B' // updated label color
+        }
+      },
+      lineColor: '#2F3336', // updated line color
+      tickColor: '#2F3336' // updated tick color
     },
     yAxis: {
       title: {
@@ -43,11 +48,17 @@ export function ShippingAOVChart() {
         formatter: function() {
           return '$' + this.value;
         },
-        style: { fontSize: '12px' }
-      }
+        style: { 
+          color: '#71767B' // updated label color
+        }
+      },
+      gridLineColor: '#2F3336' // updated grid line color
     },
     legend: {
-      enabled: false
+      enabled: false,
+      itemStyle: {
+        color: '#71767B' // updated legend item color
+      }
     },
     tooltip: {
       formatter: function() {
@@ -55,6 +66,11 @@ export function ShippingAOVChart() {
         return `<b>${point.name}</b><br/>
                 AOV: $${point.y.toFixed(2)}<br/>
                 Orders: ${point.orders.toLocaleString()}`;
+      },
+      backgroundColor: '#000000', // updated background color
+      borderColor: '#2F3336', // updated border color
+      style: {
+        color: '#FFFFFF' // updated text color
       }
     },
     plotOptions: {

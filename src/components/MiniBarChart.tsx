@@ -35,14 +35,14 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
               tick={{ fontSize: 10 }}
               axisLine={false}
             />
-            <Bar dataKey="value" fill="#4f46e5" radius={[2, 2, 0, 0]} />
+            <Bar dataKey="value" fill="#1D9BF0" radius={[2, 2, 0, 0]} />
             <Tooltip
-              wrapperStyle={{ overflow: 'visible' }}
+              wrapperStyle={{ overflow: 'visible', backgroundColor: '#000000', borderColor: '#2F3336' }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const value = payload[0].value as number;
                   return (
-                    <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="rounded-lg border bg-background p-2 shadow-sm" style={{ color: '#FFFFFF' }}>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="text-[0.70rem] text-muted-foreground">
                           Gross Sales
@@ -67,14 +67,14 @@ export const MiniBarChart = ({ data, testData, winner }: MiniBarChartProps) => {
     <div className="h-16 w-32">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-          <Bar dataKey="sales" fill="#4f46e5" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="sales" fill="#1D9BF0" radius={[2, 2, 0, 0]} />
           <Tooltip
-            wrapperStyle={{ overflow: 'visible' }}
+            wrapperStyle={{ overflow: 'visible', backgroundColor: '#000000', borderColor: '#2F3336' }}
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const value = Number(payload[0].value);
                 return (
-                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                  <div className="rounded-lg border bg-background p-2 shadow-sm" style={{ color: '#FFFFFF' }}>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="text-[0.70rem] text-muted-foreground">
                         Sales

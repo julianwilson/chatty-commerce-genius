@@ -347,13 +347,13 @@ const PromotionDetails = () => {
                     {
                       name: 'Current Period Sales',
                       data: dailyData.map(day => day.sales),
-                      color: '#1E3A8A',
+                      color: '#1D9BF0',
                       yAxis: 0
                     },
                     {
                       name: 'Same Period LY Sales',
                       data: previousPeriodData.map(day => day.sales),
-                      color: '#9CA3AF',
+                      color: '#71767B',
                       dashStyle: 'ShortDash',
                       yAxis: 0
                     },

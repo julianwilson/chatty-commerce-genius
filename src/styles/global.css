@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 200 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 200 10% 15%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 10% 15%;
+ 
+    --primary: 207 85% 54%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 207 85% 54%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 200 10% 96%;
+    --muted-foreground: 200 10% 45%;
+ 
+    --accent: 207 85% 54%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 200 10% 90%;
+    --input: 200 10% 90%;
+    --ring: 207 85% 54%;
+ 
+    --radius: 0.75rem;
+  }
+ 
+  .dark {
+    --background: 200 12% 9%;
+    --foreground: 0 0% 98%;
+ 
+    --card: 200 12% 11%;
+    --card-foreground: 0 0% 98%;
+ 
+    --popover: 200 12% 11%;
+    --popover-foreground: 0 0% 98%;
+ 
+    --primary: 207 85% 54%;
+    --primary-foreground: 0 0% 98%;
+ 
+    --secondary: 207 85% 54%;
+    --secondary-foreground: 0 0% 98%;
+ 
+    --muted: 200 12% 13%;
+    --muted-foreground: 207 5% 46%;
+ 
+    --accent: 207 85% 54%;
+    --accent-foreground: 0 0% 98%;
+ 
+    --destructive: 0 74% 55%;
+    --destructive-foreground: 0 0% 98%;
+ 
+    --border: 200 12% 16%;
+    --input: 200 12% 16%;
+    --ring: 207 85% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground dark;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom Shadcn Component Styles */
+@layer components {
+  /* Cards with subtle hover effect and shadow */
+  .card {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Gradient borders for primary cards */
+  .card-gradient {
+    @apply relative before:absolute before:inset-0 before:-z-10 before:rounded-[calc(var(--radius)+1px)] before:p-[1px] before:bg-gradient-to-r before:from-primary/20 before:via-primary/30 before:to-primary/20;
+  }
+
+  /* Custom button styles */
+  .btn-gradient {
+    @apply relative bg-gradient-to-r from-primary via-primary/90 to-primary hover:from-primary/90 hover:to-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200;
+  }
+
+  /* Glassmorphism effect for overlays */
+  .glass {
+    @apply bg-background/80 backdrop-blur-md border border-border/50;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar {
+    @apply scrollbar-thin scrollbar-thumb-primary/10 scrollbar-track-transparent hover:scrollbar-thumb-primary/20;
+  }
+
+  /* Animated gradient backgrounds */
+  .gradient-animate {
+    @apply relative overflow-hidden;
+    &:before {
+      @apply absolute inset-0 -z-10 animate-gradient-xy;
+      background: linear-gradient(115deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+      background-size: 200% 200%;
+    }
+  }
+
+  /* Data visualization colors */
+  .chart-colors {
+    --chart-primary: hsl(var(--primary));
+    --chart-secondary: hsl(var(--primary));
+    --chart-success: #1D9BF0;
+    --chart-warning: #1D9BF0;
+    --chart-error: hsl(var(--destructive));
+  }
+
+  /* Hover effects similar to X.com */
+  .hover-card {
+    @apply transition-colors duration-200 hover:bg-white/[0.03];
+  }
+}
+
+/* Custom animations */
+@keyframes gradient-xy {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-gradient-xy {
+  animation: gradient-xy 15s ease infinite;
+}
+
+/* Typography improvements */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}

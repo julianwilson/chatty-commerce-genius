@@ -54,30 +54,30 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Experiment and Promotion Metrics */}
       <div className="grid grid-cols-2 gap-4">
-        <Card>
+        <Card className="card">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="font-semibold text-black dark:text-white">
               <MetricTooltip metric="Experiment Sales">
                 Experiment Sales
               </MetricTooltip>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-secondary">$194,862</div>
-            <div className="text-sm text-muted-foreground mt-2">5 of 25 experiments completed</div>
+            <div className="text-3xl font-bold text-[#1D9BF0]">$194,862</div>
+            <div className="text-sm text-[#71767B]">5 of 25 experiments completed</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="card">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="font-semibold text-black dark:text-white">
               <MetricTooltip metric="Promotional Sales">
                 Promotional Sales
               </MetricTooltip>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-secondary">$36,625</div>
-            <div className="text-sm text-muted-foreground mt-2">1 of 2 promotions completed</div>
+            <div className="text-3xl font-bold text-[#1D9BF0]">$36,625</div>
+            <div className="text-sm text-[#71767B]">1 of 2 promotions completed</div>
           </CardContent>
         </Card>
       </div>
@@ -98,7 +98,7 @@ const Dashboard = () => {
       {/* Activity Feed */}
       <Card>
         <CardHeader>
-          <CardTitle>Activity Feed</CardTitle>
+          <CardTitle className="font-semibold text-black dark:text-white">Activity Feed</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -113,7 +113,7 @@ const Dashboard = () => {
                       ? "bg-blue-500"
                       : activity.type === "experiment"
                       ? "bg-green-500"
-                      : "bg-orange-500"
+                      : "bg-[#1D9BF0]"
                   }`}
                 />
                 <p className="text-sm">{activity.text}</p>
