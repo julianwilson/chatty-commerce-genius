@@ -107,15 +107,7 @@ const Dashboard = () => {
                 key={index}
                 className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
               >
-                <div
-                  className={`w-3 h-3 rounded-full mt-1.5 ${
-                    activity.type === "collection"
-                      ? "bg-blue-500"
-                      : activity.type === "experiment"
-                      ? "bg-green-500"
-                      : "bg-[#1D9BF0]"
-                  }`}
-                />
+                <div className="w-3 h-3 rounded-full mt-1.5 bg-[#1D9BF0]" />
                 <p className="text-sm">{activity.text}</p>
               </div>
             ))}

@@ -80,7 +80,7 @@ export default function CreateExperiment() {
           </div>
         )}
 
-        <div className="mt-8">
+        <div className={cn("mt-8", !experimentType && "pt-0 px-8 pb-8")}>
           {!experimentType && (
             <TypeStep onNext={handleTypeSelection} />
           )}

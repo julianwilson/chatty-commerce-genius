@@ -18,6 +18,7 @@ import { ExperimentTable } from "@/components/experiment/ExperimentTable";
 import { ExperimentMetricsGraphs } from "@/components/experiment/ExperimentMetricsGraphs";
 import { generateExperimentData } from "@/utils/experimentUtils";
 import { Product } from "@/types/experiment";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 export default function ExperimentDetails() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export default function ExperimentDetails() {
   const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [experimentName, setExperimentName] = useState("Price Testing - Spring Collection");
+  const [experimentType, setExperimentType] = useState("Price Testing"); // Add experiment type state
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -74,7 +76,7 @@ export default function ExperimentDetails() {
       if (value.includes("%")) {
         const numValue = parseFloat(value.replace("%", "").replace("+", ""));
         if (numValue > 0) return "text-[#1D9BF0]";
-        if (numValue < 0) return "text-[#FF3737]";
+        if (numValue < 0) return "text-black";
       }
     }
     return "";
@@ -207,6 +209,12 @@ export default function ExperimentDetails() {
         getValueColor={getValueColor}
         getGrossSales={getGrossSales}
       />
+
+      <div className="flex items-center gap-2">
+        <Badge variant="secondary">
+          {experimentType}
+        </Badge>
+      </div>
 
       <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
         <AlertDialogContent>

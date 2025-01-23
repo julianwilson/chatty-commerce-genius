@@ -148,7 +148,7 @@ export function ExperimentMetricsGraphs() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">
               {metric.name}
-              <span className={`ml-2 text-xs ${metric.improvement > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`ml-2 text-xs ${metric.improvement > 0 ? 'text-[#1D9BF0]' : 'text-black'}`}>
                 {metric.improvement > 0 ? '+' : ''}{metric.improvement}%
               </span>
             </CardTitle>
@@ -162,7 +162,7 @@ export function ExperimentMetricsGraphs() {
               <div className="mt-2 pt-2 border-t">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">Estimated Monthly Impact</span>
-                  <span className="text-sm font-medium text-green-600">
+                  <span className="text-sm font-medium text-[#1D9BF0]">
                     {metric.monthlyOrdersImpact && `+${metric.monthlyOrdersImpact} orders`}
                     {metric.monthlyRevenueImpact && `+${formatCurrency(metric.monthlyRevenueImpact)}`}
                   </span>

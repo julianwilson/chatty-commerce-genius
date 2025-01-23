@@ -124,13 +124,13 @@ export const ExperimentTable = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead className={highestProfitColumns.control ? "bg-green-100" : ""}>
+              <TableHead className={highestProfitColumns.control ? "bg-[#1D9BF0]/10" : ""}>
                 <MetricTooltip metric="Control">Control</MetricTooltip>
               </TableHead>
-              <TableHead className={highestProfitColumns.testA ? "bg-green-100" : ""}>
+              <TableHead className={highestProfitColumns.testA ? "bg-[#1D9BF0]/10" : ""}>
                 <MetricTooltip metric="Test Group">Test A</MetricTooltip>
               </TableHead>
-              <TableHead className={highestProfitColumns.testB ? "bg-green-100" : ""}>
+              <TableHead className={highestProfitColumns.testB ? "bg-[#1D9BF0]/10" : ""}>
                 <MetricTooltip metric="Test Group">Test B</MetricTooltip>
               </TableHead>
             </TableRow>
@@ -142,17 +142,17 @@ export const ExperimentTable = ({
                   <MetricTooltip metric={row.metric}>{row.metric}</MetricTooltip>
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-green-100" : ""}`}
+                  className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-[#1D9BF0]/10" : ""}`}
                 >
                   <MoneyDisplay value={Number(row.control)} />
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-green-100" : ""}`}
+                  className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-[#1D9BF0]/10" : ""}`}
                 >
                   <MoneyDisplay value={Number(row.testA)} />
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-green-100" : ""}`}
+                  className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-[#1D9BF0]/10" : ""}`}
                 >
                   <MoneyDisplay value={Number(row.testB)} />
                 </TableCell>

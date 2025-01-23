@@ -20,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 type DateRange = "Last 12 Weeks" | "Last 30 Days" | "Last 90 Days" | "Last 6 Months" | "Last 12 Months";
 type GroupBy = "Day" | "Week" | "Month";
@@ -430,22 +432,24 @@ export default function Promotions() {
                 onClick={() => navigate(`/promotions/${promotion.id}`)}
               >
                 <TableCell>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    promotion.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
-                    promotion.status === 'Scheduled' ? 'bg-yellow-100 text-yellow-800' :
-                    promotion.status === 'Running' ? 'bg-green-100 text-green-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <Badge variant={promotion.status === 'Running' ? 'default' : 'secondary'}>
                     {promotion.status}
-                  </span>
+                  </Badge>
                 </TableCell>
                 <TableCell className="font-medium">{promotion.name}</TableCell>
                 <TableCell>{promotion.type}</TableCell>
                 <TableCell>{promotion.startDate}</TableCell>
                 <TableCell>{promotion.endDate}</TableCell>
                 <TableCell>{promotion.totalSales}</TableCell>
-                <TableCell className={promotion.lyComp >= 0 ? "text-green-600" : "text-red-600"}>
-                  {promotion.lyComp > 0 ? "+" : ""}{promotion.lyComp}%
+                <TableCell>
+                  <span className={cn(
+                    promotion.lyComp >= 0 
+                      ? 'text-[#1D9BF0]'
+                      : 'text-black'
+                  )}>
+                    {promotion.lyComp > 0 && '+'}
+                    {promotion.lyComp}%
+                  </span>
                 </TableCell>
                 <TableCell>{promotion.avgMarkdown}%</TableCell>
               </TableRow>

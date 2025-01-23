@@ -38,8 +38,8 @@ export const MetricCard = ({
           <span className="text-3xl font-bold">
             {formatValue(currentValue)}
           </span>
-          <span className={`text-sm ${percentage >= 0 ? "text-green-600" : "text-red-600"}`}>
-            {percentage >= 0 ? "+" : ""}{percentage}%
+          <span className={`text-sm ${percentage >= 0 ? "text-[#1D9BF0]" : "text-black"}`}>
+            {percentage > 0 ? "+" : ""}{percentage}%
           </span>
         </div>
         <div className="text-sm text-muted-foreground mt-1">

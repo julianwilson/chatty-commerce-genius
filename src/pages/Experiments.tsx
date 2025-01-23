@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MetricTooltip } from "@/components/MetricTooltip";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 const experimentStatuses = ["Draft", "Running", "Paused", "Completed"] as const;
 const experimentTypes = ["Price Testing", "Image Testing"] as const;
@@ -170,14 +171,11 @@ export default function Experiments() {
                 >
                   {visibleColumns.includes('status') && (
                     <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        experiment.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
-                        experiment.status === 'Running' ? 'bg-green-100 text-green-800' :
-                        experiment.status === 'Paused' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
+                      <Badge variant={
+                        experiment.status === 'Running' ? 'default' : 'secondary'
+                      }>
                         {experiment.status}
-                      </span>
+                      </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes('name') && (
@@ -187,11 +185,9 @@ export default function Experiments() {
                   )}
                   {visibleColumns.includes('type') && (
                     <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        experiment.type === 'Price Testing' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800'
-                      }`}>
+                      <Badge variant="secondary">
                         {experiment.type}
-                      </span>
+                      </Badge>
                     </TableCell>
                   )}
                   {visibleColumns.includes('startDate') && (
@@ -209,15 +205,15 @@ export default function Experiments() {
                     </TableCell>
                   )}
                   {visibleColumns.includes('incrementalChange') && (
-                    <TableCell 
-                      className={`font-medium ${
-                        Number(experiment.incrementalChange) >= 0 
-                          ? 'text-green-600' 
-                          : 'text-red-600'
-                      }`}
-                    >
-                      {Number(experiment.incrementalChange) > 0 ? '+' : ''}
-                      {experiment.incrementalChange}%
+                    <TableCell>
+                      <span className={
+                        experiment.incrementalChange >= 0 
+                          ? 'text-[#1D9BF0]'
+                          : 'text-black'
+                      }>
+                        {experiment.incrementalChange > 0 && '+'}
+                        {experiment.incrementalChange}%
+                      </span>
                     </TableCell>
                   )}
                 </TableRow>

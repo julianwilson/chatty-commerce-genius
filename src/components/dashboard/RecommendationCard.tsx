@@ -19,11 +19,11 @@ export const RecommendationCard = ({ recommendation }: { recommendation: Recomme
   const getIcon = () => {
     switch (recommendation.type) {
       case 'seasonality':
-        return <Calendar className="h-5 w-5 text-blue-500" />;
+        return <Calendar className="h-5 w-5 text-[#1D9BF0]" />;
       case 'sales':
         return recommendation.description.includes('increase') ? 
-          <TrendingUp className="h-5 w-5 text-green-500" /> : 
-          <TrendingDown className="h-5 w-5 text-red-500" />;
+          <TrendingUp className="h-5 w-5 text-[#1D9BF0]" /> : 
+          <TrendingDown className="h-5 w-5 text-black" />;
       case 'alert':
         return <AlertTriangle className="h-5 w-5 text-[#1D9BF0]" />;
     }
