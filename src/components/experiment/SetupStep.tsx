@@ -44,7 +44,6 @@ const baseSuccessMetrics = [
 ] as const;
 
 const formSchema = z.object({
-  name: z.string().min(1, "Experiment name is required"),
   startDateTime: z.date(),
   endDateTime: z.date(),
   timezone: z.enum(timezones),
@@ -99,20 +98,6 @@ export function SetupStep({ onNext, onBack, experimentType }: SetupStepProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Experiment Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter experiment name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="successMetric"

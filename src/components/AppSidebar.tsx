@@ -34,7 +34,6 @@ import { useLocation } from "react-router-dom";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart },
-  { title: "Promotions", url: "/promotions", icon: Percent },
   { title: "Experiments", url: "/experiments", icon: FlaskConical },
   { title: "Analytics", url: "/analytics/summary", icon: PieChart },
   { title: "Dynamic Pricing", url: "/dynamic-pricing", icon: DollarSign },

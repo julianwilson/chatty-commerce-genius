@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,19 +20,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { PlusCircle, X } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { addDays, differenceInDays, format } from "date-fns";
-import { MetricTooltip } from "../MetricTooltip";
 import { UTMControls, utmRulesSchema } from "./UTMControls";
 
 const priceRoundingOptions = [
@@ -77,23 +68,13 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
   const [testGroups, setTestGroups] = useState<string[]>(["A", "B"]);
   const formSchema = createFormSchema(testGroups);
   const { toast } = useToast();
-  
-  const tomorrow = addDays(new Date(), 1);
-  const twoWeeksFromTomorrow = addDays(tomorrow, 14);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       controlTrafficAllocation: 33.33,
       utmControls: false,
-      utmRules: [{
-        action: "Enable",
-        source: "",
-        medium: "",
-        campaign: "",
-        term: "",
-        content: "",
-      }],
+      utmRules: [],
       testAPriceAdjustmentType: "Increase By",
       testAPriceAdjustmentPercentage: 20,
       testAPriceRounding: "No Rounding",
@@ -104,44 +85,23 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
       testBPriceRounding: "No Rounding",
       testBPriceRoundingValue: 0.99,
       testBTrafficAllocation: 33.34,
-    },
+    } as FormValues,
   });
 
   const removeTestGroup = (letterToRemove: string) => {
     const remainingGroups = testGroups.filter(letter => letter !== letterToRemove);
     setTestGroups(remainingGroups);
 
-    // Redistribute traffic allocation
     const removedAllocation = form.getValues(`test${letterToRemove}TrafficAllocation` as any);
-    const redistributedShare = removedAllocation / (remainingGroups.length + 1); // +1 for control
+    const redistributedShare = removedAllocation / (remainingGroups.length + 1);
 
-    // Update control allocation
     const newControlAllocation = form.getValues('controlTrafficAllocation') + redistributedShare;
     form.setValue('controlTrafficAllocation', newControlAllocation);
 
-    // Update remaining test groups allocation
     remainingGroups.forEach(letter => {
       const currentValue = form.getValues(`test${letter}TrafficAllocation` as any);
       form.setValue(`test${letter}TrafficAllocation` as any, currentValue + redistributedShare);
     });
-  };
-
-  const onSubmit = (values: FormValues) => {
-    const totalAllocation = [values.controlTrafficAllocation]
-      .concat(testGroups.map(letter => values[`test${letter}TrafficAllocation` as keyof FormValues] as number))
-      .reduce((sum, value) => sum + value, 0);
-
-    if (Math.abs(totalAllocation - 100) > 0.01) {
-      toast({
-        title: "Invalid Traffic Allocation",
-        description: "Traffic allocation must sum to 100%",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Rules values:", values);
-    onNext();
   };
 
   const addTestGroup = () => {
@@ -168,10 +128,22 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
     form.setValue(`test${nextLetter}TrafficAllocation` as any, remainingShare * 2);
   };
 
-  const calculateDurationInDays = () => {
-    const startDate = new Date(form.watch('startDateTime'));
-    const endDate = new Date(form.watch('endDateTime'));
-    return differenceInDays(endDate, startDate);
+  const onSubmit = (values: FormValues) => {
+    const totalAllocation = [values.controlTrafficAllocation]
+      .concat(testGroups.map(letter => values[`test${letter}TrafficAllocation` as keyof FormValues] as number))
+      .reduce((sum, value) => sum + value, 0);
+
+    if (Math.abs(totalAllocation - 100) > 0.01) {
+      toast({
+        title: "Invalid Traffic Allocation",
+        description: "Traffic allocation must sum to 100%",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Rules values:", values);
+    onNext();
   };
 
   return (
@@ -187,7 +159,7 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             className="gap-2"
           >
             <PlusCircle className="h-4 w-4" />
-            <MetricTooltip metric="New Test Group">New Test Group</MetricTooltip>
+            New Test Group
           </Button>
         </div>
 
@@ -196,170 +168,190 @@ export function PriceTestingRules({ onNext, onBack }: RulesStepProps) {
             <div key={letter} className="space-y-4 p-4 border rounded-lg relative">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium">Test {letter} Price Adjustment</h3>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeTestGroup(letter)}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                {testGroups.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeTestGroup(letter)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              
-              <FormField
-                control={form.control}
-                name={`test${letter}PriceAdjustmentType` as any}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Adjustment Type</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select adjustment type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {priceAdjustmentTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`test${letter}PriceAdjustmentPercentage` as any}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Adjustment Percentage</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`test${letter}PriceRounding` as any}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price Rounding</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select price rounding" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {priceRoundingOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {form.watch(`test${letter}PriceRounding` as any) !== "No Rounding" && (
+
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name={`test${letter}PriceRoundingValue` as any}
+                  name={`test${letter}PriceAdjustmentType` as any}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Rounding Value</FormLabel>
+                      <FormLabel>Adjustment Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select adjustment type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {priceAdjustmentTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`test${letter}PriceAdjustmentPercentage`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Adjustment Percentage</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          step="0.01"
+                          placeholder="Enter percentage"
                           {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
+
+                <FormField
+                  control={form.control}
+                  name={`test${letter}PriceRounding`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price Rounding</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select rounding type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {priceRoundingOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch(`test${letter}PriceRounding`) !== "No Rounding" && (
+                  <FormField
+                    control={form.control}
+                    name={`test${letter}PriceRoundingValue`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Rounding Value</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="e.g. 0.99"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <FormField
+                  control={form.control}
+                  name={`test${letter}TrafficAllocation`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Traffic Allocation (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="Enter percentage"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           ))}
         </div>
 
         <div className="space-y-4">
-          <FormLabel>Traffic Allocation</FormLabel>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Control</TableHead>
-                {testGroups.map((letter) => (
-                  <TableHead key={letter}>Test {letter}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <FormField
-                    control={form.control}
-                    name="controlTrafficAllocation"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
-                            className="w-24"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
+          <FormField
+            control={form.control}
+            name="controlTrafficAllocation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Control Group Traffic Allocation (%)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="Enter percentage"
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
-                </TableCell>
-                {testGroups.map((letter) => (
-                  <TableCell key={letter}>
-                    <FormField
-                      control={form.control}
-                      name={`test${letter}TrafficAllocation` as any}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
-                              className="w-24"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableBody>
-          </Table>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <UTMControls form={form} />
+        <div className="space-y-4">
+          <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <div className="text-base font-medium">UTM Controls</div>
+              <div className="text-sm text-muted-foreground">
+                Control experiment activation based on UTM parameters
+              </div>
+            </div>
+            <FormField
+              control={form.control}
+              name="utmControls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {form.watch("utmControls") && (
+            <UTMControls
+              rules={form.watch("utmRules") || []}
+              onChange={(rules) => form.setValue("utmRules", rules)}
+            />
+          )}
+        </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onBack}>
+          <Button type="button" variant="outline" onClick={onBack}>
             Back
           </Button>
           <Button type="submit">Next</Button>

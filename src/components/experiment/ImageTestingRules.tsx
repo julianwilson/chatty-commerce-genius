@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UTMControls, utmRulesSchema } from "./UTMControls";
+import { Form } from "@/components/ui/form"; // Import the Form component
 
 const productImages = [
   "https://www.scentiment.com/cdn/shop/files/Scentiment_Kit_Standard_Diffuser-2_Hotel_Top_3_black.png?v=1728055369",
@@ -79,14 +80,13 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
     },
   });
 
-  const [successMetric, setSuccessMetric] = useState("conversion-rate");
-
-  const hasAltTagValue = form.watch("bulkAltTag").trim() !== "";
+  const hasAltTagValue = form.watch("bulkAltTag")?.trim() !== "";
 
   const getTestGroups = () => {
     const groups = ["Control"];
-    const start = form.watch("imageRange")[0] - 1;
-    const end = form.watch("imageRange")[1] - 1;
+    const range = form.watch("imageRange") || [1, 4];
+    const start = range[0] - 1;
+    const end = range[1] - 1;
 
     for (let i = start; i <= end; i++) {
       groups.push(`Test ${String.fromCharCode(65 + (i - start))}`);
@@ -99,141 +99,143 @@ export function ImageTestingRules({ onNext, onBack }: ImageTestingRulesProps) {
     if (isControl) {
       return productImages[0];
     }
-    const start = form.watch("imageRange")[0] - 1;
+    const range = form.watch("imageRange") || [1, 4];
+    const start = range[0] - 1;
     return productImages[index + start - 1];
   };
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <Label htmlFor="preview-product">Preview Product</Label>
-        <Select
-          defaultValue={form.watch("selectedProduct")}
-          onValueChange={(value) => form.setValue("selectedProduct", value)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a product to preview" />
-          </SelectTrigger>
-          <SelectContent>
-            {products.map((product) => (
-              <SelectItem key={product.id} value={product.id.toString()}>
-                {product.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(() => onNext())} className="space-y-8">
+          <div className="space-y-2">
+            <Label htmlFor="preview-product">Preview Product</Label>
+            <Select
+              value={form.watch("selectedProduct") || "1"}
+              onValueChange={(value) => form.setValue("selectedProduct", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a product to preview" />
+              </SelectTrigger>
+              <SelectContent>
+                {products.map((product) => (
+                  <SelectItem key={product.id} value={product.id.toString()}>
+                    {product.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="success-metric">Success Metric</Label>
-        <Select
-          defaultValue={successMetric}
-          onValueChange={(value) => setSuccessMetric(value)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a success metric" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="conversion-rate">Conversion Rate</SelectItem>
-            <SelectItem value="revenue-per-visitor">Revenue Per Visitor</SelectItem>
-            <SelectItem value="click-through-rate">Click-Through Rate</SelectItem>
-            <SelectItem value="gross-margin">Gross Margin</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+          <div className="relative">
+            <Carousel className={`w-full max-w-xl ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}>
+              <CarouselContent>
+                {productImages.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="relative h-[300px]">
+                      <img
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="w-full h-full object-contain rounded-lg"
+                        style={{ display: hasAltTagValue ? 'none' : 'block' }}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
 
-      <div className="relative">
-        <Carousel className={`w-full max-w-xl ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}>
-          <CarouselContent>
-            {productImages.map((image, index) => (
-              <CarouselItem key={index}>
-                <div className="relative h-[300px]">
-                  <img
-                    src={image}
-                    alt={`Product ${index + 1}`}
-                    className="w-full h-full object-contain rounded-lg"
-                    style={{ display: hasAltTagValue ? 'none' : 'block' }}
+            <div className="mt-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {getTestGroups().map((group, index) => (
+                      <TableHead key={index} className="text-center">{group}</TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    {getTestGroups().map((group, index) => (
+                      <TableCell key={index} className="text-center">
+                        <img
+                          src={getImageForGroup(index, group === "Control")}
+                          alt={`Product ${index + 1}`}
+                          className="w-24 h-24 mx-auto object-contain"
+                          style={{ display: hasAltTagValue ? 'none' : 'block' }}
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="mt-8 space-y-6">
+              <div className="space-y-4">
+                <Label>Image Range</Label>
+                <Slider
+                  value={form.watch("imageRange") || [1, 4]}
+                  onValueChange={(value) => form.setValue("imageRange", value)}
+                  max={4}
+                  min={1}
+                  step={1}
+                  className={`w-full ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Image {form.watch("imageRange")?.[0] || 1}</span>
+                  <span>Image {form.watch("imageRange")?.[1] || 4}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="hide-images">Hide other image(s) in test?</Label>
+                <Switch
+                  id="hide-images"
+                  checked={form.watch("hideOtherImages") || false}
+                  onCheckedChange={(value) => form.setValue("hideOtherImages", value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bulk-alt">Test Via Alt Tag</Label>
+                <Input
+                  id="bulk-alt"
+                  value={form.watch("bulkAltTag") || ""}
+                  onChange={(e) => form.setValue("bulkAltTag", e.target.value)}
+                  placeholder="Enter alt tag for testing"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="utm-controls">Enable UTM Controls?</Label>
+                  <Switch
+                    id="utm-controls"
+                    checked={form.watch("utmControls") || false}
+                    onCheckedChange={(value) => form.setValue("utmControls", value)}
                   />
                 </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-
-        <div className="mt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {getTestGroups().map((group, index) => (
-                  <TableHead key={index} className="text-center">{group}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                {getTestGroups().map((group, index) => (
-                  <TableCell key={index} className="text-center">
-                    <img
-                      src={getImageForGroup(index, group === "Control")}
-                      alt={`Product ${index + 1}`}
-                      className="w-24 h-24 mx-auto object-contain"
-                      style={{ display: hasAltTagValue ? 'none' : 'block' }}
-                    />
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-8 space-y-6">
-          <div className="space-y-4">
-            <Label>Image Range</Label>
-            <Slider
-              value={form.watch("imageRange")}
-              onValueChange={(value) => form.setValue("imageRange", value)}
-              max={4}
-              min={1}
-              step={1}
-              className={`w-full ${hasAltTagValue ? 'opacity-50 pointer-events-none' : ''}`}
-            />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Image {form.watch("imageRange")[0]}</span>
-              <span>Image {form.watch("imageRange")[1]}</span>
+                {form.watch("utmControls") && (
+                  <UTMControls
+                    rules={form.watch("utmRules") || []}
+                    onChange={(rules) => form.setValue("utmRules", rules)}
+                  />
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="hide-images">Hide other image(s) in test?</Label>
-            <Switch
-              id="hide-images"
-              checked={form.watch("hideOtherImages")}
-              onCheckedChange={(value) => form.setValue("hideOtherImages", value)}
-            />
+          <div className="flex justify-between">
+            <Button type="button" variant="outline" onClick={onBack}>
+              Back
+            </Button>
+            <Button type="submit">Continue</Button>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="bulk-alt">Test Via Alt Tag</Label>
-            <Input
-              id="bulk-alt"
-              value={form.watch("bulkAltTag")}
-              onChange={(e) => form.setValue("bulkAltTag", e.target.value)}
-              placeholder="Enter alt tag for testing"
-            />
-          </div>
-        </div>
-      </div>
-
-      <UTMControls form={form} />
-
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack}>
-          Back
-        </Button>
-        <Button onClick={onNext}>Next</Button>
-      </div>
+        </form>
+      </Form>
     </div>
   );
 }

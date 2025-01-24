@@ -2,19 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
+import { TypeStep } from "@/components/promotion/TypeStep";
 import { SetupStep } from "@/components/promotion/SetupStep";
 import { ProductsStep } from "@/components/promotion/ProductsStep";
 import { LaunchStep } from "@/components/promotion/LaunchStep";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const steps = ["Setup", "Products", "Launch"] as const;
+const steps = ["Type", "Setup", "Products", "Launch"] as const;
 
 export default function CreatePromotion() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [typeData, setTypeData] = useState({ type: "sitewide" });
   const [setupData, setSetupData] = useState({
     name: "",
-    type: "",
     startDate: new Date(),
     endDate: new Date(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -35,6 +36,11 @@ export default function CreatePromotion() {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleTypeSubmit = (data: { type: string }) => {
+    setTypeData(data);
+    goToNextStep();
   };
 
   return (
@@ -74,14 +80,15 @@ export default function CreatePromotion() {
         </div>
 
         <div className="mt-8">
-          {currentStep === 0 && <SetupStep onNext={goToNextStep} />}
-          {currentStep === 1 && (
+          {currentStep === 0 && <TypeStep onNext={handleTypeSubmit} />}
+          {currentStep === 1 && <SetupStep onNext={goToNextStep} selectedType={typeData.type} />}
+          {currentStep === 2 && (
             <ProductsStep 
               onNext={goToNextStep} 
               onBack={goToPreviousStep}
             />
           )}
-          {currentStep === 2 && (
+          {currentStep === 3 && (
             <LaunchStep 
               onBack={goToPreviousStep}
               setupData={setupData}

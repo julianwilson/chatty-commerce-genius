@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // Add Badge import
 import { cn } from "@/lib/utils";
 import { ArrowRight, Percent, Type, Layout, Image, Truck } from "lucide-react";
 
@@ -88,9 +87,6 @@ export function TypeStep({ onNext }: TypeStepProps) {
                 {form.watch("type") === type.id && (
                   <ArrowRight className="w-5 h-5 text-primary" />
                 )}
-                <Badge variant="secondary" className="ml-2">
-                  {type.label}
-                </Badge>
               </div>
             </Card>
           );

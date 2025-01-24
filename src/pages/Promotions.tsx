@@ -283,7 +283,15 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
       name: 'Gross Sales',
       type: 'line',
       data: data.map(d => Math.round(d.grossSales)),
-      color: '#2563eb',
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
       tooltip: {
         valuePrefix: '$'
       }
@@ -291,7 +299,15 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
       name: 'Ad Spend',
       type: 'line',
       data: data.map(d => Math.round(d.adSpend)),
-      color: '#dc2626',
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
       tooltip: {
         valuePrefix: '$'
       }
@@ -299,34 +315,82 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
       name: 'Units Sold',
       type: 'line',
       data: data.map(d => Math.round(d.unitsSold)),
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
       yAxis: 1,
-      color: '#16a34a'
-    }, {
-      name: 'AOV',
-      type: 'line',
-      data: data.map(d => Math.round(d.aov)),
-      color: '#ea580c',
       tooltip: {
-        valuePrefix: '$'
+        valuePrefix: ''
       }
     }, {
       name: 'AUR',
       type: 'line',
-      data: data.map(d => Math.round(d.aur)),
-      color: '#db2777',
+      data: data.map(d => d.aur),
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
       tooltip: {
         valuePrefix: '$'
       }
     }, {
-      name: 'Avg. Markdown %',
+      name: 'AOV',
       type: 'line',
-      data: data.map(d => Math.round(d.avgMarkdown)),
+      data: data.map(d => d.aov),
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
+      tooltip: {
+        valuePrefix: '$'
+      }
+    }, {
+      name: 'Avg Markdown',
+      type: 'line',
+      data: data.map(d => d.avgMarkdown),
+      color: '#1D9BF0',
+      states: {
+        hover: {
+          lineWidth: 3
+        },
+        inactive: {
+          opacity: 0.2
+        }
+      },
       yAxis: 2,
-      color: '#9333ea',
       tooltip: {
         valueSuffix: '%'
       }
     }],
+    plotOptions: {
+      series: {
+        states: {
+          hover: {
+            enabled: true,
+            lineWidth: 3
+          },
+          inactive: {
+            opacity: 0.2
+          }
+        }
+      }
+    },
     credits: {
       enabled: false
     },

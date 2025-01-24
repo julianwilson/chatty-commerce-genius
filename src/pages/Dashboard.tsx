@@ -9,29 +9,29 @@ import { MetricTooltip } from "@/components/MetricTooltip";
 const recommendations = [
   {
     type: 'seasonality' as const,
-    title: 'Summer Collection Opportunity',
-    description: 'Historical data shows increased demand for summer dresses starting next month. Consider launching a summer collection promotion.',
+    title: 'Summer Price Optimization',
+    description: 'Historical data shows increased demand for summer dresses starting next month. Consider running price tests to optimize margins.',
     action: {
-      label: 'Create Promotion',
-      path: '/promotions/create'
+      label: 'Create Experiment',
+      path: '/experiments/create'
     }
   },
   {
     type: 'sales' as const,
-    title: 'Dresses Performance',
-    description: 'Dress sales have increased by 25% in the last week. Consider expanding inventory.',
+    title: 'Dresses Price Sensitivity',
+    description: 'Dress sales have increased by 25% in the last week. Run an A/B test to find optimal price points.',
     action: {
-      label: 'View Collection',
-      path: '/collections/dresses'
+      label: 'Create Experiment',
+      path: '/experiments/create'
     }
   },
   {
     type: 'alert' as const,
-    title: 'Seasonal Inventory Alert',
-    description: 'Winter collection items are showing high stock levels. Consider a clearance promotion.',
+    title: 'Winter Collection Pricing',
+    description: 'Winter items showing low price elasticity. Consider A/B testing higher price points to maximize revenue.',
     action: {
-      label: 'View Products',
-      path: '/products'
+      label: 'Create Experiment',
+      path: '/experiments/create'
     }
   }
 ];
@@ -42,7 +42,6 @@ const activities = [
   { type: "experiment", text: "Ended Experiment (Dresses +- 5%)" },
   { type: "experiment", text: "Started Experiment (George Foreman Grill +- 10%)" },
   { type: "experiment", text: "Started Experiment (Lower Ground Shipping to $5)" },
-  { type: "promotion", text: "Started Promotion (20% off site wide)" },
 ];
 
 const Dashboard = () => {
@@ -52,8 +51,8 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Experiment and Promotion Metrics */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Experiment Metrics */}
+      <div className="grid grid-cols-1 gap-4">
         <Card className="card">
           <CardHeader>
             <CardTitle className="font-semibold text-black dark:text-white">
@@ -65,19 +64,6 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-bold text-[#1D9BF0]">$194,862</div>
             <div className="text-sm text-[#71767B]">5 of 25 experiments completed</div>
-          </CardContent>
-        </Card>
-        <Card className="card">
-          <CardHeader>
-            <CardTitle className="font-semibold text-black dark:text-white">
-              <MetricTooltip metric="Promotional Sales">
-                Promotional Sales
-              </MetricTooltip>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-[#1D9BF0]">$36,625</div>
-            <div className="text-sm text-[#71767B]">1 of 2 promotions completed</div>
           </CardContent>
         </Card>
       </div>

@@ -73,7 +73,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const addMessage = (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
     const newMessage = {

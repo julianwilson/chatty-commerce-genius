@@ -21,6 +21,13 @@ export default function CreateExperiment() {
   const [currentStep, setCurrentStep] = useState(0);
   const [experimentType, setExperimentType] = useState<string>("");
   const [selectedZones, setSelectedZones] = useState<string[]>([]);
+  const [experimentDetails, setExperimentDetails] = useState<{
+    successMetric?: string;
+    startDateTime?: Date;
+    endDateTime?: Date;
+    timezone?: string;
+    selectedProducts?: number;
+  }>({});
   const navigate = useNavigate();
 
   const steps = experimentType === "Shipping Testing" ? shippingSteps : regularSteps;
@@ -116,7 +123,13 @@ export default function CreateExperiment() {
             <>
               {currentStep === 0 && experimentType && (
                 <SetupStep
-                  onNext={goToNextStep}
+                  onNext={(details) => {
+                    setExperimentDetails(prev => ({
+                      ...prev,
+                      ...details
+                    }));
+                    goToNextStep();
+                  }}
                   onBack={() => setExperimentType("")}
                   experimentType={experimentType}
                 />
@@ -130,12 +143,20 @@ export default function CreateExperiment() {
               )}
               {currentStep === 2 && experimentType && (
                 <ProductsStep 
-                  onNext={goToNextStep} 
+                  onNext={(count) => {
+                    setExperimentDetails(prev => ({
+                      ...prev,
+                      selectedProducts: count
+                    }));
+                    goToNextStep();
+                  }}
                   onBack={goToPreviousStep} 
                 />
               )}
               {currentStep === 3 && experimentType && (
                 <LaunchStep
+                  experimentType={experimentType}
+                  experimentDetails={experimentDetails}
                   onBack={goToPreviousStep}
                   onClose={() => navigate("/experiments")}
                 />

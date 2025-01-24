@@ -63,9 +63,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface SetupStepProps {
   onNext: () => void;
+  selectedType: string;
 }
 
-export function SetupStep({ onNext }: SetupStepProps) {
+export function SetupStep({ onNext, selectedType }: SetupStepProps) {
   const { toast } = useToast();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -76,6 +77,7 @@ export function SetupStep({ onNext }: SetupStepProps) {
       timezone: "America/New_York",
       startDateTime: new Date(),
       endDateTime: new Date(),
+      type: selectedType as any,
     },
   });
 
@@ -160,31 +162,6 @@ export function SetupStep({ onNext }: SetupStepProps) {
             <Sparkles className="h-4 w-4" />
           </Button>
         </div>
-
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-gray-50">
-                    <SelectValue placeholder="Select promotion type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {promotionTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="flex gap-4 items-end">
           <FormField

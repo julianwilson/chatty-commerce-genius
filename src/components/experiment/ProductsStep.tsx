@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -183,7 +183,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
   return (
     <div className="space-y-8 w-full">
       <div className="space-y-4 w-full">
-        {filterRules.map((rule) => (
+        {filterRules.map((rule, index) => (
           <div key={rule.id} className="flex gap-4 items-center w-full">
             <Select
               value={rule.field}
@@ -253,8 +253,8 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
           </TableHeader>
           <TableBody>
             {products?.map((product) => (
-              <>
-                <TableRow key={product.id}>
+              <Fragment key={product.id}>
+                <TableRow>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -351,7 +351,7 @@ export function ProductsStep({ onNext, onBack, initialFilters }: ProductsStepPro
                     </TableCell>
                   </TableRow>
                 )}
-              </>
+              </Fragment>
             ))}
           </TableBody>
         </Table>

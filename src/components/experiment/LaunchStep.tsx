@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,13 +10,40 @@ import { X } from "lucide-react";
 interface LaunchStepProps {
   onBack: () => void;
   onClose: () => void;
+  experimentType: string;
+  experimentDetails: {
+    successMetric?: string;
+    startDateTime?: Date;
+    endDateTime?: Date;
+    timezone?: string;
+    selectedProducts?: number;
+  };
 }
 
-export function LaunchStep({ onBack, onClose }: LaunchStepProps) {
+export function LaunchStep({ onBack, onClose, experimentType, experimentDetails }: LaunchStepProps) {
   const [emailInput, setEmailInput] = useState<string>("");
   const [notificationEmails, setNotificationEmails] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [experimentName, setExperimentName] = useState("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Generate experiment name based on details
+    const metric = experimentDetails.successMetric ? 
+      experimentDetails.successMetric.charAt(0).toUpperCase() + experimentDetails.successMetric.slice(1) : 
+      "Optimization";
+    
+    const date = experimentDetails.startDateTime ? 
+      format(experimentDetails.startDateTime, "MMM-dd") : 
+      format(new Date(), "MMM-dd");
+    
+    const productCount = experimentDetails.selectedProducts ? 
+      `${experimentDetails.selectedProducts}-products` : 
+      "multi-product";
+    
+    const generatedName = `${experimentType} ${metric} Test (${productCount}) - ${date}`;
+    setExperimentName(generatedName);
+  }, [experimentDetails, experimentType]);
 
   const handleEmailInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -81,20 +108,41 @@ export function LaunchStep({ onBack, onClose }: LaunchStepProps) {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Review Experiment Details</h2>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="experiment-name">Experiment Name</Label>
+            <Input
+              id="experiment-name"
+              value={experimentName}
+              onChange={(e) => setExperimentName(e.target.value)}
+              placeholder="Enter experiment name"
+            />
+          </div>
+
+          <div>
+            <span className="font-medium">Type:</span>
+            <p className="text-gray-600">{experimentType}</p>
+          </div>
+
+          <div>
+            <span className="font-medium">Success Metric:</span>
+            <p className="text-gray-600">{experimentDetails.successMetric}</p>
+          </div>
+
+          <div>
+            <span className="font-medium">Duration:</span>
+            <p className="text-gray-600">
+              {experimentDetails.startDateTime && experimentDetails.endDateTime ? (
+                `${format(experimentDetails.startDateTime, "MMM d, yyyy")} - ${format(experimentDetails.endDateTime, "MMM d, yyyy")}`
+              ) : (
+                "Not specified"
+              )}
+            </p>
+          </div>
+
           <div>
             <span className="font-medium">Selected Products:</span>
-            <p className="text-gray-600">20 products selected</p>
-          </div>
-
-          <div>
-            <span className="font-medium">Test Duration:</span>
-            <p className="text-gray-600">14 days</p>
-          </div>
-
-          <div>
-            <span className="font-medium">Expected Sample Size:</span>
-            <p className="text-gray-600">~2,000 sessions</p>
+            <p className="text-gray-600">{experimentDetails.selectedProducts || 0} products selected</p>
           </div>
         </div>
       </div>
@@ -141,7 +189,7 @@ export function LaunchStep({ onBack, onClose }: LaunchStepProps) {
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !experimentName.trim()}
         >
           {isSubmitting ? "Launching..." : "Launch Experiment"}
         </Button>
