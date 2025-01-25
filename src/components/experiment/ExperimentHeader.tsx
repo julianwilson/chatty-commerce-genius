@@ -35,7 +35,7 @@ export const ExperimentHeader = ({
         <h1 className="text-2xl font-bold">{experimentName}</h1>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline">
+        <Button variant="outline" className="bg-white">
           <Upload className="h-4 w-4 mr-2" />
           Export
         </Button>

@@ -43,18 +43,18 @@ function MainContent() {
   const { isCollapsed } = useChat();
   
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-50">
       <div className="flex-none">
         <AppSidebar />
       </div>
       <main 
-        className="flex-1 w-full min-w-[1024px] transition-all duration-300 fixed top-0 bottom-0 overflow-auto"
+        className="flex-1 w-full min-w-[1024px] transition-all duration-300 fixed top-0 bottom-0 overflow-auto bg-gray-50"
         style={{ 
           left: isCollapsed ? '112px' : '464px',
           right: 0
         }}
       >
-        <div className="px-2 py-3 border-b bg-background sticky top-0 z-10">
+        <div className="px-2 py-3 border-b bg-white sticky top-0 z-10">
           <SearchBar />
         </div>
         <div className="max-w-[1280px] px-2 py-3 pl-0 ml-12 mt-12">
