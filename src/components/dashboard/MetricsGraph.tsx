@@ -102,7 +102,7 @@ export const MetricsGraph = () => {
                 bottom: 5,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid horizontal={true} vertical={false} strokeDasharray="3 3" />
               <XAxis dataKey="week" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
