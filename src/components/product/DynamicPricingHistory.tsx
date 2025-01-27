@@ -9,6 +9,7 @@ interface PriceChange {
   aur: number;
   rule: string;
   reason?: string;
+  units: number;
 }
 
 interface DynamicPricingHistoryProps {
@@ -33,6 +34,15 @@ const generateMockPriceHistory = (): PriceChange[] => {
     return price * variance;
   };
 
+  // Helper to generate realistic unit sales
+  const generateUnits = (price: number, basePrice: number): number => {
+    // Units tend to be higher when price is lower relative to base price
+    const priceRatio = price / basePrice;
+    const baseUnits = 50; // Base units per day
+    const adjustedUnits = baseUnits * (2 - priceRatio); // Inverse relationship with price
+    return Math.round(adjustedUnits * (0.8 + Math.random() * 0.4)); // Add some randomness
+  };
+
   // Initial price
   history.push({
     timestamp: subDays(now, 30).toISOString(),
@@ -40,7 +50,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.2),
     aur: calculateAUR(basePrice),
     rule: "Initial",
-    reason: "Base price set"
+    reason: "Base price set",
+    units: generateUnits(basePrice, basePrice)
   });
 
   // High velocity increase
@@ -50,7 +61,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.3),
     aur: calculateAUR(basePrice * 1.15),
     rule: "High Velocity",
-    reason: "Sales velocity > 10 units/day"
+    reason: "Sales velocity > 10 units/day",
+    units: generateUnits(basePrice * 1.15, basePrice)
   });
 
   // Seasonality adjustment
@@ -60,7 +72,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.4),
     aur: calculateAUR(basePrice * 1.25),
     rule: "Seasonality",
-    reason: "Peak season pricing"
+    reason: "Peak season pricing",
+    units: generateUnits(basePrice * 1.25, basePrice)
   });
 
   // Low conversion adjustment
@@ -70,7 +83,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.35),
     aur: calculateAUR(basePrice * 1.1),
     rule: "Low Conversion",
-    reason: "Conversion rate < 2%"
+    reason: "Conversion rate < 2%",
+    units: generateUnits(basePrice * 1.1, basePrice)
   });
 
   // Recent adjustment
@@ -80,7 +94,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.4),
     aur: calculateAUR(basePrice * 1.2),
     rule: "High Velocity",
-    reason: "Sales velocity > 15 units/day"
+    reason: "Sales velocity > 15 units/day",
+    units: generateUnits(basePrice * 1.2, basePrice)
   });
 
   // Current price
@@ -90,7 +105,8 @@ const generateMockPriceHistory = (): PriceChange[] => {
     compareAtPrice: roundToTenCents(basePrice * 1.5),
     aur: calculateAUR(basePrice * 1.3),
     rule: "Seasonality",
-    reason: "Holiday season adjustment"
+    reason: "Holiday season adjustment",
+    units: generateUnits(basePrice * 1.3, basePrice)
   });
 
   return history;
@@ -117,6 +133,7 @@ export function DynamicPricingHistory({ productId }: DynamicPricingHistoryProps)
           )}
           <p className="text-sm">Price: {formatPrice(data.price)}</p>
           <p className="text-sm">AUR: {formatPrice(data.aur)}</p>
+          <p className="text-sm">Units Sold: {data.units}</p>
           {data.compareAtPrice && (
             <p className="text-sm">Compare at: {formatPrice(data.compareAtPrice)}</p>
           )}
@@ -153,13 +170,21 @@ export function DynamicPricingHistory({ productId }: DynamicPricingHistoryProps)
                 className="text-xs"
               />
               <YAxis
+                yAxisId="left"
                 className="text-xs"
                 tickFormatter={formatPrice}
                 domain={['dataMin - 5', 'dataMax + 5']}
               />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                className="text-xs"
+                domain={[0, 'auto']}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Line
+                yAxisId="left"
                 type="monotone"
                 dataKey="price"
                 name="Price"
@@ -168,6 +193,7 @@ export function DynamicPricingHistory({ productId }: DynamicPricingHistoryProps)
                 strokeWidth={2}
               />
               <Line
+                yAxisId="left"
                 type="monotone"
                 dataKey="compareAtPrice"
                 name="Compare At"
@@ -176,10 +202,20 @@ export function DynamicPricingHistory({ productId }: DynamicPricingHistoryProps)
                 strokeWidth={2}
               />
               <Line
+                yAxisId="left"
                 type="monotone"
                 dataKey="aur"
                 name="AUR"
                 stroke="#16a34a"
+                dot={{ r: 4 }}
+                strokeWidth={2}
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="units"
+                name="Units"
+                stroke="#dc2626"
                 dot={{ r: 4 }}
                 strokeWidth={2}
               />
@@ -199,6 +235,9 @@ export function DynamicPricingHistory({ productId }: DynamicPricingHistoryProps)
                     <div className="font-medium">{formatPrice(change.price)}</div>
                     <div className="text-muted-foreground text-xs">
                       AUR: {formatPrice(change.aur)}
+                    </div>
+                    <div className="text-muted-foreground text-xs">
+                      Units: {change.units}
                     </div>
                   </div>
                 </div>

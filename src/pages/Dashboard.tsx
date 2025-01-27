@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RecommendationCard } from "@/components/dashboard/RecommendationCard";
 import { MetricsGraph } from "@/components/dashboard/MetricsGraph";
 import { MetricTooltip } from "@/components/MetricTooltip";
+import { CurrentExperiments } from "@/components/dashboard/CurrentExperiments";
 
 // Mock recommendations data
 const recommendations = [
@@ -52,7 +53,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Experiment Metrics */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="card">
           <CardHeader>
             <CardTitle className="font-semibold text-black dark:text-white">
@@ -62,14 +63,34 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#1D9BF0]">$194,862</div>
+            <div className="text-3xl font-bold text-[#6C63FF]">$194,862</div>
             <div className="text-sm text-[#71767B]">5 of 25 experiments completed</div>
+          </CardContent>
+        </Card>
+
+        <Card className="card">
+          <CardHeader>
+            <CardTitle className="font-semibold text-black dark:text-white">
+              <MetricTooltip metric="Monthly Profit Uplift">
+                Monthly Profit Uplift
+              </MetricTooltip>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-[#6C63FF]">$45,721</div>
+              <div className="text-lg font-semibold text-[#6C63FF]">+12.4%</div>
+            </div>
+            <div className="text-sm text-[#71767B]">Based on implemented experiment results</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Metrics Graph */}
       <MetricsGraph />
+
+      {/* Current Experiments */}
+      <CurrentExperiments />
 
       {/* Recommendations Section */}
       <div className="mb-8">
@@ -93,7 +114,7 @@ const Dashboard = () => {
                 key={index}
                 className="flex items-start space-x-4 p-4 rounded-lg bg-muted/50"
               >
-                <div className="w-3 h-3 rounded-full mt-1.5 bg-[#1D9BF0]" />
+                <div className="w-3 h-3 rounded-full mt-1.5 bg-[#6C63FF]" />
                 <p className="text-sm">{activity.text}</p>
               </div>
             ))}

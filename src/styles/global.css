@@ -117,8 +117,8 @@
   .chart-colors {
     --chart-primary: hsl(var(--primary));
     --chart-secondary: hsl(var(--primary));
-    --chart-success: #1D9BF0;
-    --chart-warning: #1D9BF0;
+    --chart-success: #6C63FF;
+    --chart-warning: #6C63FF;
     --chart-error: hsl(var(--destructive));
   }
 

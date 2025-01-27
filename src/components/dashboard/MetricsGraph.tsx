@@ -84,7 +84,7 @@ export const MetricsGraph = () => {
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-lg font-bold">{metric.value}</p>
-                <span className={`text-xs ${metric.change.startsWith('+') ? 'text-[#1D9BF0]' : 'text-black'}`}>
+                <span className={`text-xs ${metric.change.startsWith('+') ? 'text-[#6C63FF]' : 'text-black'}`}>
                   {metric.change}
                 </span>
               </div>
@@ -108,10 +108,10 @@ export const MetricsGraph = () => {
               <XAxis dataKey="week" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="newRevenue" stroke="#1D9BF0" name="App Attributed Sales Generated" />
-              <Line type="monotone" dataKey="aur" stroke="#1D9BF0" name="AUR" />
-              <Line type="monotone" dataKey="aov" stroke="#1D9BF0" name="AOV" />
-              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#1D9BF0" name="UPT" />
+              <Line type="monotone" dataKey="newRevenue" stroke="#6C63FF" name="App Attributed Sales Generated" />
+              <Line type="monotone" dataKey="aur" stroke="#6C63FF" name="AUR" />
+              <Line type="monotone" dataKey="aov" stroke="#6C63FF" name="AOV" />
+              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#6C63FF" name="UPT" />
               <Line type="monotone" dataKey="avgMarkdown" stroke="#000000" name="Avg. Markdown %" />
             </LineChart>
           </ResponsiveContainer>
