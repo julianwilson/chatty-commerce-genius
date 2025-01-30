@@ -28,6 +28,7 @@ import DynamicPricing from "./pages/DynamicPricing";
 import CreateDynamicPricingRule from "./pages/CreateDynamicPricingRule";
 import Navigation from "./pages/Navigation";
 import { UserFeedback } from "./components/user-feedback/UserFeedback";
+import { ThemeProvider } from "@/components/theme-provider";
 
 // Analytics Pages
 import AnalyticsSummary from "./pages/analytics/Summary";
@@ -43,18 +44,18 @@ function MainContent() {
   const { isCollapsed } = useChat();
   
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       <div className="flex-none">
         <AppSidebar />
       </div>
       <main 
-        className="flex-1 w-full min-w-[1024px] transition-all duration-300 fixed top-0 bottom-0 overflow-auto bg-gray-50"
+        className="flex-1 w-full min-w-[1024px] transition-all duration-300 fixed top-0 bottom-0 overflow-auto bg-background"
         style={{ 
           left: isCollapsed ? '112px' : '464px',
           right: 0
         }}
       >
-        <div className="px-2 py-3 border-b bg-white sticky top-0 z-10">
+        <div className="px-2 py-3 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
           <SearchBar />
         </div>
         <div className="max-w-[1280px] px-2 py-3 pl-0 ml-12 mt-12">
@@ -97,19 +98,21 @@ function MainContent() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <SidebarProvider defaultOpen={false}>
-          <ChatProvider>
-            <MainContent />
-          </ChatProvider>
-        </SidebarProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider defaultTheme="dark" attribute="class">
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <SidebarProvider defaultOpen={false}>
+            <ChatProvider>
+              <MainContent />
+            </ChatProvider>
+          </SidebarProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

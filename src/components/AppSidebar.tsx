@@ -68,12 +68,11 @@ export function AppSidebar() {
   const isAnalyticsPage = location.pathname.startsWith('/analytics');
 
   return (
-    <Sidebar collapsible="icon" variant="floating" className="group hover:w-[var(--sidebar-width)] bg-[#000000]">
+    <Sidebar collapsible="icon" variant="floating" className="group hover:w-[var(--sidebar-width)] bg-[#000000] transition-all duration-500 ease-in-out">
       <SidebarContent>
         <SidebarGroup>
-          <div className="flex items-center justify-between px-4 py-2">
-            <SidebarGroupLabel className="text-white">E-commerce Director</SidebarGroupLabel>
-            <SidebarTrigger className="text-white hover:text-[#1D9BF0]" />
+          <div className="flex items-center gap-2 px-2">
+            <SidebarTrigger />
           </div>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -81,10 +80,10 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   {item.title === "Analytics" && isAnalyticsPage ? (
                     <div>
-                      <SidebarMenuButton asChild tooltip={item.title}>
+                      <SidebarMenuButton asChild>
                         <button
                           onClick={() => isOpen && setIsAnalyticsOpen(!isAnalyticsOpen)}
-                          className="w-full flex items-center gap-3 text-white hover:text-white hover:bg-white/[0.03]"
+                          className="w-full flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]"
                         >
                           <item.icon className="h-5 w-5" />
                           <span className="flex-1">{item.title}</span>
@@ -98,11 +97,11 @@ export function AppSidebar() {
                         <div className="pl-6 mt-2">
                           {analyticsItems.map((subItem) => (
                             <SidebarMenuItem key={subItem.title}>
-                              <SidebarMenuButton asChild tooltip={subItem.title}>
+                              <SidebarMenuButton asChild>
                                 <a
                                   href={subItem.url}
                                   className={cn(
-                                    "flex items-center gap-3 text-white hover:text-white hover:bg-white/[0.03]",
+                                    "flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]",
                                     location.pathname === subItem.url && "bg-white/[0.03]"
                                   )}
                                 >
@@ -116,11 +115,11 @@ export function AppSidebar() {
                       )}
                     </div>
                   ) : (
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton asChild>
                       <a
                         href={item.url}
                         className={cn(
-                          "flex items-center gap-3 text-white hover:text-white hover:bg-white/[0.03]",
+                          "flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]",
                           location.pathname === item.url && "bg-white/[0.03]"
                         )}
                       >

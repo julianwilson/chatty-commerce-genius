@@ -408,7 +408,7 @@ const PromotionTrendsGraph = ({ data }: { data: PromotionDataPoint[] }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <div className="bg-background rounded-lg shadow-sm p-6 mb-6">
       <HighchartsReact highcharts={Highcharts} options={options} />
     </div>
   );
@@ -474,7 +474,7 @@ export default function Promotions() {
       <Filter onFilterChange={setGraphData} />
       <PromotionTrendsGraph data={graphData} />
 
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="bg-background rounded-lg shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -492,7 +492,7 @@ export default function Promotions() {
             {promotionsData.map((promotion) => (
               <TableRow
                 key={promotion.id}
-                className="cursor-pointer hover:bg-gray-50"
+                className="cursor-pointer hover:bg-muted"
                 onClick={() => navigate(`/promotions/${promotion.id}`)}
               >
                 <TableCell>

@@ -31,6 +31,28 @@ const metricDefinitions: Record<string, MetricDefinition> = {
     abbreviation: "RPV",
     description: "The total amount of revenue generated from each impression to a website, calculated by dividing gross sales by impressions.",
   },
+  "Conversion Rate": {
+    title: "Conversion Rate",
+    abbreviation: "CVR",
+    description: "The percentage of visitors who complete a desired action (like making a purchase), calculated by dividing the number of conversions by the total number of visitors.",
+  },
+  "AOV": {
+    title: "Average Order Value",
+    abbreviation: "AOV",
+    description: "The average amount spent each time a customer places an order, calculated by dividing total revenue by number of orders.",
+  },
+  "Total Orders": {
+    title: "Total Orders",
+    description: "The total number of completed purchases during the experiment period.",
+  },
+  "Unit Sales": {
+    title: "Unit Sales",
+    description: "The total number of individual items sold across all orders during the experiment period.",
+  },
+  "Visitors": {
+    title: "Visitors",
+    description: "The total number of unique users who viewed the tested variants during the experiment period.",
+  },
   "Gross Margin %": {
     title: "Gross Margin %",
     abbreviation: "GM %",

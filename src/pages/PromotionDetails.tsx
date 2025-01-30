@@ -228,7 +228,7 @@ const PromotionDetails = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <main className="flex-1 bg-white p-8">
+        <main className="flex-1 bg-background p-8">
           <div className="container mx-auto">
             <div className="flex items-center gap-4 mb-6">
               <Button
@@ -302,7 +302,7 @@ const PromotionDetails = () => {
               />
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+            <div className="bg-background rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
                 options={{
@@ -396,7 +396,7 @@ const PromotionDetails = () => {
               />
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border p-4 mb-8">
+            <div className="bg-background rounded-lg shadow-sm border p-4 mb-8">
               <HighchartsReact
                 highcharts={Highcharts}
                 options={{
@@ -474,7 +474,7 @@ const PromotionDetails = () => {
               />
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border mb-8">
+            <div className="bg-background rounded-lg shadow-sm border mb-8">
               <Table>
                 <TableHeader>
                   <TableRow>

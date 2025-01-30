@@ -49,7 +49,7 @@ const metrics = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-4 border rounded shadow">
+      <div className="bg-background p-4 border rounded shadow">
         <p className="text-sm font-bold mb-2 text-black">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm text-black">

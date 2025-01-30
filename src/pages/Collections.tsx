@@ -40,7 +40,7 @@ export default function Collections() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <main className="flex-1 bg-white">
+        <main className="flex-1 bg-background">
           <div className="container mx-auto py-8">
             <h1 className="text-2xl font-bold mb-6">Collections</h1>
             <div className="rounded-md border">

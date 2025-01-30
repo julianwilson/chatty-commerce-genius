@@ -1,6 +1,7 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MetricTooltip } from "@/components/MetricTooltip";
 
 interface MetricData {
   name: string;
@@ -84,7 +85,6 @@ export function ExperimentMetricsGraphs() {
       labels: {
         formatter: function() {
           const value = this.value;
-          // Format large numbers with k suffix
           if (value >= 1000) {
             return metric.unit + (value / 1000).toFixed(1) + 'k';
           }
@@ -99,20 +99,21 @@ export function ExperimentMetricsGraphs() {
     tooltip: {
       formatter: function() {
         const value = this.y;
-        // Format large numbers with comma separator
         const formattedValue = value?.toLocaleString();
         return `<b>${this.x}</b><br/>
                 ${metric.name}: ${metric.unit}${formattedValue}`;
       }
     },
     plotOptions: {
+      series: {
+        color: '#6C63FF'
+      },
       bar: {
         borderRadius: 3,
         dataLabels: {
           enabled: true,
           formatter: function() {
             const value = this.y;
-            // Format large numbers with k suffix in labels
             if (value && value >= 1000) {
               return metric.unit + (value / 1000).toFixed(1) + 'k';
             }
@@ -126,8 +127,7 @@ export function ExperimentMetricsGraphs() {
     },
     series: [{
       name: metric.name,
-      data: [metric.control, metric.winner],
-      color: '#1D9BF0'
+      data: [metric.control, metric.winner]
     }],
     credits: {
       enabled: false
@@ -146,8 +146,10 @@ export function ExperimentMetricsGraphs() {
       {mockData.map((metric) => (
         <Card key={metric.name} className="w-full">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              {metric.name}
+            <CardTitle className="text-sm font-medium flex items-center">
+              <MetricTooltip metric={metric.name}>
+                {metric.name}
+              </MetricTooltip>
               <span className={`ml-2 text-xs ${metric.improvement > 0 ? 'text-[#1D9BF0]' : 'text-black'}`}>
                 {metric.improvement > 0 ? '+' : ''}{metric.improvement}%
               </span>

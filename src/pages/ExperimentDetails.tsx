@@ -179,62 +179,70 @@ export default function ExperimentDetails() {
   }
 
   return (
-    <div className="p-8">
-      <ExperimentHeader
-        experimentName={experimentName}
-        onBack={() => navigate('/experiments')}
-        selectedProducts={selectedProducts}
-        selectedVariants={selectedVariants}
-        onPublish={(mode) => {
-          setPublishMode(mode);
-          setShowPublishDialog(true);
-        }}
-      />
-      
-      <div className="space-y-6 mb-8">
-        <ExperimentSummary />
-        <ExperimentMetricsGraphs />
-      </div>
+    <div className="min-h-screen flex w-full">
+      <main className="flex-1 bg-background p-8">
+        <ExperimentHeader
+          experimentName={experimentName}
+          onBack={() => navigate('/experiments')}
+          selectedProducts={selectedProducts}
+          selectedVariants={selectedVariants}
+          onPublish={(mode) => {
+            setPublishMode(mode);
+            setShowPublishDialog(true);
+          }}
+        />
+        
+        <div className="space-y-6 mb-8">
+          <div className="bg-background rounded-lg shadow-sm border p-4 mb-8">
+            <ExperimentSummary />
+          </div>
+          <div className="bg-background rounded-lg shadow-sm border p-4 mb-8">
+            <ExperimentMetricsGraphs />
+          </div>
+        </div>
 
-      <ExperimentTable
-        mockProducts={mockProducts}
-        selectedProducts={selectedProducts}
-        selectedVariants={selectedVariants}
-        experimentData={experimentData}
-        onProductSelect={handleProductSelect}
-        onVariantSelect={handleVariantSelect}
-        onSelectProduct={setSelectedProduct}
-        getTestSalesPercentages={getTestSalesPercentages}
-        getHighestProfitColumn={getHighestProfitColumn}
-        getValueColor={getValueColor}
-        getGrossSales={getGrossSales}
-      />
+        <div className="bg-background rounded-lg shadow-sm border mb-8">
+          <ExperimentTable
+            mockProducts={mockProducts}
+            selectedProducts={selectedProducts}
+            selectedVariants={selectedVariants}
+            experimentData={experimentData}
+            onProductSelect={handleProductSelect}
+            onVariantSelect={handleVariantSelect}
+            onSelectProduct={setSelectedProduct}
+            getTestSalesPercentages={getTestSalesPercentages}
+            getHighestProfitColumn={getHighestProfitColumn}
+            getValueColor={getValueColor}
+            getGrossSales={getGrossSales}
+          />
+        </div>
 
-      <div className="flex items-center gap-2">
-        <Badge variant="secondary">
-          {experimentType}
-        </Badge>
-      </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">
+            {experimentType}
+          </Badge>
+        </div>
 
-      <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              {publishMode === 'all' 
-                ? "This action will publish all winning changes from this experiment to your live store."
-                : `This action will publish ${selectedProducts.length} selected products and ${selectedVariants.length} variants to your live store.`
-              } This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handlePublishChanges}>
-              Confirm
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        <AlertDialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                {publishMode === 'all' 
+                  ? "This action will publish all winning changes from this experiment to your live store."
+                  : `This action will publish ${selectedProducts.length} selected products and ${selectedVariants.length} variants to your live store.`
+                } This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handlePublishChanges}>
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </main>
     </div>
   );
 }

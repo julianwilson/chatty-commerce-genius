@@ -135,7 +135,7 @@ export default function Experiments() {
                 <Settings2 className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white">
+            <DropdownMenuContent align="end" className="bg-background">
               {columns.map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column.id}
@@ -166,7 +166,7 @@ export default function Experiments() {
               {experimentsData.map((experiment) => (
                 <TableRow 
                   key={experiment.id}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-muted"
                   onClick={() => handleRowClick(experiment.id)}
                 >
                   {visibleColumns.includes('status') && (

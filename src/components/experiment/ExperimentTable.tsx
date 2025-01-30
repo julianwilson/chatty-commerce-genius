@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MetricTooltip } from "@/components/MetricTooltip";
 import { MoneyDisplay } from "@/components/MoneyDisplay";
 import { Product, ExperimentMetric } from "@/types/experiment";
+import { cn } from "@/lib/utils";
 
 interface ExperimentTableProps {
   mockProducts: Product[];
@@ -123,14 +124,22 @@ export const ExperimentTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Metric</TableHead>
-              <TableHead className={highestProfitColumns.control ? "bg-[#1D9BF0]/10" : ""}>
+              <TableHead className={cn(
+                "w-[200px]",
+                highestProfitColumns.control && "bg-muted"
+              )}>
                 <MetricTooltip metric="Control">Control</MetricTooltip>
               </TableHead>
-              <TableHead className={highestProfitColumns.testA ? "bg-[#1D9BF0]/10" : ""}>
+              <TableHead className={cn(
+                "w-[200px]",
+                highestProfitColumns.testA && "bg-muted"
+              )}>
                 <MetricTooltip metric="Test Group">Test A</MetricTooltip>
               </TableHead>
-              <TableHead className={highestProfitColumns.testB ? "bg-[#1D9BF0]/10" : ""}>
+              <TableHead className={cn(
+                "w-[200px]",
+                highestProfitColumns.testB && "bg-muted"
+              )}>
                 <MetricTooltip metric="Test Group">Test B</MetricTooltip>
               </TableHead>
             </TableRow>
@@ -142,17 +151,26 @@ export const ExperimentTable = ({
                   <MetricTooltip metric={row.metric}>{row.metric}</MetricTooltip>
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.control, row.metric)} ${highestProfitColumns.control ? "bg-[#1D9BF0]/10" : ""}`}
+                  className={cn(
+                    getValueColor(row.control, row.metric),
+                    highestProfitColumns.control && "bg-muted"
+                  )}
                 >
                   <MoneyDisplay value={Number(row.control)} />
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.testA, row.metric)} ${highestProfitColumns.testA ? "bg-[#1D9BF0]/10" : ""}`}
+                  className={cn(
+                    getValueColor(row.testA, row.metric),
+                    highestProfitColumns.testA && "bg-muted"
+                  )}
                 >
                   <MoneyDisplay value={Number(row.testA)} />
                 </TableCell>
                 <TableCell 
-                  className={`${getValueColor(row.testB, row.metric)} ${highestProfitColumns.testB ? "bg-[#1D9BF0]/10" : ""}`}
+                  className={cn(
+                    getValueColor(row.testB, row.metric),
+                    highestProfitColumns.testB && "bg-muted"
+                  )}
                 >
                   <MoneyDisplay value={Number(row.testB)} />
                 </TableCell>

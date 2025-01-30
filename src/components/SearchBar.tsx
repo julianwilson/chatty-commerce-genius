@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useNavigate } from "react-router-dom";
+import { ThemeToggle } from "./theme-toggle";
 
 export const SearchBar = () => {
   const [openPopover, setOpenPopover] = useState(false);
@@ -138,29 +139,32 @@ export const SearchBar = () => {
   );
 
   return (
-    <div className="relative w-full max-w-lg">
-      <Popover open={openPopover} onOpenChange={setOpenPopover}>
-        <PopoverTrigger asChild>
-          <Input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search..."
-            className="w-full pl-4 pr-12"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onClick={() => setOpenPopover(true)}
-          />
-        </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0" align="start">
-          <SearchResults />
-        </PopoverContent>
-      </Popover>
-      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Command className="w-4 h-4 mr-1" />
-          <span>K</span>
+    <div className="flex items-center gap-4">
+      <div className="relative w-full max-w-lg">
+        <Popover open={openPopover} onOpenChange={setOpenPopover}>
+          <PopoverTrigger asChild>
+            <Input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search..."
+              className="w-full pl-4 pr-12"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onClick={() => setOpenPopover(true)}
+            />
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px] p-0" align="start">
+            <SearchResults />
+          </PopoverContent>
+        </Popover>
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Command className="w-4 h-4 mr-1" />
+            <span>K</span>
+          </div>
         </div>
       </div>
+      <ThemeToggle />
     </div>
   );
 };
