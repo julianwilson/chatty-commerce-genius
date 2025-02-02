@@ -47,22 +47,24 @@ function MainContent() {
   
   return (
     <div
-      className="flex min-h-screen bg-background"
+      className="flex min-h-screen bg-background relative"
       style={{
         '--chat-open': isCollapsed ? 0 : 1,
-        marginLeft: location.pathname.startsWith('/analytics') ? '192px' : '72px',
-        marginRight: isCollapsed ? '48px' : '400px'
       } as React.CSSProperties}
     >
       <AppSidebar />
       {location.pathname.startsWith('/analytics') && <AnalyticsSidebar />}
       <main
-        className="flex-1 min-w-0 transition-all duration-300 overflow-auto relative z-20"
+        className="flex-1 min-w-[1550px] transition-all duration-300 overflow-auto relative z-20 w-full pl-[72px]"
+        style={{
+          paddingLeft: location.pathname.startsWith('/analytics') ? '272px' : '72px',
+          paddingRight: isCollapsed ? '0px' : '400px'
+        }}
       >
         <div className="px-2 py-3 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
           <SearchBar />
         </div>
-        <div className="max-w-[1280px] px-2 py-3 pl-0 ml-12 mt-12">
+        <div className="max-w-[1550px] px-2 py-3 pl-0 ml-12 mt-12">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
