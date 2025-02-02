@@ -29,13 +29,13 @@ export function ChatMessage({ sender, content, timestamp }: ChatMessageProps) {
 
   return (
     <div className={cn(
-      'flex gap-3 p-4',
+      'flex gap-3 p-6',
       sender === 'assistant' ? 'bg-muted/50' : '',
     )}>
       <div className="flex-1 space-y-2">
         <div className="flex items-center gap-2">
           <span className="font-medium">
-            {sender === 'assistant' ? 'Cascade' : 'You'}
+            {sender === 'assistant' ? 'Signal' : 'You'}
           </span>
           <span className="text-xs text-muted-foreground">{timestamp}</span>
         </div>

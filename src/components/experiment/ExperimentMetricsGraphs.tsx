@@ -65,6 +65,7 @@ export function ExperimentMetricsGraphs() {
     chart: {
       type: 'bar',
       height: '120px',
+      backgroundColor: 'transparent',
       style: {
         fontFamily: 'Inter, sans-serif'
       }
@@ -75,7 +76,11 @@ export function ExperimentMetricsGraphs() {
     xAxis: {
       categories: ['Control', 'Winner'],
       labels: {
-        style: { fontSize: '12px' }
+        style: {
+          fontSize: '12px',
+          color: '#71767B',
+          fontWeight: '500'
+        }
       }
     },
     yAxis: {
@@ -84,24 +89,35 @@ export function ExperimentMetricsGraphs() {
       },
       labels: {
         formatter: function() {
-          const value = this.value;
-          if (value >= 1000) {
+          const value = Number(this.value);
+          if (!isNaN(value) && value >= 1000) {
             return metric.unit + (value / 1000).toFixed(1) + 'k';
           }
-          return metric.unit + value;
+          return metric.unit + this.value;
         },
-        style: { fontSize: '12px' }
-      }
+        style: {
+          fontSize: '12px',
+          color: '#71767B',
+          fontWeight: '500'
+        }
+      },
+      gridLineColor: '#2F3336'
     },
     legend: {
       enabled: false
     },
     tooltip: {
       formatter: function() {
-        const value = this.y;
-        const formattedValue = value?.toLocaleString();
+        const value = Number(this.y);
+        const formattedValue = !isNaN(value) ? value.toLocaleString() : '0';
         return `<b>${this.x}</b><br/>
                 ${metric.name}: ${metric.unit}${formattedValue}`;
+      },
+      backgroundColor: '#000000',
+      borderColor: '#2F3336',
+      style: {
+        color: '#FFFFFF',
+        fontWeight: '500'
       }
     },
     plotOptions: {
@@ -113,19 +129,23 @@ export function ExperimentMetricsGraphs() {
         dataLabels: {
           enabled: true,
           formatter: function() {
-            const value = this.y;
-            if (value && value >= 1000) {
+            const value = Number(this.y);
+            if (!isNaN(value) && value >= 1000) {
               return metric.unit + (value / 1000).toFixed(1) + 'k';
             }
-            return metric.unit + value;
+            return metric.unit + (this.y ?? 0);
           },
           style: {
-            fontSize: '11px'
+            fontSize: '11px',
+            fontWeight: '600',
+            textOutline: 'none',
+            color: '#71767B'
           }
         }
       }
     },
     series: [{
+      type: 'bar',
       name: metric.name,
       data: [metric.control, metric.winner]
     }],
@@ -150,7 +170,7 @@ export function ExperimentMetricsGraphs() {
               <MetricTooltip metric={metric.name}>
                 {metric.name}
               </MetricTooltip>
-              <span className={`ml-2 text-xs ${metric.improvement > 0 ? 'text-[#1D9BF0]' : 'text-black'}`}>
+              <span className={`ml-2 text-xs ${metric.improvement > 0 ? 'text-primary' : 'text-foreground dark:text-gray-400'}`}>
                 {metric.improvement > 0 ? '+' : ''}{metric.improvement}%
               </span>
             </CardTitle>
@@ -164,7 +184,7 @@ export function ExperimentMetricsGraphs() {
               <div className="mt-2 pt-2 border-t">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">Estimated Monthly Impact</span>
-                  <span className="text-sm font-medium text-[#1D9BF0]">
+                  <span className="text-sm font-medium text-primary">
                     {metric.monthlyOrdersImpact && `+${metric.monthlyOrdersImpact} orders`}
                     {metric.monthlyRevenueImpact && `+${formatCurrency(metric.monthlyRevenueImpact)}`}
                   </span>

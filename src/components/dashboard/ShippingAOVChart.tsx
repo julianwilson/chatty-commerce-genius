@@ -4,14 +4,19 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export function ShippingAOVChart() {
   // Mock data for AOV comparison
-  const aovData = [
+  interface CustomDataPoint extends Highcharts.PointOptionsObject {
+    orders?: number;
+  }
+
+  const aovData: Highcharts.SeriesOptionsType[] = [
     {
+      type: 'bar',
       name: 'Average Order Value',
       data: [
-        { name: 'Paid Shipping', y: 128.50, orders: 2845 },
-        { name: 'Free Shipping', y: 185.75, orders: 1532 }
+        { name: 'Paid Shipping', y: 128.50, orders: 2845 } as CustomDataPoint,
+        { name: 'Free Shipping', y: 185.75, orders: 1532 } as CustomDataPoint
       ],
-      color: '#1D9BF0' // updated color
+      color: 'var(--primary)'
     }
   ];
 
@@ -19,9 +24,9 @@ export function ShippingAOVChart() {
     chart: {
       type: 'bar',
       height: '300px',
-      backgroundColor: 'transparent', // updated background color
+      backgroundColor: 'transparent',
       style: {
-        fontFamily: 'inherit' // updated font family
+        fontFamily: 'inherit'
       }
     },
     title: {
@@ -30,47 +35,49 @@ export function ShippingAOVChart() {
     xAxis: {
       type: 'category',
       labels: {
-        style: { 
-          color: '#71767B' // updated label color
+        style: {
+          color: 'var(--muted-foreground)'
         }
       },
-      lineColor: '#2F3336', // updated line color
-      tickColor: '#2F3336' // updated tick color
+      lineColor: 'var(--border)',
+      tickColor: 'var(--border)'
     },
     yAxis: {
       title: {
         text: 'Average Order Value ($)',
         style: {
-          fontSize: '12px'
+          fontSize: '12px',
+          color: 'var(--muted-foreground)'
         }
       },
       labels: {
         formatter: function() {
           return '$' + this.value;
         },
-        style: { 
-          color: '#71767B' // updated label color
+        style: {
+          color: 'var(--muted-foreground)'
         }
       },
-      gridLineColor: '#2F3336' // updated grid line color
+      gridLineColor: 'var(--border)'
     },
     legend: {
       enabled: false,
       itemStyle: {
-        color: '#71767B' // updated legend item color
+        color: 'var(--muted-foreground)'
       }
     },
     tooltip: {
-      formatter: function() {
-        const point = this.point as any;
+      formatter: function(this: Highcharts.PointerEventObject) {
+        const point = this.point as unknown as CustomDataPoint;
+        if (!point) return '';
         return `<b>${point.name}</b><br/>
-                AOV: $${point.y.toFixed(2)}<br/>
-                Orders: ${point.orders.toLocaleString()}`;
+                AOV: $${point.y?.toFixed(2)}<br/>
+                Orders: ${point?.orders?.toLocaleString() ?? 0}`;
       },
-      backgroundColor: '#000000', // updated background color
-      borderColor: '#2F3336', // updated border color
+      backgroundColor: 'var(--background)',
+      borderColor: 'var(--border)',
       style: {
-        color: '#FFFFFF' // updated text color
+        color: 'var(--foreground)'
       }
     },
     plotOptions: {

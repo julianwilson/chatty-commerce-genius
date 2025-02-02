@@ -69,16 +69,16 @@ export function ChatWindow({ messages, isTyping, isCollapsed, onToggleCollapse }
   return (
     <div 
       className={cn(
-        "fixed top-16 bottom-0 border-r bg-background flex flex-col transition-all duration-300",
-        isCollapsed 
-          ? "left-[64px] w-[48px]" 
-          : "left-[64px] w-[400px]"
+      "fixed top-16 bottom-0 border-r bg-background flex flex-col transition-all duration-300 z-50",
+        isCollapsed
+          ? "right-0 w-[48px]"
+          : "right-0 w-[400px]"
       )}
     >
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-3 z-50 h-6 w-6 rounded-full border bg-background shadow-md"
+        className="absolute -left-3 top-3 z-50 h-6 w-6 rounded-full border bg-background shadow-md"
         onClick={onToggleCollapse}
       >
         {isCollapsed ? (

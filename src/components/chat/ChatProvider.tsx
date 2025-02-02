@@ -59,7 +59,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       sender: 'assistant',
       content: (
         <>
-          Welcome to Chatty Commerce Genius! I can help you manage your:
+          I can help you manage your:
           <ul className="list-disc pl-6 mt-2 space-y-1">
             <li><MentionLink type="experiments">Experiments</MentionLink></li>
             <li><MentionLink type="promotions">Promotions</MentionLink></li>

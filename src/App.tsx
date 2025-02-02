@@ -2,9 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { AnalyticsSidebar } from "@/components/AnalyticsSidebar";
 import { SearchBar } from "@/components/SearchBar";
 import { ChatProvider, useChat } from "@/components/chat/ChatProvider";
 import Dashboard from "./pages/Dashboard";
@@ -21,7 +22,7 @@ import Experiments from "./pages/Experiments";
 import ExperimentsEmpty from "./pages/ExperimentsEmpty";
 import CreateExperiment from "./pages/CreateExperiment";
 import ExperimentDetails from "./pages/ExperimentDetails";
-import Recipes from "./pages/Recipes";
+import Recipes from "./components/Recipes";
 import SalesPlan from "./pages/SalesPlan";
 import Settings from "./pages/Settings";
 import DynamicPricing from "./pages/DynamicPricing";
@@ -42,18 +43,21 @@ const queryClient = new QueryClient();
 
 function MainContent() {
   const { isCollapsed } = useChat();
+  const location = useLocation();
   
   return (
-    <div className="flex min-h-screen bg-background">
-      <div className="flex-none">
-        <AppSidebar />
-      </div>
-      <main 
-        className="flex-1 w-full min-w-[1024px] transition-all duration-300 fixed top-0 bottom-0 overflow-auto bg-background"
-        style={{ 
-          left: isCollapsed ? '112px' : '464px',
-          right: 0
-        }}
+    <div
+      className="flex min-h-screen bg-background"
+      style={{
+        '--chat-open': isCollapsed ? 0 : 1,
+        marginLeft: location.pathname.startsWith('/analytics') ? '192px' : '72px',
+        marginRight: isCollapsed ? '48px' : '400px'
+      } as React.CSSProperties}
+    >
+      <AppSidebar />
+      {location.pathname.startsWith('/analytics') && <AnalyticsSidebar />}
+      <main
+        className="flex-1 min-w-0 transition-all duration-300 overflow-auto relative z-20"
       >
         <div className="px-2 py-3 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
           <SearchBar />

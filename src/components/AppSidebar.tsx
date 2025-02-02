@@ -55,14 +55,14 @@ const analyticsItems = [
 export function AppSidebar() {
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(true);
   const location = useLocation();
-  const { isOpen } = useSidebar();
+  const { state } = useSidebar();
 
   // Close analytics submenu when sidebar is collapsed
   useEffect(() => {
-    if (!isOpen) {
+    if (state === "collapsed") {
       setIsAnalyticsOpen(false);
     }
-  }, [isOpen]);
+  }, [state]);
 
   // Check if we're on an analytics page
   const isAnalyticsPage = location.pathname.startsWith('/analytics');
@@ -71,49 +71,25 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" variant="floating" className="group hover:w-[var(--sidebar-width)] bg-[#000000] transition-all duration-500 ease-in-out">
       <SidebarContent>
         <SidebarGroup>
-          <div className="flex items-center gap-2 px-2">
-            <SidebarTrigger />
-          </div>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="mt-4">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  {item.title === "Analytics" && isAnalyticsPage ? (
-                    <div>
-                      <SidebarMenuButton asChild>
-                        <button
-                          onClick={() => isOpen && setIsAnalyticsOpen(!isAnalyticsOpen)}
-                          className="w-full flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]"
-                        >
-                          <item.icon className="h-5 w-5" />
-                          <span className="flex-1">{item.title}</span>
-                          <ChevronDown className={cn(
-                            "h-4 w-4 transition-transform",
-                            isAnalyticsOpen && "transform rotate-180"
-                          )} />
-                        </button>
-                      </SidebarMenuButton>
-                      {isAnalyticsOpen && isOpen && (
-                        <div className="pl-6 mt-2">
-                          {analyticsItems.map((subItem) => (
-                            <SidebarMenuItem key={subItem.title}>
-                              <SidebarMenuButton asChild>
-                                <a
-                                  href={subItem.url}
-                                  className={cn(
-                                    "flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]",
-                                    location.pathname === subItem.url && "bg-white/[0.03]"
-                                  )}
-                                >
-                                  <subItem.icon className="h-5 w-5" />
-                                  <span>{subItem.title}</span>
-                                </a>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  {item.title === "Analytics" ? (
+                    <SidebarMenuButton asChild>
+                      <a
+                        href={item.url}
+                        className={cn(
+                          "flex items-center gap-3 px-5 py-2 text-white hover:text-white hover:bg-white/[0.03]",
+                          location.pathname.startsWith('/analytics') && "bg-white/[0.03]"
+                        )}
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span className="flex-1">
+                          <span className="transition-opacity duration-300 group-data-[collapsible=icon]:opacity-0">{item.title}</span>
+                        </span>
+                      </a>
+                    </SidebarMenuButton>
                   ) : (
                     <SidebarMenuButton asChild>
                       <a
@@ -124,7 +100,9 @@ export function AppSidebar() {
                         )}
                       >
                         <item.icon className="h-5 w-5" />
-                        <span>{item.title}</span>
+                        <span className="flex-1">
+                          <span className="transition-opacity duration-300 group-data-[collapsible=icon]:opacity-0">{item.title}</span>
+                        </span>
                       </a>
                     </SidebarMenuButton>
                   )}

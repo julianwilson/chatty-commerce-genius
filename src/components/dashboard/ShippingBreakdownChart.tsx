@@ -4,6 +4,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export function ShippingBreakdownChart() {
   // Mock data for shipping breakdown
+  interface CustomDataPoint extends Highcharts.PointOptionsObject {
+    percentage?: number;
+    aov?: number;
+  }
+
   const shippingData = [
     {
       name: 'Orders',
@@ -11,7 +16,7 @@ export function ShippingBreakdownChart() {
         { name: 'Paid Shipping', y: 2845, percentage: 65, aov: 128.50 },
         { name: 'Free Shipping', y: 1532, percentage: 35, aov: 185.75 }
       ],
-      color: '#2563eb'
+      color: 'var(--primary)'
     }
   ];
 
@@ -31,45 +36,45 @@ export function ShippingBreakdownChart() {
       pie: {
         allowPointSelect: true,
         cursor: 'pointer',
-        colors: ['#1D9BF0', '#8ECDF8'],
+        colors: ['var(--primary)', 'var(--primary-light, #8ECDF8)'],
         dataLabels: {
           enabled: true,
           format: '<b>{point.name}</b>: {point.percentage:.1f}%',
           style: {
-            color: '#71767B'
+            color: 'var(--muted-foreground)'
           }
         }
       }
     },
     series: [{
+      type: 'pie' as const,
       name: 'Shipping',
-      colorByPoint: true,
       data: [{
         name: 'Paid Shipping',
         y: 65
       }, {
         name: 'Free Shipping',
         y: 35
-      }]
+      }] as CustomDataPoint[]
     }],
     legend: {
       itemStyle: {
-        color: '#71767B'
+        color: 'var(--muted-foreground)'
       }
     },
     credits: {
       enabled: false
     },
     tooltip: {
-      backgroundColor: '#000000',
-      borderColor: '#2F3336',
+      backgroundColor: 'var(--background)',
+      borderColor: 'var(--border)',
       style: {
-        color: '#FFFFFF'
+        color: 'var(--foreground)'
       },
       formatter: function() {
-        const point = this.point as any;
-        return `<b>${point.name}</b><br/>
-                Percentage: ${point.percentage}%`;
+        const point = this as unknown as { point: CustomDataPoint, percentage: number };
+        return `<b>${point.point.name}</b><br/>
+                Percentage: ${point.percentage.toFixed(1)}%`;
       }
     }
   };

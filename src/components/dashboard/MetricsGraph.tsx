@@ -49,10 +49,10 @@ const metrics = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-background p-4 border rounded shadow">
-        <p className="text-sm font-bold mb-2 text-black">{label}</p>
+      <div className="bg-background dark:bg-gray-950 p-4 border dark:border-gray-800 rounded shadow dark:shadow-2xl dark:shadow-black/20">
+        <p className="text-sm font-bold mb-2 text-foreground">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm text-black">
+          <p key={index} className="text-sm text-foreground">
             {entry.name}:{' '}
             <span className="font-bold">
               {entry.dataKey === 'unitsPerTransaction' 
@@ -84,7 +84,7 @@ export const MetricsGraph = () => {
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-lg font-bold">{metric.value}</p>
-                <span className={`text-xs ${metric.change.startsWith('+') ? 'text-[#6C63FF]' : 'text-black'}`}>
+                <span className={`text-xs ${metric.change.startsWith('+') ? 'text-primary' : 'text-muted-foreground'}`}>
                   {metric.change}
                 </span>
               </div>
@@ -108,11 +108,11 @@ export const MetricsGraph = () => {
               <XAxis dataKey="week" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="newRevenue" stroke="#6C63FF" name="App Attributed Sales Generated" />
-              <Line type="monotone" dataKey="aur" stroke="#6C63FF" name="AUR" />
-              <Line type="monotone" dataKey="aov" stroke="#6C63FF" name="AOV" />
-              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#6C63FF" name="UPT" />
-              <Line type="monotone" dataKey="avgMarkdown" stroke="#000000" name="Avg. Markdown %" />
+              <Line type="monotone" dataKey="newRevenue" stroke="#6C63FF" strokeWidth={2} name="App Attributed Sales Generated" />
+              <Line type="monotone" dataKey="aur" stroke="#6C63FF" strokeWidth={2} name="AUR" />
+              <Line type="monotone" dataKey="aov" stroke="#6C63FF" strokeWidth={2} name="AOV" />
+              <Line type="monotone" dataKey="unitsPerTransaction" stroke="#6C63FF" strokeWidth={2} name="UPT" />
+              <Line type="monotone" dataKey="avgMarkdown" stroke="currentColor" className="text-foreground dark:text-gray-400" strokeWidth={2} name="Avg. Markdown %" />
             </LineChart>
           </ResponsiveContainer>
         </div>
